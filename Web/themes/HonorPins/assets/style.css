@@ -23,8 +23,8 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:300,400,600,700,800,900");
 
 /* All CSS FILE */
-@import "assets/css/fontawesome.min.css";
-@import "assets/css/bootstrap.min.css";
-@import "assets/css/reset.css";
-@import "assets/css/plugins.css";
-@import "assets/css/style.css";
+@import "css/fontawesome.min.css";
+@import "css/bootstrap.min.css";
+@import "css/reset.css";
+@import "css/plugins.css";
+@import "css/style.css";
