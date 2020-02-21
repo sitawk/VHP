@@ -1,0 +1,23 @@
+{
+    "name": "HonorPin",
+    "type": "Bootstrap-4 theme",
+    "description": "Honor pin Bootstrap 4 theme",
+    "keywords": ["Honor", "pin", "bootstrap 4", "template"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Faheem Ahmed",
+            "email": "faheemahmed4420@gmail.com",
+            "role": "Lead Developer"
+        },
+    ],
+    "require": {
+        "php": ">=5.4",
+        "composer/installers": "~1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
