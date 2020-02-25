@@ -4,6 +4,16 @@ layout = "default"
 [account]
 [session]
 ==
+<?php
+function onStart(){
+  $user = Auth::getUser();
+  if ($user) {
+    $redrect = '/';
+    return Redirect::to($redrect);
+  }
+}
+?>
+==
 
 <style>
 .btn-facebook:hover {
@@ -44,22 +54,22 @@ layout = "default"
         <div class="login-or">
           <!-- <hr class="hr-or"> -->
           <!-- <span class="span-or">or</span> </div> -->
-          <form>
+          <form data-request="onRegister">
            <div class="form-group">
-             <label for="inputUsername">Username</label>
-             <input id="inputUsername" type="text" class="form-control">
+             <label for="inputUsername">Full Name</label>
+             <input id="inputUsername" type="text" name="name" class="form-control">
            </div>
            <div class="form-group">
              <label for="inputEmail">email</label>
-             <input id="inputEmail" type="text" class="form-control">
+             <input id="inputEmail" type="text" name="email" class="form-control">
            </div>
            <div class="form-group">
              <label for="inputPassword">Password</label>
-             <input type="password" class="form-control" id="inputPassword">
+             <input type="password" class="form-control" name="password" id="inputPassword">
            </div>
            <div class="form-group">
              <label for="inputRePassword">Re Enter Password</label>
-             <input id="inputRePassword" type="password" class="form-control">
+             <input id="inputRePassword" type="password" name="password_confirmation" class="form-control">
            </div>
            <div class="checkbox pull-right">
              <label>

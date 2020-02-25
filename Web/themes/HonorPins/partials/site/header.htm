@@ -1,71 +1,124 @@
+==
+<?php
+function onLogoutUser(){
+  Auth::logout();
+  return Redirect::to('/');
+}
+function onStart(){
+  $this['user'] = Auth::getuser();
+}
+
+?>
+==
+<style>
+
+
+</style>
 <header class="position-absolute bg-white w-100">
-  <div class="topbar bb-0">
-    <div class="container">
-      <div class="row text-sm-left">
-        <div class="col-12 row col-sm-6">
+    <div class="topbar bb-0">
+        <div class="container">
+            <div class="row text-sm-left">
+                <div class="col-12 row col-sm-6 mobile-hide">
+                    <div class="col-4">
+                        <p style="font-size: 1.3rem;"><i class="fa fa-map-marker"></i> Glandale, CA 91302</p>
+                    </div>
+                    <div class="col-4">
+                        <p style="font-size: 1.3rem;"><i class="fa fa-envelope"></i> <a href="mail:+698-695-806">info@honorpins.com</a></p>
+                    </div>
+                    <div class="col-4">
+                        <p style="font-size: 1.3rem;"><i class="fa fa-phone"></i> <a href="tel:+698-695-806">+698 695 806</a></p>
+                    </div>
+                </div>
+                {%if user %}
+                <div class="col-12 col-sm-3 ml-auto ">
+                    <nav class="mobile-hide navbar navbar-dark  navbar-expand-sm float-right">
+                      <a class="navbar-brand" href="#">
 
-          <div class="col-6">
-            <p style="font-size: 1.1rem;">Email : info@honorpins.com</p>
-          </div>
-            <div class="col-6">
-              <p style="font-size: 1.1rem;">Phone: <a href="tel:+698-695-806">+698 695 806</a></p>
+   <p class="text-primary ">{{user.name}}</p>
+ </a>
 
-</div>
+                        <div class="collapse navbar-collapse" id="navbar-list-4">
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown ">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="#">Dashboard</a>
+                                        <a class="dropdown-item" href="#">Edit Profile</a>
+                                        <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                {%else%}
+                <div class="col-12 col-sm-6">
+                  <div class=" ml-4 float-sm-right">
+                      <p style="font-size: 1.1rem;"><a href="/login">Login</a></p>
+                  </div>
+                  <div class="phone-call float-sm-right">
+                  <p style="font-size: 1.1rem;"><a href="/register">Register</a></p>
+                  </div>
+                </div>
+                {%endif%}
+            </div>
         </div>
-        <div class="col-12 col-sm-6">
-          <div class=" ml-4 float-sm-right">
-              <p style="font-size: 1.1rem;"><a href="/login">Login</a></p>
-          </div>
-          <div class="phone-call float-sm-right">
-          <p style="font-size: 1.1rem;"><a href="/register">Register</a></p>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-  <nav id="active-sticky" class="navbar navbar-dark navbar-expand-lg">
-    <div class="container bg-dark">
-      <a class="navbar-brand" href="index.html"><h1 class="text-white">HonorPins</h1></a>
-      <button class="navbar-toggler navber-toggler-right" data-toggle="collapse" data-target="#navbarToggler">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarToggler">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-              <a href="/" class="nav-link">Home</a>
-          </li>
-          <li class="nav-item">
-            <a href="/about-us" class="nav-link">About</a>
-          </li>
-          <li class="nav-item">
-            <a href="/pricing" class="nav-link">Pricing</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a href="/services" class="nav-link dropdown-toggle" data-toggle="dropdown" >Services</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Service One</a></li>
-              <li><a class="dropdown-item" href="#">Service two</a></li>
-              <li><a class="dropdown-item" href="#">Service three</a></li>
+    <nav id="active-sticky" class="navbar navbar-dark navbar-expand-lg">
+        <div class="container bg-dark">
+          <ul class="navbar-nav content-mobile" >
+              <li class="nav-item dropdown "  style="position:absolute;top:0;margin-top:25px">
+                  <a class="nav-link dropdown-toggle text-white"   href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
+                  </a>
+                  <div class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="#">Dashboard</a>
+                      <a class="dropdown-item" href="#">Edit Profile</a>
+                      <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
+                  </div>
+              </li>
+          </ul>
+            <a class="navbar-brand content-desktop" href="index.html">
+                <h1 class="text-white">HonorPins</h1>
+            </a>
+            <a class="navbar-brand content-mobile  ml-5" href="index.html">
+                <h1 class="text-white">HonorPins</h1>
+            </a>
 
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a href="contact.html" class="nav-link">Contact Us</a>
-          </li>
-          <a href="about.html" class="btn-primary font-weight-bold px-4 py-3 rounded">Get a Quote</a>
-        </ul>
-        <div class="search-icon">
-          <i data-target="#searchBox" data-toggle="collapse" class="fa fa-search d-none d-lg-block"></i>
-          <div class="collapse" id="searchBox">
-            <form class="input-group" action="http://regaltheme.com/tf/multi/optimi/search">
-              <input class="form-control" type="text" placeholder="Search..">
-              <div class="input-group-append">
-                <button type="submit" class="input-group-text"><i class="fa fa-search"></i></button>
-              </div>
-            </form>
-          </div>
+
+
+            <button class="navbar-toggler navber-toggler-right"  data-toggle="collapse" data-target="#navbarToggler">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/about-us" class="nav-link">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/pricing" class="nav-link">Pricing</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="/services" class="nav-link dropdown-toggle" data-toggle="dropdown">Services</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Service One</a></li>
+                            <li><a class="dropdown-item" href="#">Service two</a></li>
+                            <li><a class="dropdown-item" href="#">Service three</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="contact.html" class="nav-link">Contact Us</a>
+                    </li>
+                    <a href="about.html" class="btn-primary font-weight-bold px-4 py-3 rounded">Get a Quote</a>
+                </ul>
+
+            </div>
         </div>
-      </div>
-    </div>
-  </nav>
+    </nav>
 </header>

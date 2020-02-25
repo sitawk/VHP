@@ -1,0 +1,15 @@
+
+.content-desktop {display: block;}
+.content-mobile {display: none;}
+
+@media screen and (max-width: 992px) {
+  .mobile-hide {
+    display:none;
+  }
+}
+@media screen and (max-width: 992px) {
+
+.content-desktop {display: none;}
+.content-mobile {display: block;}
+
+}
