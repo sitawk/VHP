@@ -1,0 +1,6 @@
+plugin:
+    name: 'codersocean.honorpins::lang.plugin.name'
+    description: 'codersocean.honorpins::lang.plugin.description'
+    author: CodersOcean
+    icon: oc-icon-adjust
+    homepage: ''

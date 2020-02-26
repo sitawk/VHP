@@ -1,0 +1,23 @@
+1.0.1:
+    - 'Initialize plugin.'
+1.0.2:
+    - 'Created table codersocean_honorpins_organizarions'
+    - builder_table_create_codersocean_honorpins_organizarions.php
+1.0.3:
+    - 'Created table codersocean_honorpins_certificates'
+    - builder_table_create_codersocean_honorpins_certificates.php
+1.0.4:
+    - 'Created table codersocean_honorpins_categories'
+    - builder_table_create_codersocean_honorpins_categories.php
+1.0.5:
+    - 'Created table codersocean_honorpins_pins'
+    - builder_table_create_codersocean_honorpins_pins.php
+1.0.6:
+    - 'Created table codersocean_honorpins_holders'
+    - builder_table_create_codersocean_honorpins_holders.php
+1.0.7:
+    - 'Created table codersocean_honorpins_holder_pins'
+    - builder_table_create_codersocean_honorpins_holder_pins.php
+1.0.8:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins.php
