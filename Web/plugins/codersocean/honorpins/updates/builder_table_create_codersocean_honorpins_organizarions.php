@@ -27,7 +27,7 @@ class BuilderTableCreateCodersoceanHonorpinsOrganizarions extends Migration
             $table->timestamp('updated_at')->nullable();
         });
     }
-    
+
     public function down()
     {
         Schema::dropIfExists('codersocean_honorpins_organizarions');

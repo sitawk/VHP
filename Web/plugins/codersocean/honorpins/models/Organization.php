@@ -8,7 +8,7 @@ use Model;
 class Organization extends Model
 {
     use \October\Rain\Database\Traits\Validation;
-    
+
 
     /**
      * @var string The database table used by the model.
@@ -18,6 +18,9 @@ class Organization extends Model
     /**
      * @var array Validation rules
      */
+     public $belongsTo = [
+        'user'       => [User::class, 'table' => 'users','key'=> 'user_id']
+    ];
     public $rules = [
     ];
 }

@@ -4,47 +4,50 @@ description = "Default layout"
 ==
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>HonorPin - {{ this.page.title }}</title>
-        <meta name="description" content="{{ this.page.meta_description }}">
-        <meta name="title" content="{{ this.page.meta_title }}">
-        <meta name="author" content="Codejunkie">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="generator" content="Codejunkie">
-        <link rel="icon" type="image/png" href="{{ 'assets/images/october.png'|theme }}">
-        <link href="{{ 'assets/style.css'|theme }}" rel="stylesheet">
-        <link href="{{ 'assets/css/custom.css'|theme }}" rel="stylesheet">
-        <script src="{{ 'assets/js/vandor/modernizr-3.5.0.min.js'|theme }}"></script>
-        {% styles %}
-    </head>
-    <body>
 
-        <!-- Header -->
+<head>
+    <meta charset="utf-8">
+    <title>HonorPin - {{ this.page.title }}</title>
+    <meta name="description" content="{{ this.page.meta_description }}">
+    <meta name="title" content="{{ this.page.meta_title }}">
+    <meta name="author" content="Codejunkie">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Codejunkie">
+    <link rel="icon" type="image/png" href="{{ 'assets/images/october.png'|theme }}">
+    <link href="{{ 'assets/style.css'|theme }}" rel="stylesheet">
+    <link href="{{ 'assets/css/custom.css'|theme }}" rel="stylesheet">
+    <script src="{{ 'assets/js/vandor/modernizr-3.5.0.min.js'|theme }}"></script>
+    {% styles %}
+</head>
 
-            {% partial 'pages/loader' %}
-            {% partial 'site/header' %}
+<body>
 
+    <!-- Header -->
 
-        <!-- Content -->
-
-            {% page %}
+    {% partial 'pages/loader' %}
+    {% partial 'site/header' %}
 
 
-        <!-- Footer -->
+    <!-- Content -->
 
-            {% partial 'site/newsletter' %}
-            {% partial 'site/footer' %}
+    {% page %}
 
 
-        <!-- Scripts -->
-        <script src="{{'assets/js/vandor/jquery-3.2.1.min.js'|theme}}"></script>
-        <script src="{{'assets/js/bootstrap.min.js'|theme}}"></script>
-        <script src="{{'assets/js/popper.min.js'|theme}}"></script>
-        <script src="{{'assets/js/plugins.js'|theme}}"></script>
-        <script src="{{'assets/js/main.js'|theme}}"></script>
-        {% framework extras %}
-        {% scripts %}
+    <!-- Footer -->
 
-    </body>
+    {% partial 'site/newsletter' %}
+    {% partial 'site/footer' %}
+
+
+    <!-- Scripts -->
+    <script src="{{'assets/js/vandor/jquery-3.2.1.min.js'|theme}}"></script>
+    <script src="{{'assets/js/bootstrap.min.js'|theme}}"></script>
+    <script src="{{'assets/js/popper.min.js'|theme}}"></script>
+    <script src="{{'assets/js/plugins.js'|theme}}"></script>
+    <script src="{{'assets/js/main.js'|theme}}"></script>
+    {% framework extras %}
+    {% scripts %}
+
+</body>
+
 </html>

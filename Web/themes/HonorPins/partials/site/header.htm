@@ -32,10 +32,10 @@ function onStart(){
                 {%if user %}
                 <div class="col-12 col-sm-3 ml-auto ">
                     <nav class="mobile-hide navbar navbar-dark  navbar-expand-sm float-right">
-                      <a class="navbar-brand" href="#">
+                        <a class="navbar-brand" href="#">
 
-   <p class="text-primary ">{{user.name}}</p>
- </a>
+                            <p class="text-primary ">{{user.name}}</p>
+                        </a>
 
                         <div class="collapse navbar-collapse" id="navbar-list-4">
                             <ul class="navbar-nav">
@@ -55,12 +55,12 @@ function onStart(){
                 </div>
                 {%else%}
                 <div class="col-12 col-sm-6">
-                  <div class=" ml-4 float-sm-right">
-                      <p style="font-size: 1.1rem;"><a href="/login">Login</a></p>
-                  </div>
-                  <div class="phone-call float-sm-right">
-                  <p style="font-size: 1.1rem;"><a href="/register">Register</a></p>
-                  </div>
+                    <div class=" ml-4 float-sm-right">
+                        <p style="font-size: 1.1rem;"><a href="/login">Login</a></p>
+                    </div>
+                    <div class="phone-call float-sm-right">
+                        <p style="font-size: 1.1rem;"><a href="/register">Register</a></p>
+                    </div>
                 </div>
                 {%endif%}
             </div>
@@ -68,18 +68,18 @@ function onStart(){
     </div>
     <nav id="active-sticky" class="navbar navbar-dark navbar-expand-lg">
         <div class="container bg-dark">
-          <ul class="navbar-nav content-mobile" >
-              <li class="nav-item dropdown "  style="position:absolute;top:0;margin-top:25px">
-                  <a class="nav-link dropdown-toggle text-white"   href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
-                  </a>
-                  <div class="dropdown-menu"  aria-labelledby="navbarDropdownMenuLink">
-                      <a class="dropdown-item" href="#">Dashboard</a>
-                      <a class="dropdown-item" href="#">Edit Profile</a>
-                      <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
-                  </div>
-              </li>
-          </ul>
+            <ul class="navbar-nav content-mobile">
+                <li class="nav-item dropdown " style="position:absolute;top:0;margin-top:25px">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Dashboard</a>
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
+                    </div>
+                </li>
+            </ul>
             <a class="navbar-brand content-desktop" href="index.html">
                 <h1 class="text-white">HonorPins</h1>
             </a>
@@ -89,7 +89,7 @@ function onStart(){
 
 
 
-            <button class="navbar-toggler navber-toggler-right"  data-toggle="collapse" data-target="#navbarToggler">
+            <button class="navbar-toggler navber-toggler-right" data-toggle="collapse" data-target="#navbarToggler">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarToggler">

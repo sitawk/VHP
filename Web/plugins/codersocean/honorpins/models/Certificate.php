@@ -8,7 +8,7 @@ use Model;
 class Certificate extends Model
 {
     use \October\Rain\Database\Traits\Validation;
-    
+
 
     /**
      * @var string The database table used by the model.
@@ -18,6 +18,10 @@ class Certificate extends Model
     /**
      * @var array Validation rules
      */
+     public $belongsTo = [
+        'category' => ['Codersocean\Honorpins\Models\Categories'],
+        'organization' => ['Codersocean\Honorpins\Models\Organization']
+    ];
     public $rules = [
     ];
 }
