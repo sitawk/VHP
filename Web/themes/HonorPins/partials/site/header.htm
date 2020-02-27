@@ -32,9 +32,9 @@ function onStart(){
                 {%if user %}
                 <div class="col-12 col-sm-3 ml-auto ">
                     <nav class="mobile-hide navbar navbar-dark  navbar-expand-sm float-right">
-                        <a class="navbar-brand" href="#">
+                        <a class="navbar-brand" href="/dashboard">
 
-                            <p class="text-primary ">{{user.name}}</p>
+                            <p class="text-primary ">{{user.name}} {{user.surname}}</p>
                         </a>
 
                         <div class="collapse navbar-collapse" id="navbar-list-4">
@@ -44,7 +44,7 @@ function onStart(){
                                         <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Dashboard</a>
+                                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
                                         <a class="dropdown-item" href="#">Edit Profile</a>
                                         <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                                     </div>
@@ -74,7 +74,7 @@ function onStart(){
                         <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="#">Dashboard</a>
+                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
                         <a class="dropdown-item" href="#">Edit Profile</a>
                         <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                     </div>
