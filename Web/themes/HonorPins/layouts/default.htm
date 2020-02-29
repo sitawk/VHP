@@ -19,6 +19,8 @@ description = "Default layout"
     <link href="{{ 'assets/css/custom.css'|theme }}" rel="stylesheet">
     <script src="{{ 'assets/js/vandor/modernizr-3.5.0.min.js'|theme }}"></script>
     {% styles %}
+    <script src="{{'assets/js/vandor/jquery-3.2.1.min.js'|theme}}"></script>
+  {% framework extras %}
 </head>
 
 <body>
@@ -41,12 +43,12 @@ description = "Default layout"
 
 
     <!-- Scripts -->
-    <script src="{{'assets/js/vandor/jquery-3.2.1.min.js'|theme}}"></script>
+
     <script src="{{'assets/js/bootstrap.min.js'|theme}}"></script>
     <script src="{{'assets/js/popper.min.js'|theme}}"></script>
     <script src="{{'assets/js/plugins.js'|theme}}"></script>
     <script src="{{'assets/js/main.js'|theme}}"></script>
-    {% framework extras %}
+
     {% scripts %}
 
 </body>

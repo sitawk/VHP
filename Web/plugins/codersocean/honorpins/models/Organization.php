@@ -21,6 +21,9 @@ class Organization extends Model
      public $belongsTo = [
         'user'       => [User::class, 'table' => 'users','key'=> 'user_id']
     ];
+    public $hasMany = [
+        'certificates'=> ['Codersocean\Honorpins\Models\Certificate','key' => 'org_id']
+    ];
     public $rules = [
     ];
 }

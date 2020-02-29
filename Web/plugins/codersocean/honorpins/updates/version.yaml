@@ -21,3 +21,12 @@
 1.0.8:
     - 'Updated table codersocean_honorpins_holder_pins'
     - builder_table_update_codersocean_honorpins_holder_pins.php
+1.0.9:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins_2.php
+1.0.10:
+    - 'Updated table codersocean_honorpins_organizarions'
+    - builder_table_update_codersocean_honorpins_organizarions.php
+1.0.11:
+    - 'Updated table codersocean_honorpins_organizarions'
+    - builder_table_update_codersocean_honorpins_organizarions_2.php

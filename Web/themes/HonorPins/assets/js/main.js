@@ -79,7 +79,7 @@
 
   // Scroll UP
   $.scrollUp({
-      scrollText: '<i class="fa fa-long-arrow-up" aria-hidden="true"></i>', // Text for element, can contain HTML
+      scrollText: '<i class="fas fa-long-arrow-alt-up" aria-hidden="true"></i>', // Text for element, can contain HTML
       scrollSpeed: 800
   });
 

@@ -1,5 +1,5 @@
 title = "User Dashboard"
-url = "/dashboard"
+url = "/dashboard/:slug?"
 layout = "default"
 [account]
 redirect=0
@@ -8,6 +8,26 @@ redirect=0
 <?php
 function onStart(){
   $this['user'] = $user = Auth::getuser();
+  $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
+}
+function onVerifyOrganization(){
+  $organization  = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+  if($organization->verification_code == post('code')){
+    $organization->status = 1;
+    $organization->save();
+    $this['addorganization'] = 1;
+    $this['verifiedorganization'] = 1;
+    return [
+        '#completeorganization' => $this->renderPartial('profile/addorganization')
+    ];
+  }else{
+    $this['error'] = 'Your Verification Code is not Valid!';
+    return [
+        '#verifycheck' => $this->renderPartial('profile/error')
+    ];
+  }
+
+
 }
 function onAvatar(){
 $user = Auth::getuser();
@@ -20,426 +40,154 @@ return [
     ];
 
 }
+function onAddOrganization(){
+  $emailposition = strpos(post('officialemail'),"@");
+  $emailposition = $emailposition+1;
+  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
+  if($emailweb === 'gmail.com'){
+    $this['error'] = 'Gmail is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'zohomail.com'){
+    $this['error'] = 'Zoho is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'protonmail.com'){
+    $this['error'] = 'Proton Mail is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'outlook.com'){
+    $this['error'] = 'Outlook is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'tutanota.com'){
+    $this['error'] = 'Tutanota is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'yahoo.com'){
+    $this['error'] = 'Yahoo is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'icloud.com'){
+    $this['error'] = 'iCloud is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'yandex.com'){
+    $this['error'] = 'Yandex is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'aol.com'){
+    $this['error'] = 'Aol is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else{
+if (strpos(post('website'), '://www.') !== false) {
+  $position = strpos(post('website'),"://www.");
+  $position = $position + 7;
+  $web = substr(post('website'),$position ,strlen(post('website')));
+  $emailposition = strpos(post('officialemail'),"@");
+  $emailposition = $emailposition+1;
+  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
+  if($web !== $emailweb){
+    $this['web'] = $web;
+    $this['emailweb'] = $emailweb;
+    $this['error'] = 'Your email should contain organization domain! eg. name@domainname.com';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }
+}else if(strpos(post('website'), '://') !== false){
+  $position = strpos(post('website'),"://");
+  $position = $position + 3;
+  $web = substr(post('website'),$position ,strlen(post('website')));
+  $emailposition = strpos(post('officialemail'),"@");
+  $emailposition = $emailposition+1;
+  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
+  if($web != $emailweb){
+    $this['web'] = $web;
+    $this['emailweb'] = $emailweb;
+    $this['error'] = 'Your email should contain organization domain! eg. name@domainname.com';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }
+}
+$user =Auth::getuser();
+$addorganization = new Codersocean\Honorpins\Models\Organization;
+$addorganization->user_id= $user->id;
+$addorganization->org_name= post('organization_name');
+$addorganization->website= post('website');
+$addorganization->org_email= post('officialemail');
+$addorganization->phone= post('phone');
+$addorganization->city= post('city');
+$addorganization->country= post('country');
+$addorganization->zip= post('zip');
+$addorganization->address= post('street_address');
+if(!empty(post('mobile'))){
+  $addorganization->mobile= post('mobile');
+}else{
+  $addorganization->mobile= 'null';
+}
+
+$addorganization->status= 0;
+$addorganization->state= post('state');
+$Caracteres = '0123456789';
+    $QuantidadeCaracteres = strlen($Caracteres);
+    $QuantidadeCaracteres--;
+    $Hash=NULL;
+        for($x=1;$x<=6;$x++){
+            $Posicao = rand(0,$QuantidadeCaracteres);
+            $Hash .= substr($Caracteres,$Posicao,1);
+        }
+$addorganization->verification_code = $Hash;
+if (Input::hasFile('customFile'))
+{
+$images = Input::file('customFile');
+$fileName = 'logo'.time().'_'.'.'.$images->getClientOriginalExtension();
+$fileName = str_replace(' ', '_', $fileName);
+$addorganization->logo ='/storage/app/uploads/web/'.$fileName;
+  $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+}else{
+  $this['error'] = 'Logo is required for register an organization!';
+  return [
+  '#logoerror' => $this->renderPartial('profile/error')
+  ];
+}
+  $this['addorganization'] = 1;
+
+  $addorganization->save();
+    $this['org'] = $addorganization;
+return [
+  '#completeorganization' => $this->renderPartial('profile/addorganization')
+];
+}
+}
+function onGetLogo(){
+  $images = Input::file('customFile');
+$user =Auth::getuser();
+$fileName = 'logo'.$user->id.'_'.'.'.$images->getClientOriginalExtension();
+$fileName = str_replace(' ', '_', $fileName);
+$image='logo';
+  $this['prganizationlogo'] ='/storage/app/uploads/web/'.$fileName;
+    $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+$this['photocaptured'] = 1;
+return [
+        '#addlogo' => $this->renderPartial('profile/addlogo')
+    ];
+
+}
 ?>
 ==
-<style>
-    .bg-light {
-        background-color: #FFF !important;
-    }
-
-    .profile-thumb {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        display: inline-block;
-    }
-
-
-    .profile-thumb .profile-thumb-edit {
-        font-size: 16px;
-        width: 37px;
-        height: 37px;
-        border-radius: 100%;
-        position: absolute;
-        overflow: hidden;
-        bottom: 0px;
-        right: 0;
-        display: -ms-flexbox !important;
-        display: flex !important;
-        -ms-flex-pack: center !important;
-        justify-content: center !important;
-        -ms-flex-align: center !important;
-        align-items: center !important;
-    }
-
-    .font-weight-500 {
-        font-weight: 500 !important;
-    }
-
-    .text-3 {
-        font-size: 16px !important;
-        font-size: 1rem !important;
-    }
-
-    .rounded-circle {
-        border-radius: 50% !important;
-    }
-
-    .account-tabs-setting {
-        float: left;
-        width: 100%;
-        padding: 70px 0;
-    }
-
-    .acc-leftbar {
-        float: left;
-        width: 100%;
-        background-color: #fff;
-        border-top: 1px solid #e5e5e5;
-        border-left: 1px solid #e5e5e5;
-        border-bottom: 1px solid #e5e5e5;
-        border-right: 1px solid #e5e5e5;
-    }
-
-    .nav-tabs {
-        border-bottom: 0;
-    }
-
-    .nav-tabs .nav-item.show .nav-link,
-    .nav-tabs .nav-link.active {
-        background-color: inherit;
-        color: #e44d3a;
-        border-color: inherit;
-    }
-
-    .acc-leftbar .nav-tabs>a {
-        float: left;
-        width: 100%;
-        background: none;
-        padding: 18px 20px;
-        border-bottom: 1px solid #e5e5e5;
-        border-left: 0;
-        border-right: 0;
-        color: #000000;
-        font-size: 16px;
-        font-weight: 500;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        -ms-border-radius: 0;
-        -o-border-radius: 0;
-        border-radius: 0;
-        border-top: 0;
-    }
-
-    .nav-tabs .nav-link {
-        border: none;
-    }
-
-    .acc-leftbar .nav-tabs>a i {
-        padding-right: 15px;
-        font-size: 20px;
-        position: relative;
-        top: 2px;
-        font-weight: 700;
-        width: 40px;
-    }
-
-    .acc-setting {
-        float: left;
-        width: 100%;
-        background-color: #fff;
-        border-left: 1px solid #e5e5e5;
-        border-bottom: 1px solid #e5e5e5;
-        border-right: 1px solid #e5e5e5;
-        -webkit-box-shadow: 1px 0 4px rgba(0, 0, 0, 0.24);
-        -moz-box-shadow: 1px 0 4px rgba(0, 0, 0, 0.24);
-        -ms-box-shadow: 1px 0 4px rgba(0, 0, 0, 0.24);
-        -o-box-shadow: 1px 0 4px rgba(0, 0, 0, 0.24);
-        box-shadow: 1px 0 4px rgba(0, 0, 0, 0.24);
-    }
-
-    .acc-setting>h3 {
-        float: left;
-        width: 100%;
-        color: #000000;
-        font-weight: 600;
-        font-size: 18px;
-        text-transform: capitalize;
-        border-bottom: 1px solid #e5e5e5;
-        padding: 17px 20px;
-    }
-
-    .notbar {
-        float: left;
-        width: 100%;
-
-        padding: 20px;
-        position: relative;
-    }
-
-    .notbar h4 {
-        color: #000000;
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-
-    .notbar p {
-        color: #686868;
-        font-size: 14px;
-        line-height: 24px;
-        width: 75%;
-    }
-
-    .toggle-btn {
-        position: absolute;
-        top: 35px;
-        right: 20px;
-    }
-
-    input {
-        outline: none;
-    }
-
-    .custom-control-label {
-        position: relative;
-        margin-bottom: 0;
-        vertical-align: top;
-        line-height: 24px;
-        font-size: 14px;
-        color: #666666;
-    }
-
-    .toggle-btn .custom-control-label {
-        position: initial;
-        margin-bottom: 0;
-        vertical-align: top;
-    }
-
-    .toggle-btn .custom-switch .custom-control-label::before {
-        left: -2.25rem;
-        width: 70px;
-        pointer-events: all;
-        border-radius: 100px;
-        height: 30px;
-        top: -1px;
-        box-shadow: none;
-    }
-
-    .toggle-btn .custom-control-label::before {
-        position: absolute;
-        top: .25rem;
-        left: -1.5rem;
-        display: block;
-        width: 1rem;
-        height: 1rem;
-        pointer-events: none;
-        content: "";
-        background-color: #fff;
-        border: #e1e1e1 solid 2px;
-    }
-
-    .toggle-btn .custom-switch .custom-control-label::after {
-        top: calc(-1px + 2px);
-        left: calc(-36px + 2px);
-        width: calc(30px - 4px);
-        height: calc(30px - 4px);
-        background-color: #e1e1e1;
-        border-radius: 100%;
-        transition: background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-transform .15s ease-in-out;
-        transition: transform .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-        transition: transform .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-transform .15s ease-in-out;
-    }
-
-    .save-stngs {
-        float: left;
-        width: 100%;
-        padding: 30px 20px 50px 20px;
-    }
-
-    ol,
-    ul {
-        list-style: none;
-    }
-
-    .save-stngs ul li {
-        display: inline-block;
-        margin-right: 17px;
-    }
-
-    .save-stngs ul li button {
-        display: inline-block;
-        color: #000000;
-        font-size: 16px;
-        border: 1px solid #e5e5e5;
-        height: 40px;
-        line-height: 40px;
-        padding: 0 22px;
-        font-weight: 600;
-        background: none;
-        cursor: pointer;
-    }
-
-    button {
-        outline: none;
-    }
-
-    .cp-field {
-        float: left;
-        width: 100%;
-        margin-top: 29.4px;
-        padding: 0 20px;
-    }
-
-    .notifications-list {
-        float: left;
-        width: 100%;
-    }
-
-    .notfication-details {
-        float: left;
-        width: 100%;
-        padding: 20px;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .noty-user-img {
-        float: left;
-        width: 35px;
-    }
-
-    .noty-user-img img {
-        width: 100%;
-    }
-
-    .requests-list {
-        float: left;
-        width: 100%;
-        padding-bottom: 0;
-    }
-
-    .request-details {
-        float: left;
-        width: 100%;
-        padding: 20px;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    .request-info {
-        float: left;
-        padding-left: 10px;
-    }
-
-    .request-info h3 {
-        color: #000000;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 0;
-        border: 0;
-        margin-bottom: 3px;
-    }
-
-    .notification-info {
-        float: left;
-        width: auto;
-        padding-left: 10px;
-    }
-
-    .notification-info h3 {
-        color: #686868;
-        font-size: 14px;
-        font-weight: 500;
-        border: 0;
-        padding: 0;
-        margin-bottom: 6px;
-    }
-
-    .notification-info>span {
-        display: inline-block;
-        color: #b2b2b2;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .notification-info h3 a {
-        color: #000000;
-        font-size: 16px;
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .accept-feat {
-        float: right;
-    }
-
-    .accept-feat ul li {
-        display: inline-block;
-    }
-
-    .accept-req {
-        color: #ffffff;
-        font-size: 16px;
-        background-color: #51a5fb;
-        height: 30px;
-        padding: 0 20px;
-        font-weight: 600;
-        border: 0;
-        border: 1px solid #51a5fb;
-    }
-
-    .close-req {
-        height: 30px;
-        width: 30px;
-        text-align: center;
-        line-height: 30px;
-        border: 1px solid #e5e5e5;
-        background: inherit;
-        color: #b2b2b2;
-        margin-left: 7px;
-    }
-
-    .privacy {
-        background-color: #fff;
-        height: 850px;
-    }
-
-    .privacy h3 {
-        font-size: 18px;
-        font-weight: 600;
-        padding-top: 18px;
-        margin-bottom: 10px;
-    }
-
-    .privacy p {
-        padding-top: 0px;
-        display: inline-block;
-    }
-
-    .privacy i {
-        float: right;
-        color: #e44d3a;
-        font-size: 20px;
-        font-weight: 600;
-    }
-
-    .btns {
-        padding-top: 20px;
-    }
-
-    .form-check {
-        padding-left: 0;
-    }
-
-    .custom-control-label {
-        position: relative;
-        margin-bottom: 0;
-        vertical-align: top;
-        line-height: 24px;
-        font-size: 14px;
-        color: #666666;
-    }
-
-    .btns a {
-        color: #000;
-        border: 1px solid #e5e5e5;
-        padding: 10px 25px 10px 25px;
-        margin-left: 15px;
-        border-radius: 5px;
-        font-weight: 600;
-    }
-
-    .helpforum {
-        background-color: #fff;
-        padding: 15px 0;
-        box-shadow: 0px 2px #c6c6c6;
-    }
-
-    .helpforum h3 {
-        font-size: 18px;
-        font-weight: 600;
-    }
-</style>
-
+<link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <section>
     <div class="header-space"></div>
     <!-- <div class="header-space"></div> -->
@@ -452,10 +200,10 @@ return [
             <div class="col-lg-3">
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-acc" aria-selected="true"><i class="fas fa-user-alt"></i>Profile</a>
-                        <a class="nav-item nav-link" id="nav-status-tab" data-toggle="tab" href="#nav-status" role="tab" aria-controls="nav-status" aria-selected="false"><i class="fas fa-building"></i>Organizations</a>
-                        <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab" href="#nav-password" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Certificates</a>
-                        <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="#nav-notification" role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Pins</a>
+                        <a class="nav-item nav-link {%if this.param.slug == ''%} active {%endif%}" id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-acc" aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i class="fas fa-user-alt"></i>Profile</a>
+                        <a class="nav-item nav-link {%if this.param.slug == 'organizations'%} active {%endif%}" id="nav-status-tab" data-toggle="tab" href="#nav-status" role="tab" aria-controls="nav-status" aria-selected="{%if this.param.slug == 'organizations'%}true {%else%}false{%endif%}"><i class="fas fa-building"></i>Organizations</a>
+                        <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab" href="#nav-password" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Personal Certificates</a>
+                        <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="#nav-notification" role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Personal Pins</a>
                         <a class="nav-item nav-link" id="nav-privcy-tab" data-toggle="tab" href="#privcy" role="tab" aria-controls="privacy" aria-selected="false"><i class="fas fa-key"></i>Change Password</a>
                         <a class="nav-item nav-link" href="#" data-request="onLogout" data-request-data="redirect: '/'"><i class="fas fa-power-off"></i>Logout</a>
                     </div>
@@ -464,24 +212,102 @@ return [
             </div>
             <div class="col-lg-9">
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
+                    <div class="tab-pane fade {%if this.param.slug == ''%}show active {%endif%}" id="nav-acc" role="tabpanel" aria-labelledby="nav-acc-tab">
                         <div class="notbar">
                             <h3>Profile Setting</h3>
                         </div>
                         <form data-request="onUpdate" data-request-update="profile/profilesetting: '#updateprofile'">
-                          <div id="updateprofile">
-                              {% partial 'profile/profilesetting' %}
-                        </div>
-                      </form>
-                    </div>
-                    <div class="tab-pane fade" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
-                        <div class="acc-setting">
-                            <h3>Profile Status</h3>
-                            <div class="profile-bx-details">
-                                <!--acc-leftbar end-->
+                            <div id="updateprofile">
+                                {% partial 'profile/profilesetting' %}
                             </div>
-                        </div>
+                        </form>
                     </div>
+                    <div class="tab-pane fade {%if this.param.slug == 'organizations'%} show active {%endif%}" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
+                        <div class="row">
+                      <div class="col-md-3 col-lg-3">
+                          <h3>My Organization</h3>
+                      </div>
+                    {%  if myorganizations|length > 0 %}
+                      <div class="col-md-3 col-lg-3 ml-auto my-3">
+                          <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+                      </div>
+                      {%endif%}
+                    </div>
+                    <div class="modal fade " id="addorganizationmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-lg"  role="document">
+                        <div class="modal-content" id="completeorganization">
+                        {% partial 'profile/addorganization' %}
+                        </div>
+                      </div>
+                    </div>
+                    {%  if myorganizations|length > 0 %}
+                    <div class="row ">
+                      {% for organization in myorganizations%}
+                  <div class="col-lg-12">
+                      <div class="job-listings" >
+                          <div class="row">
+                              <div class="col-lg-3 col-md-3 col-xs-12">
+                                  <div class="job-company-logo">
+                                      <img style="width:100%"  src="{{organization.logo}}" alt="">
+                                  </div>
+                                  <div class="job-details">
+                                      <h4>{{organization.org_name}}</h4>
+
+                                  </div>
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                {%if organization.status == 1%}
+                                <span class="btn-open">
+                                    Activated
+                                </span>
+                                {% elseif organization.status == 0 %}
+                                  <span class="verification">
+                                      Verification Pending
+                                  </span>
+                                  {% elseif organization.status == 2 %}
+                                  <span class="part-time">
+                                      Suspended
+                                  </span>
+                                  {%endif%}
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-xs-12 text-right">
+                                  <div class="location">
+                                      <i class="lni-map-marker"></i> {{organization.city}}, {{organization.country}}
+                                  </div>
+                              </div>
+                                {%if organization.status == 1%}
+                              <div class="col-lg-3 col-md-2 col-xs-12 text-right">
+                                  <a href="#" class="btn-apply ">See Certificates</a>
+                              </div>
+                              {% elseif organization.status == 0 %}
+                              <div class="col-lg-3 col-md-2 col-xs-12 text-right">
+                                  <a href="#" class="btn-apply ">Activate Now</a>
+                              </div>
+{% elseif organization.status == 2 %}
+<div class="col-lg-3 col-md-2 col-xs-12 text-right">
+    <a class="btn-apply-disable disabled ">See Certificates</a>
+</div>
+{%endif%}
+
+                          </div>
+                      </div>
+                  </div>
+                  {%endfor%}
+
+              </div>
+                    {%else%}
+                    <div class="row " style="height: 250px;">
+                      <div class="col-lg-4 text-center ml-auto mr-auto my-auto" >
+                          <img  src="{{'assets/img/add.svg'|theme}}" />
+                            <h4 class="text-primary mt-5">No Organization registered yet!</h2>
+                              <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+                        </div>
+                        </div>
+                    {%endif%}
+
+
+                    </div>
+
                     <div class="tab-pane fade" id="nav-password" role="tabpanel" aria-labelledby="nav-password-tab">
                         <div class="acc-setting">
                             <h3>Account Setting</h3>

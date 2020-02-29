@@ -3,7 +3,7 @@
         <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
             <div class="profile-thumb mt-3 mb-4"> <img class="" style="width:100px;height:100px;border-radius: 50px;object-fit: cover;vertical-align: initial;" src="{%if user.avatar%}{{user.avatar.path}}{%else%} {{'assets/img/user.png'|theme}}{%endif%}" alt="">
                 <div class="profile-thumb-edit custom-file bg-primary text-white" data-toggle="tooltip" title="Change Profile Picture"> <i class="fas fa-camera position-absolute"></i>
-                    <input type="file" class="custom-file-input" name="customFile" data-request="onAvatar" data-request-flash data-request-files>
+                    <input type="file" class="custom-file-input" name="customFile" data-request="onAvatar"  data-request-files>
                 </div>
             </div>
             <p class="text-3 font-weight-500 mb-2">Hello, {{user.name}} {{user.surname}}</p>
