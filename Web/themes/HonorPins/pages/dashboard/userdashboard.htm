@@ -8,6 +8,10 @@ redirect=0
 <?php
 function onStart(){
   $this['user'] = $user = Auth::getuser();
+  if(!$user){
+    $redrect = '/login';
+    return Redirect::to($redrect);
+  }
   $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
 }
 function onVerifyOrganization(){
