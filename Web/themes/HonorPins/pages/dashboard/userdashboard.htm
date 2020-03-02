@@ -1,17 +1,43 @@
 title = "User Dashboard"
-url = "/dashboard/:slug?"
+url = "/dashboard/:slug?/:certificate?/:orgid?"
 layout = "default"
 [account]
 redirect=0
 [session]
+[Dashboard]
 ==
 <?php
-function onStart(){
+function onSendEmail(){
   $this['user'] = $user = Auth::getuser();
+  $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+  $datamail = [
+              'name' => $user->name.' '.$user->surname,
+              'code' => $addorganization->verification_code,
+
+          ];
+  Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+              $message->to($addorganization->org_email, $addorganization->org_email);
+               $message->from('noreply@honorpins.com','Verification Messege');
+          });
+  return post('id');
+}
+function onStart(){
+  $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
+  $this['user'] = $user = Auth::getuser();
+  if($this->param('certificate') === 'certificates'){
+    if($this->param('orgid')){
+      $thisorganization = $this['thisorganization'] = Codersocean\Honorpins\Models\Organization::where('id',$this->param('orgid'))->first();
+      $thisorganizationcertificates = $this['thisorganizationcertificates'] = Codersocean\Honorpins\Models\Certificate::where('org_id',$this->param('orgid'))->get();
+    }else{
+      return Redirect::to('dashboard/organizations');
+    }
+
+  }
   if(!$user){
     $redrect = '/login';
     return Redirect::to($redrect);
   }
+
   $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
 }
 function onVerifyOrganization(){
@@ -28,6 +54,25 @@ function onVerifyOrganization(){
     $this['error'] = 'Your Verification Code is not Valid!';
     return [
         '#verifycheck' => $this->renderPartial('profile/error')
+    ];
+  }
+
+
+}
+function onAcitvateOrganization(){
+  $organization  = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+  if($organization->verification_code == post('code')){
+    $organization->status = 1;
+    $organization->save();
+  //dd('hello');
+    $this['verifiedorganization'] = 1;
+    return [
+        "#activation".post('id')."completed" => $this->renderPartial('profile/activateorganization')
+    ];
+  }else{
+    $this['error'] = 'Your Verification Code is not Valid!';
+    return [
+        '#activateverifycheck' => $this->renderPartial('profile/error')
     ];
   }
 
@@ -153,6 +198,15 @@ $Caracteres = '0123456789';
             $Hash .= substr($Caracteres,$Posicao,1);
         }
 $addorganization->verification_code = $Hash;
+$datamail = [
+            'name' => $user->name.' '.$user->surname,
+            'code' => $Hash,
+
+        ];
+Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+            $message->to($addorganization->org_email, $addorganization->org_email);
+             $message->from('noreply@honorpins.com','Verification Messege');
+        });
 if (Input::hasFile('customFile'))
 {
 $images = Input::file('customFile');
@@ -194,25 +248,28 @@ return [
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <section>
     <div class="header-space"></div>
-    <!-- <div class="header-space"></div> -->
     <div class="container mt-65 py-5">
         <div class="row">
-
             <div class="col-lg-12 text-center">
                 <h2>Dashboard</h2>
             </div>
             <div class="col-lg-3">
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link {%if this.param.slug == ''%} active {%endif%}" id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-acc" aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i class="fas fa-user-alt"></i>Profile</a>
-                        <a class="nav-item nav-link {%if this.param.slug == 'organizations'%} active {%endif%}" id="nav-status-tab" data-toggle="tab" href="#nav-status" role="tab" aria-controls="nav-status" aria-selected="{%if this.param.slug == 'organizations'%}true {%else%}false{%endif%}"><i class="fas fa-building"></i>Organizations</a>
+                        <a class="nav-item nav-link {%if this.param.slug == ''%} active {%endif%}" id="nav-acc-tab" data-toggle="tab" href="#nav-acc" role="tab" aria-controls="nav-acc"
+                          aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i class="fas fa-user-alt"></i>Profile</a>
+                        {%if this.param.certificate == 'certificates' %}
+                        <a class="nav-item nav-link {%if this.param.slug == 'organizations'%} active {%endif%}" href="/dashboard/organizations"><i class="fas fa-building"></i>Organizations</a>
+                        {%else%}
+                        <a class="nav-item nav-link {%if this.param.slug == 'organizations'%} active {%endif%}" id="nav-status-tab" data-toggle="tab" href="#nav-status" role="tab" aria-controls="nav-status"
+                          aria-selected="{%if this.param.slug == 'organizations'%}true {%else%}false{%endif%}"><i class="fas fa-building"></i>Organizations</a>
+                        {%endif%}
                         <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab" href="#nav-password" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Personal Certificates</a>
                         <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="#nav-notification" role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Personal Pins</a>
                         <a class="nav-item nav-link" id="nav-privcy-tab" data-toggle="tab" href="#privcy" role="tab" aria-controls="privacy" aria-selected="false"><i class="fas fa-key"></i>Change Password</a>
                         <a class="nav-item nav-link" href="#" data-request="onLogout" data-request-data="redirect: '/'"><i class="fas fa-power-off"></i>Logout</a>
                     </div>
                 </div>
-                <!--acc-leftbar end-->
             </div>
             <div class="col-lg-9">
                 <div class="tab-content" id="nav-tabContent">
@@ -228,90 +285,128 @@ return [
                     </div>
                     <div class="tab-pane fade {%if this.param.slug == 'organizations'%} show active {%endif%}" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
                         <div class="row">
-                      <div class="col-md-3 col-lg-3">
-                          <h3>My Organization</h3>
-                      </div>
-                    {%  if myorganizations|length > 0 %}
-                      <div class="col-md-3 col-lg-3 ml-auto my-3">
-                          <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
-                      </div>
-                      {%endif%}
-                    </div>
-                    <div class="modal fade " id="addorganizationmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                      <div class="modal-dialog modal-lg"  role="document">
-                        <div class="modal-content" id="completeorganization">
-                        {% partial 'profile/addorganization' %}
+                            {%if this.param.certificate == 'certificates'%}
+                            <div class="col-md-9 col-lg-9">
+                                <h3>{{thisorganization.org_name}}'s Certificates</h3>
+                            </div>
+                            {%else%}
+                            <div class="col-md-9 col-lg-9">
+                                <h3>My Organization</h3>
+                            </div>
+                            {%endif%}
+                            {%if this.param.certificate == 'certificates'%}
+                            <div class="col-md-3 col-lg-3 ml-auto my-3">
+                                <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addcertificatemodal"><i class="fas fa-plus text-white"></i> Certificate</button>
+                            </div>
+                            {%else%}
+                            {%  if myorganizations|length > 0 %}
+                            <div class="col-md-3 col-lg-3 ml-auto my-3">
+                                <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+                            </div>
+                            {%endif%}
+                            {%endif%}
                         </div>
-                      </div>
-                    </div>
-                    {%  if myorganizations|length > 0 %}
-                    <div class="row ">
-                      {% for organization in myorganizations%}
-                  <div class="col-lg-12">
-                      <div class="job-listings" >
-                          <div class="row">
-                              <div class="col-lg-3 col-md-3 col-xs-12">
-                                  <div class="job-company-logo">
-                                      <img style="width:100%"  src="{{organization.logo}}" alt="">
-                                  </div>
-                                  <div class="job-details">
-                                      <h4>{{organization.org_name}}</h4>
-
-                                  </div>
-                              </div>
-                              <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                                {%if organization.status == 1%}
-                                <span class="btn-open">
-                                    Activated
-                                </span>
-                                {% elseif organization.status == 0 %}
-                                  <span class="verification">
-                                      Verification Pending
-                                  </span>
-                                  {% elseif organization.status == 2 %}
-                                  <span class="part-time">
-                                      Suspended
-                                  </span>
-                                  {%endif%}
-                              </div>
-                              <div class="col-lg-3 col-md-3 col-xs-12 text-right">
-                                  <div class="location">
-                                      <i class="lni-map-marker"></i> {{organization.city}}, {{organization.country}}
-                                  </div>
-                              </div>
-                                {%if organization.status == 1%}
-                              <div class="col-lg-3 col-md-2 col-xs-12 text-right">
-                                  <a href="#" class="btn-apply ">See Certificates</a>
-                              </div>
-                              {% elseif organization.status == 0 %}
-                              <div class="col-lg-3 col-md-2 col-xs-12 text-right">
-                                  <a href="#" class="btn-apply ">Activate Now</a>
-                              </div>
-{% elseif organization.status == 2 %}
-<div class="col-lg-3 col-md-2 col-xs-12 text-right">
-    <a class="btn-apply-disable disabled ">See Certificates</a>
-</div>
-{%endif%}
-
+                        <div class="modal fade " id="addorganizationmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="completeorganization">
+                                    {% partial 'profile/addorganization' %}
+                                </div>
+                            </div>
+                        </div>
+                        {%if this.param.certificate == 'certificates'%}
+                        <div class="modal fade " id="addcertificatemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="completecertificate">
+                                    {% partial 'profile/addcertificate' categories=categories thisorganization=thisorganization %}
+                                </div>
+                            </div>
+                        </div>
+                        {%endif%}
+                        {%if this.param.certificate == 'certificates'%}
+                        {%  if thisorganizationcertificates|length > 0 %}
+                        <div class="row" id="organizationcertificate">
+                            {% partial 'profile/organizationcertificates' thisorganizationcertificates = thisorganizationcertificates%}
                           </div>
-                      </div>
-                  </div>
-                  {%endfor%}
-
-              </div>
-                    {%else%}
-                    <div class="row " style="height: 250px;">
-                      <div class="col-lg-4 text-center ml-auto mr-auto my-auto" >
-                          <img  src="{{'assets/img/add.svg'|theme}}" />
-                            <h4 class="text-primary mt-5">No Organization registered yet!</h2>
-                              <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+                        {%else%}
+                        <div class="row " style="height: 250px;">
+                            <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
+                                <img src="{{'assets/img/add.svg'|theme}}" />
+                                <h4 class="text-primary mt-5">No Certificates Added yet!</h2>
+                                    <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addcertificatemodal"><i class="fas fa-plus text-white"></i> Certificate</button>
+                            </div>
                         </div>
+                        {%endif%}
+                        {%else%}
+                        {%  if myorganizations|length > 0 %}
+                        <div class="row ">
+                            {% for organization in myorganizations%}
+                            <div class="col-lg-12">
+                                <div class="job-listings">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 text-center col-xs-12">
+                                            <div class="job-company-logo">
+                                                <img style="width:100%" src="{{organization.logo}}" alt="">
+                                            </div>
+                                            <div class="job-details">
+                                                <h4>{{organization.org_name}}</h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                            {%if organization.status == 1%}
+                                            <span class="btn-open">
+                                                Activated
+                                            </span>
+                                            {% elseif organization.status == 0 %}
+                                            <span class="verification">
+                                                Verification Pending
+                                            </span>
+                                            {% elseif organization.status == 2 %}
+                                            <span class="part-time">
+                                                Suspended
+                                            </span>
+                                            {%endif%}
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-xs-12 text-right">
+                                            <div class="location">
+                                                <i class="lni-map-marker"></i> {{organization.city}}, {{organization.country}}
+                                            </div>
+                                        </div>
+                                        {%if organization.status == 1%}
+                                        <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                            <a href="/dashboard/organizations/certificates/{{organization.id}}" class="btn-apply ">See Certificates</a>
+                                        </div>
+                                        {% elseif organization.status == 0 %}
+                                        <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                            <a href="#" class="btn-apply" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
+                                        </div>
+                                        <div class="modal fade " id="organization{{organization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content" id="activation{{organization.id}}completed">
+                                                    {% partial 'profile/activateorganization' organization=organization%}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% elseif organization.status == 2 %}
+                                        <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                            <a class="btn-apply-disable disabled ">See Certificates</a>
+                                        </div>
+                                        {%endif%}
+                                    </div>
+                                </div>
+                            </div>
+                            {%endfor%}
                         </div>
-                    {%endif%}
-
-
+                        {%else%}
+                        <div class="row " style="height: 250px;">
+                            <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
+                                <img src="{{'assets/img/add.svg'|theme}}" />
+                                <h4 class="text-primary mt-5">No Organization registered yet!</h2>
+                                    <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+                            </div>
+                        </div>
+                        {%endif%}
+                        {%endif%}
                     </div>
-
                     <div class="tab-pane fade" id="nav-password" role="tabpanel" aria-labelledby="nav-password-tab">
                         <div class="acc-setting">
                             <h3>Account Setting</h3>
@@ -346,11 +441,8 @@ return [
                                         <li><button type="submit">Restore Setting</button></li>
                                     </ul>
                                 </div>
-                                <!--save-stngs end-->
-
                             </form>
                         </div>
-                        <!--acc-setting end-->
                     </div>
                     <div class="tab-pane fade" id="nav-notification" role="tabpanel" aria-labelledby="nav-notification-tab">
                         <div class="acc-setting">
@@ -364,9 +456,7 @@ return [
                                         <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
                                         <span>2 min ago</span>
                                     </div>
-                                    <!--notification-info -->
                                 </div>
-                                <!--notfication-details end-->
                                 <div class="notfication-details">
                                     <div class="noty-user-img">
                                         <img src="images/resources/ny-img2.png" alt="">
@@ -375,20 +465,7 @@ return [
                                         <h3><a href="#" title="">Poonam Verma</a> Bid on your Latest project.</h3>
                                         <span>2 min ago</span>
                                     </div>
-                                    <!--notification-info -->
                                 </div>
-                                <!--notfication-details end-->
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img3.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Tonney Dhman</a> Comment on your project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                    <!--notification-info -->
-                                </div>
-                                <!--notfication-details end-->
                                 <div class="notfication-details">
                                     <div class="noty-user-img">
                                         <img src="images/resources/ny-img1.png" alt="">
@@ -397,57 +474,9 @@ return [
                                         <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
                                         <span>2 min ago</span>
                                     </div>
-                                    <!--notification-info -->
                                 </div>
-                                <!--notfication-details end-->
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img1.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                    <!--notification-info -->
-                                </div>
-                                <!--notfication-details end-->
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img2.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Poonam Verma </a> Bid on your Latest project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                    <!--notification-info -->
-                                </div>
-                                <!--notfication-details end-->
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img3.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Tonney Dhman</a> Comment on your project</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                    <!--notification-info -->
-                                </div>
-                                <!--notfication-details end-->
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img1.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                    <!--notification-info -->
-                                </div>
-                                <!--notfication-details end-->
                             </div>
-                            <!--notifications-list end-->
                         </div>
-                        <!--acc-setting end-->
                     </div>
                     <div class="tab-pane fade" id="privcy" role="tabpanel" aria-labelledby="nav-privcy-tab">
                         <div class="acc-setting">
@@ -467,98 +496,9 @@ return [
                                             <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
                                         </ul>
                                     </div>
-                                    <!--accept-feat end-->
                                 </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img2.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>John Doe</h3>
-                                        <span>PHP Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img3.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Poonam</h3>
-                                        <span>Wordpress Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img4.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Bill Gates</h3>
-                                        <span>C & C++ Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img5.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Jessica William</h3>
-                                        <span>Graphic Designer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img6.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>John Doe</h3>
-                                        <span>PHP Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
                             </div>
-                            <!--requests-list end-->
                         </div>
-                        <!--acc-setting end-->
                     </div>
                     <div class="tab-pane fade" id="security-login" role="tabpanel" aria-labelledby="security">
                         <div class="privacy security">
@@ -592,7 +532,6 @@ return [
                                     </form>
                                     <h3>Answer</h3>
                                     <form>
-
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="exampleInputPassword1" placeholder=" Answer here">
                                         </div>
@@ -659,77 +598,7 @@ return [
                                             <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
                                         </ul>
                                     </div>
-                                    <!--accept-feat end-->
                                 </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img2.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>John Doe</h3>
-                                        <span>PHP Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img3.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Poonam</h3>
-                                        <span>Wordpress Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img4.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Bill Gates</h3>
-                                        <span>C & C++ Developer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img5.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Jessica William</h3>
-                                        <span>Graphic Designer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                    <!--accept-feat end-->
-                                </div>
-                                <!--request-detailse end-->
                                 <div class="request-details">
                                     <div class="noty-user-img">
                                         <img src="images/resources/r-img6.png" alt="">
@@ -744,13 +613,9 @@ return [
                                             <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
                                         </ul>
                                     </div>
-                                    <!--accept-feat end-->
                                 </div>
-                                <!--request-detailse end-->
                             </div>
-                            <!--requests-list end-->
                         </div>
-                        <!--acc-setting end-->
                     </div>
                     <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="nav-privacy-tab">
                         <div class="privac">
@@ -956,13 +821,43 @@ return [
                                         <li><button type="submit">Restore Setting</button></li>
                                     </ul>
                                 </div>
-                                <!--save-stngs end-->
                             </form>
                         </div>
-                        <!--acc-setting end-->
                     </div>
-
-
                     <div class="header-space"></div>
-                    <!-- <div class="header-space"></div> -->
 </section>
+<script>
+    function sendemail(id) {
+        console.log(id)
+        var loader = 'spinner' + id;
+        var messege = 'successfullysent' + id;
+        document.getElementById(loader).style.display = 'block'
+        document.getElementById(messege).style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById(loader).style.display = 'none'
+            document.getElementById(messege).style.display = 'block'
+            return data;
+        });
+
+    }
+
+    function sendemailadd(id) {
+        console.log(id)
+        document.getElementById('spinneradd').style.display = 'block'
+        document.getElementById('successfullysentadd').style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById('spinneradd').style.display = 'none'
+            document.getElementById('successfullysentadd').style.display = 'block'
+            return data;
+        });
+
+    }
+</script>

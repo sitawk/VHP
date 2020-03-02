@@ -6,6 +6,7 @@ class Plugin extends PluginBase
 {
     public function registerComponents()
     {
+      return [\Codersocean\Honorpins\Components\Dashboard::class  => 'Dashboard'              ];
     }
 
     public function registerSettings()

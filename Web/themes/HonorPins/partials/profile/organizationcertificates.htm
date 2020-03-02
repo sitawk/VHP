@@ -1,0 +1,32 @@
+{% for certificate in thisorganizationcertificates%}
+<div class="col-lg-12">
+    <div class="job-listings">
+        <div class="row">
+            <div class="col-lg-4 col-md-3  col-xs-12">
+                <div class="job-details">
+                    <h4>{{certificate.title}}</h4>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-xs-12 text-center">
+                <div class="location">
+                  4 Holders
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                <div class="location">
+                    {{certificate.category.name}}
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                <a href="#" class="btn-apply ">Certificate Holders</a>
+            </div>
+
+            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                <a class="btn-apply-disable disabled ">See Certificates</a>
+            </div> -->
+
+        </div>
+    </div>
+</div>
+{%endfor%}
