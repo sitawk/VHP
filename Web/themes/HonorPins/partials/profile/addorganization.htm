@@ -1,165 +1,200 @@
+    <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
 {% if addorganization == 1%}
 {% if verifiedorganization == 1%}
-
 <div class="modal-header">
-  <h3 >Activation Completed</h3>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <h3>Activation Completed</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
-
 <div class="modal-body">
-
     <div class="row px-5">
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="row">
-          <div class="col-md-6 text-center ml-auto mr-auto my-4">
-
-            <i class="fas fa-check-circle text-success" style="font-size:150px;"></i>
-
-          </div>
-        <div class="col-md-12">
-            <h2 class="text-primary text-center">Your Organization is Successfully Activated!</h2>
-
+            <div class="row">
+                <div class="col-md-6 text-center ml-auto mr-auto my-4">
+                    <i class="fas fa-check-circle text-success" style="font-size:150px;"></i>
+                </div>
+                <div class="col-md-12">
+                    <h2 class="text-primary text-center">Your Organization is Successfully Activated!</h2>
+                </div>
+            </div>
         </div>
-        </div>
-
-
-
-
     </div>
-
-</div>
 </div>
 <div class="modal-footer">
-  <a href="/dashboard/organizations" class="btn btn-primary"> Close</a>
+    <a href="/dashboard/organizations" class="btn btn-primary"> Close</a>
 </div>
 {%else%}
-
 <div class="modal-header">
-  <h3 >Registration Completed</h3>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <h3>Registration Completed</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
-
 <div class="modal-body">
-
     <div class="row px-5">
         <div class="col-md-7 ml-auto mr-auto">
-        <div class="col-md-12">
-            <h2 class="text-primary text-center">6 Digits Verification code has been sent to your official email!</h2>
-
-        </div>
-        <form data-request="onVerifyOrganization">
-        <div class="col-md-12 my-4">
-
-          <div class="form-group">
-              <label>Enter Code</label>
-              <input type="number" required name="code" class="form-control">
-              <input type="hidden" name="id" value="{{org.id}}" class="form-control">
-          </div>
-
-        </div>
-        <div class="col-md-12 my-4">
-          <p class="my-3" id="verifycheck"></p>
-          <button type="submit" class="btn btn-primary">Activate Now</button>
-          <span class="text-dark" style="font-size:12px;display:block;margin-top:10px">or, Didnt receive an email?</span>
-          <a href="#" class="text-primary" onclick="sendemailadd({{org.id}})">Resend</a>
-
-                                  <span id="spinneradd" class="" style="display:none"><i   class="fa-spin fa fa-spinner text-primary"></i></span>
-            <span id="successfullysentadd" style="font-size:12px;display:none" class="text-success"> Email successfully sent!</span>
-        </div>
-      </form>
-    </div>
-
-</div>
-</div>
-<div class="modal-footer">
-  <a href="/dashboard/organizations" class="btn btn-primary"> Close</a>
-</div>
-{%endif%}
-
-{%else%}
-<div class="modal-header">
-  <h3  id="exampleModalLongTitle">Register an Organization</h3>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<form data-request="onAddOrganization" data-request-files >
-<div class="modal-body">
-
-    <div class="row px-5">
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label>Organization Name</label>
-                <input type="text" required name="organization_name" class="form-control">
+            <div class="col-md-12">
+                <h2 class="text-primary text-center">6 Digits Verification code has been sent to your official email!</h2>
             </div>
-            <div class="form-group">
-                <label>Organization Website <span class="example-span">eg. https://www.org-name.com</span></label>
-                <input type="url" required name="website" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Official Email <span class="wrapper"><i class="fas fa-exclamation-circle text-primary"></i><span class="tooltip bg-primary">This email needs to be verified to activate this organization!</span></span> <span class="example-span">eg. yourname@org-name.com</span></label>
-                <input type="email" required name="officialemail" class="form-control">
-                <span id="emailerror"></span>
-            </div>
-        </div>
-        <div class="col-md-6" >
-            <p style="font-size:18px" class=" font-weight-500 mb-2">Add Logo</p>
-            <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
-                <div class="profile-thumb mt-3 mb-4" > <span id="addlogo"> {% partial 'profile/addlogo'%}</span>
-                    <div class="profile-thumb-edit custom-file bg-primary text-white" data-toggle="tooltip" title="Add Logo"> <i class="fas fa-camera position-absolute"></i>
-                      <input type="file" required class="custom-file-input" name="customFile" data-request="onGetLogo"  data-request-files>
+            <form data-request="onVerifyOrganization">
+                <div class="col-md-12 my-4">
+                    <div class="form-group">
+                        <label>Enter Code</label>
+                        <input type="number" required name="code" class="form-control">
+                        <input type="hidden" name="id" value="{{org.id}}" class="form-control">
                     </div>
                 </div>
-                <span id="logoerror"></span>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label>Phone</label>
-                <input type="text" required name="phone" class="form-control">
-            </div>
-          </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label>Mobile <span class="example-span">Optional</span></label>
-                <input type="text" name="mobile" class="form-control">
-            </div>
-          </div>
-          <div class="col-lg-12">
-            <div class="form-group">
-                <label>Street Address</label>
-                <input type="text" required name="street_address" class="form-control">
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="form-group">
-                <label>Country</label>
-                <input type="text" required name="country" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>State</label>
-                <input type="text" required name="state" class="form-control">
-            </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="form-group">
-              <label>City</label>
-              <input type="text" required name="city" class="form-control">
-          </div>
-          <div class="form-group">
-              <label>Zip Code</label>
-              <input type="text" required name="zip" class="form-control">
-          </div>
+                <div class="col-md-12 my-4">
+                    <p class="my-3" id="verifycheck"></p>
+                    <button type="submit" class="btn btn-primary">Activate Now</button>
+                    <span class="text-dark" style="font-size:12px;display:block;margin-top:10px">or, Didnt receive an email?</span>
+                    <a href="#" class="text-primary" onclick="sendemailadd({{org.id}})">Resend</a>
+
+                    <span id="spinneradd" class="" style="display:none"><i class="fa-spin fa fa-spinner text-primary"></i></span>
+                    <span id="successfullysentadd" style="font-size:12px;display:none" class="text-success"> Email successfully sent!</span>
+                </div>
+            </form>
         </div>
     </div>
-
 </div>
 <div class="modal-footer">
-  <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
+    <a href="/dashboard/organizations" class="btn btn-primary"> Close</a>
 </div>
+{%endif%}
+{%else%}
+<div class="modal-header">
+    <h3 id="exampleModalLongTitle">Register an Organization</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+  <form data-request="onAddOrganization" data-request-files>
+    <div class="modal-body px-5">
+
+          <div class="row" >
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Organization Name</label>
+                    <input type="text" required name="organization_name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Organization Website <span class="example-span">eg. https://www.org-name.com</span></label>
+                    <input type="text" required name="website" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Official Email <span class="wrapper"><i class="fas fa-exclamation-circle text-primary"></i><span class="tooltip bg-primary">This email needs to be verified to activate this organization!</span></span> <span
+                          class="example-span">eg. yourname@org-name.com</span></label>
+                    <input type="email" required name="officialemail" class="form-control">
+                    <span id="emailerror"></span>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+
+                  <input type="file" name="logo" class="dropify" data-max-file-size="3M" data-height="200"  />
+                </div>
+                </div>
+<div class="row" >
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Phone No.</label>
+                        <input id="phone" type="tel" required name="phone" class="form-control">
+
+                    </div>
+                </div>
+
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label>Street Address</label>
+                    <input type="text" required name="street_address" class="form-control">
+                </div>
+            </div>
+            </div>
+            <div class="row" id="partialCountryState">
+                {% partial 'country-state' countryId=user.country_id stateId=user.state_id %}
+
+
+            </div>
+            <div class="row" >
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" required name="city" class="form-control">
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                  <label>Zip Code</label>
+                  <input type="text" id="zip" required name="zip" class="form-control">
+              </div>
+
+            </div>
+            </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
+    </div>
 </form>
 {%endif%}
+<script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+<script type="text/javascript">
+    $('.dropify').dropify({
+        messages: {
+            'default': 'Drag and drop a Organization Logo',
+            'replace': 'Drag and drop or click to replace',
+            'remove': 'Remove',
+            'error': 'Ooops, something wrong appended.'
+        },
+        error: {
+            'fileSize': 'The file size is too big (1M max).'
+        }
+    });
+        // $('.dropify').dropify({
+        //     messages: {
+        //         'default': 'Drag and drop a photo',
+        //         'replace': 'Drag and drop or click to replace',
+        //         'remove': 'Remove',
+        //         'error': 'Ooops, something wrong appended.'
+        //     },
+        //     error: {
+        //         'fileSize': 'The file size is too big (1M max).'
+        //     }
+        // });
+        $(document).ready(function() {
+            $('#zip').mask('99999');
+        })
+        $("#phone").on("change paste keyup", function() {
+            // alert($(this).val());
+
+            // const align = div1.getAttribute('placeholder');
+            // console.log($(this).context.placeholder)
+            var placeholder = $(this).context.placeholder;
+            var i;
+            var string = '';
+            for (i = 0; i < placeholder.length; i++) {
+                if (placeholder[i] === ')') {
+                    string = string + ')'
+                } else if (placeholder[i] === '(') {
+                    string = string + '('
+                } else if (placeholder[i] === '-') {
+                    string = string + '-'
+                } else if (placeholder[i] === ' ') {
+                    string = string + ' '
+                } else {
+                    string = string + '9'
+                }
+
+            }
+            console.log(string)
+            $('#phone').mask(string);
+
+
+            // $(this).attr("data-inputmask","'mask': "+placeholder+"");
+        });
+        $("#phone").intlTelInput({
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        });
+    </script>

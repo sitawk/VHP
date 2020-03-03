@@ -368,11 +368,15 @@ class Account extends ComponentBase
         }
 
         if (Input::hasFile('avatar')) {
+          // dd('hello');
             $user->avatar = Input::file('avatar');
         }
 
         $user->fill(post());
+        $user->country_id=post('country_id');
+        $user->state_id=post('state_id');
         $user->save();
+        $this->page['user'] = $user;
 
         /*
          * Password has changed, reauthenticate the user

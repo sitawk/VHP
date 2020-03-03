@@ -1,0 +1,1 @@
+jQuery(document).ready(function(){$(document).ready(function(){$('[data-toggle="input-mask"]').each(function(e,t){var a=$(t).data("maskFormat"),n=$(t).data("reverse");null!=n?$(t).mask(a,{reverse:n}):$(t).mask(a)})});

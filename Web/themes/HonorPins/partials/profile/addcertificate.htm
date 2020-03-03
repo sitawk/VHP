@@ -2,88 +2,75 @@
 
 
 <div class="modal-header">
-  <h3 >Certificate Submited</h3>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <h3>Certificate Submited</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
-
 <div class="modal-body">
-
     <div class="row px-5">
         <div class="col-md-6 ml-auto mr-auto">
-          <div class="row">
-          <div class="col-md-6 text-center ml-auto mr-auto my-4">
-
-            <i class="fas fa-check-circle text-success" style="font-size:150px;"></i>
-
-          </div>
-        <div class="col-md-12">
-            <h2 class="text-primary text-center">Certificate is Successfully Added!</h2>
+            <div class="row">
+                <div class="col-md-6 text-center ml-auto mr-auto my-4">
+                    <i class="fas fa-check-circle text-success" style="font-size:150px;"></i>
+                </div>
+                <div class="col-md-12">
+                    <h2 class="text-primary text-center">Certificate is Successfully Added!</h2>
+                </div>
+            </div>
         </div>
-        </div>
-
-
-
-
     </div>
-
-</div>
 </div>
 <div class="modal-footer">
-  <a href="/dashboard/organizations/certificates/{{thisorganization.id}}" class="btn btn-primary"> Close</a>
+    <a href="/dashboard/organizations/certificates/{{thisorganization.id}}" class="btn btn-primary"> Close</a>
 </div>
-
-
 {%else%}
 <div class="modal-header">
-  <h3  id="exampleModalLongTitle">Add Certificate</h3>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
+    <h3 id="exampleModalLongTitle">Add Certificate</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
 </div>
-<form data-request="onAddCertificate" data-request-files >
-<div class="modal-body">
-
-    <div class="row px-5">
-        <div class="col-md-12">
-            <div class="form-group">
-                <label>Certificate Title</label>
-                <input type="text" required name="title" class="form-control">
+<form data-request="onAddCertificate" data-request-files>
+    <div class="modal-body">
+        <div class="row px-5">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Certificate Title</label>
+                    <input type="text" required name="title" class="form-control">
+                </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Url</label>
+                    <input type="url" required name="url" class="form-control">
+                    <input type="hidden" value="{{thisorganization.id}}" name="org_id" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select class="form-control" name="category">
+                        {%for category in categories%}
+                        <option value="{{category.id}}">{{category.name}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" name="desc" aria-label="With textarea"></textarea>
+                </div>
+            </div>
+
+
+
         </div>
-        <div class="col-md-6" >
-          <div class="form-group">
-              <label>Url</label>
-              <input type="url" required name="url" class="form-control">
-              <input type="hidden" value="{{thisorganization.id}}" name="org_id" class="form-control">
-          </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label>Category</label>
-                <select class="form-control" name="category">
-                  {%for category in categories%}
-  <option value="{{category.id}}">{{category.name}}</option>
-  {%endfor%}
-</select>
-
-            </div>
-          </div>
-        <div class="col-lg-12">
-            <div class="form-group">
-                <label>Description</label>
-                <textarea class="form-control" name="desc" aria-label="With textarea"></textarea>
-            </div>
-          </div>
-
-
 
     </div>
-
-</div>
-<div class="modal-footer">
-  <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
-</div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
+    </div>
 </form>
 {%endif%}

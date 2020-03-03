@@ -1,0 +1,160 @@
+title = "Home"
+url = "/contact-us"
+layout = "default"
+==
+<style>
+.default-padding {
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+.contact-area .contact-items {
+    overflow: hidden;
+}
+.bg-contain {
+    /* background-position: center center; */
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.contact-area .address-items li {
+    display: block;
+    margin-bottom: 30px;
+}
+.google-maps iframe {
+    height: 500px;
+    margin-bottom: -10px;
+    padding: 3px;
+    width: 100%;
+}
+.contact-area .address-items h4 {
+    border-bottom: 1px solid #e7e7e7;
+    font-weight: 600;
+    padding-bottom: 15px;
+    text-transform: capitalize;
+}
+.contact-area .address-items li .icon i {
+    color: #1cb9c8;
+    display: inline-block;
+    font-size: 50px;
+}
+.contact-area .address-items li .icon, .contact-area .address-items li span {
+    display: table-cell;
+    vertical-align: top;
+}
+.contact-area .address-items li span {
+    padding-left: 15px;
+}
+.contact-area .address-items li .icon, .contact-area .address-items li span {
+    display: table-cell;
+    vertical-align: top;
+}
+.contact-area .contact-form h2 {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+.contact-area .contact-form p {
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 20px;
+}
+</style>
+<div class="contact-area default-padding">
+    <div class="header-space"></div>
+       <div class="container">
+           <div class="row contact-items bg-contain" style="background-image: url(/themes/honorpins/assets/img/map.svg);">
+
+                   <div class="col-md-4 address">
+                       <div class="address-items">
+                           <ul class="info">
+                               <li>
+                                   <h4>Office Location</h4>
+                                   <div class="icon"><i class="fas fa-map-marked-alt"></i></div>
+                                   <span>22 Baker Street,<br> London, United Kingdom,<br> W1U 3BW</span>
+                               </li>
+                               <li>
+                                   <h4>Office Hours</h4>
+                                   <div class="icon"><i class="fas fa-clock"></i> </div>
+                                   <span>info@yourdomain.com<br>admin@yourdomain.com</span>
+                               </li>
+                               <li>
+                                   <h4>Phone</h4>
+                                   <div class="icon"><i class="fas fa-phone"></i></div>
+                                   <span>+44-20-7328-4499 <br>+99-34-8878-9989</span>
+                               </li>
+                               <li>
+                                   <h4>Email</h4>
+                                   <div class="icon"><i class="fas fa-envelope-open"></i> </div>
+                                   <span>info@yourdomain.com<br>admin@yourdomain.com</span>
+                               </li>
+                           </ul>
+                       </div>
+                   </div>
+                   <div class="col-md-8 contact-form">
+                       <h2>Let's lalk about your idea</h2>
+                       <p>
+                           Our next drew much you with rank. Tore many held age hold rose than our. She literature sentiments any contrasted. Set aware joy sense young now tears china shy.
+                       </p>
+                        <div class="row">
+
+                           <div class="col-md-12">
+
+                                   <div class="form-group">
+                                       <input class="form-control" id="name" name="name" placeholder="Name" type="text">
+                                       <span class="alert-error"></span>
+                                   </div>
+
+                           </div>
+
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <input class="form-control" id="email" name="email" placeholder="Email*" type="email">
+                                       <span class="alert-error"></span>
+                                   </div>
+                               </div>
+                               <div class="col-md-6">
+                                   <div class="form-group">
+                                       <input class="form-control" id="phone" name="phone" placeholder="Phone" type="text">
+                                       <span class="alert-error"></span>
+                                   </div>
+                               </div>
+
+                           <div class="col-md-12">
+
+                                   <div class="form-group comments">
+                                       <textarea class="form-control" id="comments" name="comments" placeholder="Tell Us About Project *"></textarea>
+                                   </div>
+
+                           </div>
+                           <div class="col-md-12">
+
+                                   <button type="submit" class="btn btn-primary" name="submit" id="submit">
+                                       Send Message <i class="fa fa-paper-plane"></i>
+                                   </button>
+
+                           </div>
+                           <!-- Alert Message -->
+                           <div class="col-md-12 alert-notification">
+                               <div id="message" class="alert-msg"></div>
+                           </div>
+
+                   </div>
+               </div>
+               </div>
+
+       </div>
+   </div>
+   <!-- End Contact Area -->
+
+    <!-- Start Google Maps
+   ============================================= -->
+
+       <div class="container-fluid">
+           <div class="row">
+           <div class="col-lg-12">
+               <div class="google-maps">
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d14767.262289338461!2d70.79414485000001!3d22.284975!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1424308883981"></iframe>
+               </div>
+           </div>
+           </div>
+
+   </div>
+   <!-- End Google Maps -->

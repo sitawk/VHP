@@ -1,3 +1,7 @@
+<style>
+
+</style>
+<!-- <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" /> -->
 <div class="row pt-5">
 
     <div class="col-lg-6">
@@ -14,31 +18,43 @@
             <input type="email" value="{{user.email}}" name="email" class="form-control">
         </div>
     </div>
+
     <div class="col-lg-6">
-        <div class="bg-light shadow-sm rounded text-center p-3 mb-4">
-            <div class="profile-thumb mt-3 mb-4"> <img class="" style="object-fit: unset;width: 175px;height: 176px;border-radius: 89px;" src="{%if user.avatar%}{{user.avatar.path}}{%else%} {{'assets/img/user.png'|theme}}{%endif%}" alt="">
-                <div class="profile-thumb-edit custom-file bg-primary text-white" data-toggle="tooltip" title="Change Profile Picture"> <i class="fas fa-camera position-absolute"></i>
-                    <input type="file" class="custom-file-input" name="customFile" data-request="onAvatar"  data-request-files>
-                </div>
+        <div class="col-lg-12 mmt-40">
+            <div class="about-single-image text-right">
+                <img src="{% if user.avatar %}{{ user.avatar.path }}{%else%}{{'assets/img/user.png'|theme}}{% endif%}" alt="">
             </div>
-            <p class="text-3 font-weight-500 mb-2">Hello, {{user.name}} {{user.surname}}</p>
+        </div>
+        <div style="margin-top: 40px;" class="col-md-12  text-center">
+            <div class="input-file-container js text-center" >
+                <input name="avatar" class="input-file" id="my-file" type="file">
+                <label tabindex="0" for="my-file" class="input-file-trigger" style="font-size: 15px;">Select an Avatar...</label>
+            </div>
+
+
         </div>
     </div>
 </div>
 <div class="row">
 
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <div class="form-group">
-            <label>Phone</label>
-            <input type="tel" value="{{user.phone}}" name="phone" class="form-control">
+            <label>Phone No.</label>
+            <input id="phone" type="tel" name="phone" class="form-control">
+
         </div>
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <div class="form-group">
             <label>Street Address</label>
             <input type="text" name="street_addr" value="{{user.street_addr}}" class="form-control">
         </div>
     </div>
+</div>
+<div class="row" id="partialCountryState">
+    {% partial 'country-state' countryId=user.country_id stateId=user.state_id %}
+
+
 </div>
 <div class="row">
 
@@ -50,29 +66,63 @@
     </div>
     <div class="col-lg-6">
         <div class="form-group">
-            <label>Country</label>
-            <input type="text" name="company" value="{{user.company}}" class="form-control">
-        </div>
-    </div>
-</div>
-<div class="row">
-
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label>State</label>
-            <input type="text" name="mobile" value="{{user.mobile}}" class="form-control">
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="form-group">
             <label>Zip Code</label>
-            <input type="text" name="zip" value="{{user.zip}}" class="form-control">
+            <input type="text" id="zip" name="zip" value="{{user.zip}}" class="form-control">
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-lg-3 ml-auto mt-30">
-      <button type="submit" class="btn btn btn-primary"> Update Profile</button>
+        <button type="submit" class="btn btn btn-primary"> Update Profile</button>
     </div>
 
 </div>
+
+<!-- <script src="{{'assets/js/dropify.min.js'|theme}}"></script> -->
+<script type="text/javascript">
+    // $('.dropify').dropify({
+    //     messages: {
+    //         'default': 'Drag and drop a photo',
+    //         'replace': 'Drag and drop or click to replace',
+    //         'remove': 'Remove',
+    //         'error': 'Ooops, something wrong appended.'
+    //     },
+    //     error: {
+    //         'fileSize': 'The file size is too big (1M max).'
+    //     }
+    // });
+    $(document).ready(function() {
+        $('#zip').mask('99999');
+    })
+    $("#phone").on("change paste keyup", function() {
+        // alert($(this).val());
+
+        // const align = div1.getAttribute('placeholder');
+        // console.log($(this).context.placeholder)
+        var placeholder = $(this).context.placeholder;
+        var i;
+        var string = '';
+        for (i = 0; i < placeholder.length; i++) {
+            if (placeholder[i] === ')') {
+                string = string + ')'
+            } else if (placeholder[i] === '(') {
+                string = string + '('
+            } else if (placeholder[i] === '-') {
+                string = string + '-'
+            } else if (placeholder[i] === ' ') {
+                string = string + ' '
+            } else {
+                string = string + '9'
+            }
+
+        }
+        console.log(string)
+        $('#phone').mask(string);
+
+
+        // $(this).attr("data-inputmask","'mask': "+placeholder+"");
+    });
+    $("#phone").intlTelInput({
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+    });
+</script>

@@ -139,29 +139,14 @@ function onAddOrganization(){
     '#emailerror' => $this->renderPartial('profile/error')
     ];
   }else{
-if (strpos(post('website'), '://www.') !== false) {
-  $position = strpos(post('website'),"://www.");
-  $position = $position + 7;
+if (strpos(post('website'), 'www.') !== false) {
+  $position = strpos(post('website'),"www.");
+  $position = $position + 4;
   $web = substr(post('website'),$position ,strlen(post('website')));
   $emailposition = strpos(post('officialemail'),"@");
   $emailposition = $emailposition+1;
   $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
   if($web !== $emailweb){
-    $this['web'] = $web;
-    $this['emailweb'] = $emailweb;
-    $this['error'] = 'Your email should contain organization domain! eg. name@domainname.com';
-    return [
-    '#emailerror' => $this->renderPartial('profile/error')
-    ];
-  }
-}else if(strpos(post('website'), '://') !== false){
-  $position = strpos(post('website'),"://");
-  $position = $position + 3;
-  $web = substr(post('website'),$position ,strlen(post('website')));
-  $emailposition = strpos(post('officialemail'),"@");
-  $emailposition = $emailposition+1;
-  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
-  if($web != $emailweb){
     $this['web'] = $web;
     $this['emailweb'] = $emailweb;
     $this['error'] = 'Your email should contain organization domain! eg. name@domainname.com';
@@ -178,7 +163,9 @@ $addorganization->website= post('website');
 $addorganization->org_email= post('officialemail');
 $addorganization->phone= post('phone');
 $addorganization->city= post('city');
-$addorganization->country= post('country');
+$country = RainLab\Location\Models\Country::where('id',post('country_id'))->first();
+$addorganization->country= $country->name;
+$addorganization->country_id= post('country_id');
 $addorganization->zip= post('zip');
 $addorganization->address= post('street_address');
 if(!empty(post('mobile'))){
@@ -188,7 +175,9 @@ if(!empty(post('mobile'))){
 }
 
 $addorganization->status= 0;
-$addorganization->state= post('state');
+$state = RainLab\Location\Models\State::where('id',post('state_id'))->first();
+$addorganization->state= $state->name;
+$addorganization->state_id= post('state_id');
 $Caracteres = '0123456789';
     $QuantidadeCaracteres = strlen($Caracteres);
     $QuantidadeCaracteres--;
@@ -207,9 +196,9 @@ Mail::send('organization.verification.code', $datamail, function($message) use (
             $message->to($addorganization->org_email, $addorganization->org_email);
              $message->from('noreply@honorpins.com','Verification Messege');
         });
-if (Input::hasFile('customFile'))
+if (Input::hasFile('logo'))
 {
-$images = Input::file('customFile');
+$images = Input::file('logo');
 $fileName = 'logo'.time().'_'.'.'.$images->getClientOriginalExtension();
 $fileName = str_replace(' ', '_', $fileName);
 $addorganization->logo ='/storage/app/uploads/web/'.$fileName;
@@ -245,6 +234,7 @@ return [
 }
 ?>
 ==
+
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <section>
     <div class="header-space"></div>
@@ -277,7 +267,7 @@ return [
                         <div class="notbar">
                             <h3>Profile Setting</h3>
                         </div>
-                        <form data-request="onUpdate" data-request-update="profile/profilesetting: '#updateprofile'">
+                        <form data-request="onUpdate" data-request-update="profile/profilesetting: '#updateprofile'" data-request-files enctype="multipart/form-data">
                             <div id="updateprofile">
                                 {% partial 'profile/profilesetting' %}
                             </div>
@@ -295,9 +285,11 @@ return [
                             </div>
                             {%endif%}
                             {%if this.param.certificate == 'certificates'%}
+                              {%  if myorganizations|length != 0 %}
                             <div class="col-md-3 col-lg-3 ml-auto my-3">
                                 <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addcertificatemodal"><i class="fas fa-plus text-white"></i> Certificate</button>
                             </div>
+                            {%endif%}
                             {%else%}
                             {%  if myorganizations|length > 0 %}
                             <div class="col-md-3 col-lg-3 ml-auto my-3">
@@ -326,7 +318,7 @@ return [
                         {%  if thisorganizationcertificates|length > 0 %}
                         <div class="row" id="organizationcertificate">
                             {% partial 'profile/organizationcertificates' thisorganizationcertificates = thisorganizationcertificates%}
-                          </div>
+                        </div>
                         {%else%}
                         <div class="row " style="height: 250px;">
                             <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
@@ -340,25 +332,87 @@ return [
                         {%  if myorganizations|length > 0 %}
                         <div class="row ">
                             {% for organization in myorganizations%}
-                            <div class="col-lg-12">
-                                <div class="job-listings">
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-3 text-center col-xs-12">
-                                            <div class="job-company-logo">
-                                                <img style="width:100%" src="{{organization.logo}}" alt="">
-                                            </div>
-                                            <div class="job-details">
-                                                <h4>{{organization.org_name}}</h4>
+                            <div class="col-md-12 myshadow card b-0 mb-5 py-4">
+
+                                <div class="card-body px-3 pb-0 b-0">
+                                    <div class="row ">
+                                        <div class="col-sm-3 mt--50">
+                                            <img style="width:150px;height:150px; object-fit:contain;" src="{{organization.logo}}" alt="Medi Test Labs &amp;  Diagnostic Center" class="rounded-circle img-center  ">
+                                        </div>
+                                        <div class="col-sm-9 ">
+                                            <div class="ml-3">
+                                                <h3 class="display-4 font-weight-bold">{{organization.org_name}}</h3>
+                                                <p class="mb-0 font-13">
+                                                </p>
+                                                <p class="mb-0 font-13">
+                                                </p>
+                                                <p class="mb-0 font-13">{{organization.city}}, {{organization.state}}, {{organization.country}}</p>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-5 my-sm">
+
+                                            <p class="mb-0" style="font-size:15px"><i class="fas fa-phone mr-4"></i> {{organization.phone}}</p>
+                                            <p class="mb-0" style="font-size:15px"><i class="fas fa-envelope mr-4"></i> {{organization.org_email}}</p>
+                                        </div>
+                                        <div class="col-sm-3 my-4">
+{%if organization.status == 1%}
+                                            <span class="badge badge-success">Activated</span>
+                                              {% elseif organization.status == 0 %}
+                                                <span class="badge badge-warning">Activation Pending</span>
+                                                {% elseif organization.status == 2 %}
+                                                <span class="badge badge-danger">Suspended</span>
+                                                {%endif%}
+                                        </div>
+                                        <div class="col-sm-4 my-sm">
+                                            {%if organization.status == 1%}
+                                            <a href="/dashboard/organizations/certificates/{{organization.id}}" class="btn btn btn-success myshadow rounded">See Certificates</a>
+                                            {% elseif organization.status == 0 %}
+
+                                            <a href="#" class="btn btn btn-success myshadow rounded" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
+
+                                            <div class="modal fade " id="organization{{organization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg" role="document">
+                                                    <div class="modal-content" id="activation{{organization.id}}completed">
+                                                        {% partial 'profile/activateorganization' organization=organization%}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% elseif organization.status == 2 %}
+                                            <a href="#" class="btn btn btn-success disabled myshadow rounded">See Certificates</a>
+
+
+                                            {%endif%}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- <div class="col-lg-12">
+                                <div class="job-listings">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-2 text-center col-xs-12">
+                                            <div class="job-company-logo">
+                                                <img style="width:160px;height:120px;object-fit:contain" src="{{organization.logo}}" alt="">
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 text-center col-xs-12">
+                                          <div class="job-details">
+                                              <h4>{{organization.org_name}}</h4>
+                                          </div>
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-xs-12 text-center">
                                             {%if organization.status == 1%}
                                             <span class="btn-open">
                                                 Activated
                                             </span>
                                             {% elseif organization.status == 0 %}
-                                            <span class="verification">
-                                                Verification Pending
+                                            <span class="label label-warning">
+                                                Pending
                                             </span>
                                             {% elseif organization.status == 2 %}
                                             <span class="part-time">
@@ -393,7 +447,7 @@ return [
                                         {%endif%}
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             {%endfor%}
                         </div>
                         {%else%}
@@ -450,25 +504,7 @@ return [
                             <div class="notifications-list">
                                 <div class="notfication-details">
                                     <div class="noty-user-img">
-                                        <img src="images/resources/ny-img1.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                </div>
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img2.png" alt="">
-                                    </div>
-                                    <div class="notification-info">
-                                        <h3><a href="#" title="">Poonam Verma</a> Bid on your Latest project.</h3>
-                                        <span>2 min ago</span>
-                                    </div>
-                                </div>
-                                <div class="notfication-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/ny-img1.png" alt="">
+
                                     </div>
                                     <div class="notification-info">
                                         <h3><a href="#" title="">Jassica William</a> Comment on your project.</h3>
@@ -584,21 +620,6 @@ return [
                         <div class="acc-setting">
                             <h3>Requests</h3>
                             <div class="requests-list">
-                                <div class="request-details">
-                                    <div class="noty-user-img">
-                                        <img src="images/resources/r-img1.png" alt="">
-                                    </div>
-                                    <div class="request-info">
-                                        <h3>Jessica William</h3>
-                                        <span>Graphic Designer</span>
-                                    </div>
-                                    <div class="accept-feat">
-                                        <ul>
-                                            <li><button type="submit" class="accept-req">Accept</button></li>
-                                            <li><button type="submit" class="close-req"><i class="la la-close"></i></button></li>
-                                        </ul>
-                                    </div>
-                                </div>
                                 <div class="request-details">
                                     <div class="noty-user-img">
                                         <img src="images/resources/r-img6.png" alt="">
@@ -826,7 +847,8 @@ return [
                     </div>
                     <div class="header-space"></div>
 </section>
-<script>
+
+<script type="text/javascript">
     function sendemail(id) {
         console.log(id)
         var loader = 'spinner' + id;
