@@ -19,8 +19,16 @@ class Pin extends Model
      * @var array Validation rules
      */
      public $belongsTo = [
-        'certificate' => ['Codersocean\Honopins\Models\Certificate','key'=> 'certificate_id'],
-        'organization' => ['Coderocean\Honorpins\Models\Organization','key'=>'org_id']
+       'certificate' => [
+           'Codersocean\Honorpins\Models\Certificate',
+           'table' => 'codersocean_honorpins_certificates',
+           'key' => 'certificate_id'
+       ],
+       'organization' => [
+           'Codersocean\Honorpins\Models\Organization',
+           'table' => 'codersocean_honorpins_organizarions',
+           'key' => 'org_id'
+       ],
     ];
     public $rules = [
     ];

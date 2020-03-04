@@ -1,0 +1,92 @@
+title = "Admin Panel - Users"
+url = "/admin/users"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = RainLab\User\Models\User::where('id',post('id'))->first();
+  $org->is_activated =1;
+  $org->save();
+}
+function onSuspendOrganization(){
+    $org = RainLab\User\Models\User::where('id',post('id'))->first();
+    $org->is_activated =0;
+    $org->save();
+}
+function onDeleteOrganization(){
+  $delete = RainLab\User\Models\User::where('id',post('id'))->forceDelete();
+}
+function onStart(){
+  $this['users'] = RainLab\User\Models\User::get();
+}
+?>
+==
+  <link rel="stylesheet" href="{{'adminassets/libs/datatables/datatables.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">Registered Users</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item active">Users</li>
+                      </ol>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="datatables-demo table table-striped table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>Photo</th>
+                                  <th>email</th>
+                                  <th>Phone</th>
+                                  <th>Location</th>
+                                  <th>Status</th>
+                                  <th>Last Seen</th>
+                                  <th>Action</th>
+                                  <th>Delete</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {%for user in users%}
+                              <tr class="odd gradeX">
+                                  <td>{{user.name}} {{user.surname}}</td>
+                                  <td><img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" alt="" class="img-fluid rounded-circle ui-w-40"></td>
+                                  <td>{{user.email}}</td>
+                                  <td>{{user.phone}}</td>
+                                  <td>{{user.city}}, {{user.state.name}}, {{user.country.name}}</td>
+                                  <td>{%if user.is_activated == 1%}<a href="javascript:void(0)" class="badge badge-success">Activated</a>{%else%}<a href="javascript:void(0)" class="badge badge-primary">Not Activated</a>{%endif%}</td>
+<td>{{user.last_seen}}</td>
+
+                                  <td>
+                                    {%if user.is_activated == 0%}
+                                    <a  href="#" data-request-confirm="Are you sure to Activate this User?" data-request="onActivateOrganization" data-request-redirect="/admin/users" data-request-data="id:'{{user.id}}'" class="btn btn-success btn-sm btn-round">
+                                      Activate now
+                                    </a>
+                                    {%elseif user.is_activated == 1%}
+                                    <a href="#"  data-request-confirm="Are you sure to Deactivate this User?" data-request="onSuspendOrganization" data-request-redirect="/admin/users" data-request-data="id:'{{user.id}}'" class="btn btn-danger btn-sm btn-round">
+                                      Deactivate now
+                                    </a>
+
+                                    {%endif%}
+                                  </td>
+
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this User?" data-request="onDeleteOrganization" data-request-redirect="/admin/users" data-request-data="id:'{{user.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  {%endfor%}
+                              </tr>
+
+                          </tbody>
+                      </table>
+                  </div>
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'adminassets/libs/datatables/datatables.js'|theme}}"></script>
+           <script src="{{'adminassets/js/pages/tables_datatables.js'|theme}}"></script>

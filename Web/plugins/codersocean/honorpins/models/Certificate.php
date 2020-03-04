@@ -19,8 +19,17 @@ class Certificate extends Model
      * @var array Validation rules
      */
      public $belongsTo = [
-        'category' => ['Codersocean\Honorpins\Models\Categories'],
-        'organization' => ['Codersocean\Honorpins\Models\Organization']
+       'category' => [
+           'Codersocean\Honorpins\Models\Categories',
+           'table' => 'codersocean_honorpins_categories',
+           'key' => 'category_id'
+       ],
+       'organization' => [
+           'Codersocean\Honorpins\Models\Organization',
+           'table' => 'codersocean_honorpins_organizarions',
+           'key' => 'org_id'
+       ],
+
     ];
     public $rules = [
     ];

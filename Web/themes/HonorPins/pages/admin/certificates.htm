@@ -1,0 +1,86 @@
+title = "Admin Panel - Organization Certificates"
+url = "/admin/certificates/:id"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+  $org->status =1;
+  $org->save();
+}
+function onSuspendOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =2;
+    $org->save();
+}
+function onReleaseOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =1;
+    $org->save();
+}
+function onDeleteOrganization(){
+  $delete = Codersocean\HonorPins\Models\Pin::where('certificate_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\HolderPins::where('certificate_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Certificate::where('id',post('id'))->delete();
+
+}
+function onStart(){
+  $this['org'] = Codersocean\HonorPins\Models\Organization::where('id',$this->param('id'))->first();
+  $this['certificates'] = Codersocean\HonorPins\Models\Certificate::where('org_id',$this->param('id'))->get();
+}
+?>
+==
+  <link rel="stylesheet" href="{{'adminassets/libs/datatables/datatables.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">{{org.org_name}}'s Certificates</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item"><a href="/admin/organizations">Organizations</a></li>
+                          <li class="breadcrumb-item active">Certificates</li>
+                      </ol>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="datatables-demo table table-striped table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>Certificate Title</th>
+                                  <th>Organization Name</th>
+                                  <th>Url</th>
+                                  <th>Category</th>
+                                  <th>Description</th>
+
+                                  <th>View</th>
+                                  <th>Delete</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {%for organization in certificates%}
+                              <tr class="odd gradeX">
+                                  <td>{{organization.title}}</td>
+                                  <td>{{organization.organization.org_name}}</td>
+                                  <td><a href="{{organization.url}}" target="_blank" type="button" class="btn btn-round btn-info">Open Url</a></td>
+                                  <td>{{organization.category.name}}</td>
+                                  <td>{{organization.desc}}</td>
+                                  <td><a href="/admin/holders/{{organization.id}}" type="button" class="btn btn-round btn-info">See Holders</a></td>
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Certificate?" data-request="onDeleteOrganization" data-request-redirect="/admin/certificates/{{organization.org_id}}" data-request-data="id:'{{organization.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  {%endfor%}
+                              </tr>
+
+                          </tbody>
+                      </table>
+                  </div>
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'adminassets/libs/datatables/datatables.js'|theme}}"></script>
+           <script src="{{'adminassets/js/pages/tables_datatables.js'|theme}}"></script>

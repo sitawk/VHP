@@ -1,0 +1,227 @@
+title = "Admin Panel - Settings"
+url = "/admin/settings"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+  $org->status =1;
+  $org->save();
+}
+function onSuspendOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =2;
+    $org->save();
+}
+function onUpdateSetting(){
+    $org = Codersocean\HonorPins\Models\Setting::where('id',1)->first();
+    $org->email =post('email');
+    $org->sec_email =post('sec_email');
+    $org->phone =post('phone');
+    $org->sec_phone =post('sec_phone');
+    $org->footer_about =post('footer_about');
+    $org->facebook =post('facebook');
+    $org->pin =post('pin');
+    $org->insta =post('insta');
+    $org->twiter =post('twiter');
+    $org->website_name =post('website_name');
+    $org->location =post('location');
+    $org->office_hour =post('office_hour');
+    if (Input::hasFile('logo'))
+  {
+    $images = Input::file('logo');
+    $fileName = 'logo'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->logo ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    if (Input::hasFile('fav'))
+    {
+    $images = Input::file('fav');
+    $fileName = 'fav'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->fav_ico ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    if (Input::hasFile('banner'))
+    {
+    $images = Input::file('banner');
+    $fileName = 'banner'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->banner_image ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    $org->save();
+}
+function onDeleteOrganization(){
+  $delete = Codersocean\HonorPins\Models\Pin::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\HolderPins::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Certificate::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->delete();
+}
+function onStart(){
+  $this['setting'] = Codersocean\HonorPins\Models\Setting::where('id',1)->first();
+}
+?>
+==
+<link rel="stylesheet" href="{{'assets/css/dropify.min.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">Website Settings</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item active">Website Settings</li>
+                      </ol>
+                  </div>
+                  <div class="card mb-4">
+                                       <h6 class="card-header">Form row</h6>
+                                       <div class="card-body">
+                                           <form data-request="onUpdateSetting" data-request-files>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Website Name</label>
+                                                       <input type="text" value="{{setting.website_name}}" name="website_name" class="form-control" placeholder="Website Name">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Footer About Us</label>
+                                                       <textarea type="text"  class="form-control" name="footer_about" placeholder="Footer About Us">{{setting.footer_about}}</textarea>
+                                                       <div class="clearfix"></div>
+                                                   </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                                 <div class="form-group col-md-6">
+                                                     <label class="form-label">Primary Contact Email</label>
+                                                     <input type="email" value="{{setting.email}}" name="email" class="form-control" placeholder="Primary Contact Email">
+                                                     <div class="clearfix"></div>
+                                                 </div>
+                                                 <div class="form-group col-md-6">
+                                                     <label class="form-label">Secondary Contact Email</label>
+                                                     <input type="email" value="{{setting.sec_email}}" name="sec_email" class="form-control" placeholder="Secondary Contact Email">
+                                                     <div class="clearfix"></div>
+                                                 </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Primary Contact Phone</label>
+                                                       <input type="text" value="{{setting.phone}}" name="phone" class="form-control" placeholder="Primary Contact Phone">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Secondary Contact Phone</label>
+                                                       <input type="text" value="{{setting.sec_phone}}" name="sec_phone" class="form-control" placeholder="Secondary Contact Phone">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                               <div class="form-group col-md-6">
+                                                   <label class="form-label">Office Location</label>
+                                                   <input type="text" class="form-control" name="location" value="{{setting.location}}" placeholder="1234 Main St">
+                                                   <div class="clearfix"></div>
+                                               </div>
+                                               <div class="form-group col-md-6">
+                                                   <label class="form-label">Opening Hours</label>
+                                                   <input type="text" class="form-control" name="office_hour" value="{{setting.office_hour}}" placeholder="eg. 10:00am - 9:00pm">
+                                                   <div class="clearfix"></div>
+                                               </div>
+                                               </div>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Facebook Link</label>
+                                                       <input type="text" value="{{setting.facebook}}" name="facebook" class="form-control" placeholder="Facebook Link">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Instagram Link</label>
+                                                       <input type="text" value="{{setting.insta}}" name="insta" class="form-control" placeholder="Instagram Link">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Twitter Link</label>
+                                                       <input type="text" value="{{setting.twiter}}" name="twiter" class="form-control" placeholder="Twitter Link">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+                                                   <div class="form-group col-md-6">
+                                                       <label class="form-label">Pinterest Link</label>
+                                                       <input type="text" value="{{setting.pin}}" name="pin" class="form-control" placeholder="Pinterest Link">
+                                                       <div class="clearfix"></div>
+                                                   </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-6">
+                                                         <input type="file" name="logo" class="dropify" data-max-file-size="2M" data-height="200"  data-default-file="{{setting.logo}}"/>
+                                                   </div>
+                                                   <div class="form-group col-md-6">
+                                                        <input type="file" name="fav" class="dropify-fav" data-max-file-size="2M" data-height="200" data-default-file="{{setting.fav_ico}}" />
+                                                   </div>
+
+                                               </div>
+                                               <div class="form-row">
+                                                   <div class="form-group col-md-12">
+                                                         <input type="file" name="banner" class="dropify-banner" data-max-file-size="2M" data-height="200" data-default-file="{{setting.banner_image}}" />
+                                                   </div>
+
+
+                                               </div>
+
+
+                                               <button type="submit" class="btn btn-primary">Update</button>
+                                           </form>
+                                       </div>
+                                   </div>
+
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+          <script type="text/javascript">
+              $('.dropify').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Website Logo',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              $('.dropify-fav').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Fav Icon',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              $('.dropify-banner').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Banner Image',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              </script>

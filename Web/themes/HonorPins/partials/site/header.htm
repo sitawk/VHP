@@ -8,6 +8,7 @@ function onStart(){
   $this['user'] = Auth::getuser();
 }
 
+
 ?>
 ==
 <style>
@@ -44,8 +45,13 @@ function onStart(){
                                         <img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" style="object-fit:contain" width="40" height="40" class="rounded-circle border">
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                      {% if user.groups.count == 0%}
                                         <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                                        <a class="dropdown-item" href="#">Edit Profile</a>
+                                      {%else%}
+                                        {% if user.groups[0].code == 'admin'%}
+                                          <a class="dropdown-item" href="/adminpanel">Admin Panel</a>
+                                          {%endif%}
+                                          {%endif%}
                                         <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                                     </div>
                                 </li>
@@ -71,11 +77,17 @@ function onStart(){
             <ul class="navbar-nav content-mobile">
                 <li class="nav-item dropdown " style="position:absolute;top:0;margin-top:25px">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{'assets/img/user.png'|theme}}" width="40" height="40" class="rounded-circle border">
+                        <img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" width="40" height="40" class="rounded-circle border">
                     </a>
+
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      {% if user.groups.count == 0%}
                         <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                        <a class="dropdown-item" href="#">Edit Profile</a>
+                      {%else%}
+                        {% if user.groups[0].code == 'admin'%}
+                          <a class="dropdown-item" href="/adminpanel">Admin Panel</a>
+                          {%endif%}
+                          {%endif%}
                         <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                     </div>
                 </li>
@@ -115,10 +127,89 @@ function onStart(){
                     <li class="nav-item">
                         <a href="/contact-us" class="nav-link">Contact Us</a>
                     </li>
-                    <a href="about.html" class="btn-primary font-weight-bold px-4 py-3 rounded">Get a Quote</a>
+                    <a href="#" data-toggle="modal" data-target="#quote" class="btn-primary font-weight-bold px-4 py-3 rounded">Get a Quote</a>
                 </ul>
+                <div class="modal fade " id="quote" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content" >
+                          <div class="modal-header">
+                              <h3 id="exampleModalLongTitle">Get a Quote</h3>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                              <div class="modal-body">
+                                  <div class="row px-5">
+                                      <div class="col-md-12">
+                                          <div class="form-group">
+                                              <label>Name</label>
+                                              <input type="text" required id="name" name="name" class="form-control">
+                                          </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="form-group">
+                                              <label>Email</label>
+                                              <input type="email" required id="email" name="email" class="form-control">
+                                          </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                          <div class="form-group">
+                                              <label>Phone</label>
+                                              <input type="text" required id="phone" name="phone" class="form-control">
+                                          </div>
+                                      </div>
 
+                                      <div class="col-lg-12">
+                                          <div class="form-group">
+                                              <label>Messege</label>
+                                              <textarea class="form-control" id="messege" name="messege" aria-label="With textarea"></textarea>
+                                          </div>
+                                      </div>
+
+
+
+                                  </div>
+
+                                <p style="font-size:13px;display:none" class="text-success text-center" id="messegea">Your quote request is successfully submited. You will be contacted soon!</p>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="submit" class="btn btn-primary" style="display:none" id="spinnerquote"><i class="fa-spin fa fa-spinner text-white"></i></button>
+                                  <button type="submit" class="btn btn-primary" onclick="sendquote()" id="sendbutton">Get a Quote</button>
+                              </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
+            <script>
+            function sendquote() {
+
+                document.getElementById('spinnerquote').style.display = 'block'
+                document.getElementById('sendbutton').style.display = 'none'
+                var email = document.getElementById('email').value
+                var phone =document.getElementById('phone').value
+                var name = document.getElementById('name').value
+                var messege = document.getElementById('messege').value
+
+                $.request('onSendQuoate', {
+                    data: {
+                        email: email,
+                        phone: phone,
+                        name: name,
+                        messege: messege,
+                    }
+                }).done(function(data) {
+                  console.log('asdasd')
+                    document.getElementById('spinnerquote').style.display = 'none'
+                    document.getElementById('sendbutton').style.display = 'block'
+                    document.getElementById('messegea').style.display = 'block'
+                    $('#quote').modal('hide');
+
+                    return data;
+                });
+
+            }
+            </script>
         </div>
     </nav>
 </header>

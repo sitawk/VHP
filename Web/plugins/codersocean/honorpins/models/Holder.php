@@ -18,6 +18,18 @@ class Holder extends Model
     /**as
      * @var array Validation rules
      */
+     public $belongsTo =[
+'certificate' => [
+           'Codersocean\Honorpins\Models\Certificate',
+           'table' => 'codersocean_honorpins_certificates',
+           'key' => 'certificate_id',
+       ],
+       'organization' => [
+           'Codersocean\Honorpins\Models\Organization',
+           'table' => 'codersocean_honorpins_organizarions',
+           'key' => 'org_id',
+       ],
+     ];
     public $rules = [
     ];
 }

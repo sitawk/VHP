@@ -236,6 +236,88 @@ class Account extends ComponentBase
             else Flash::error($ex->getMessage());
         }
     }
+    public function onAdminSignin()
+    {
+      // dd('hello');
+        try {
+            /*
+             * Validate input
+             */
+               $data = post();
+             Flash::success($data);
+
+                       //       $code = $user->getGroups();
+                       //         foreach ($code as $group) {
+                       //    if($group->code =! 'admin'){
+                       //      Auth::logout();
+                       //      return [
+                       //        '#loginerror' => $this->renderPartial('admin/loginerror')
+                       //      ];
+                       //
+                       //     }
+                       // }
+
+            $rules = [];
+
+            $rules['login'] = $this->loginAttribute() == UserSettings::LOGIN_USERNAME
+                ? 'required|between:2,255'
+                : 'required|email|between:6,255';
+
+            $rules['password'] = 'required|between:4,255';
+
+            if (!array_key_exists('login', $data)) {
+                $data['login'] = post('username', post('email'));
+            }
+
+            $validation = Validator::make($data, $rules);
+            if ($validation->fails()) {
+                throw new ValidationException($validation);
+            }
+
+            /*
+             * Authenticate user
+             */
+            $credentials = [
+                'login'    => array_get($data, 'login'),
+                'password' => array_get($data, 'password')
+            ];
+
+            /*
+            * Login remember mode
+            */
+            switch ($this->rememberLoginMode()) {
+                case UserSettings::REMEMBER_ALWAYS:
+                    $remember = true;
+                    break;
+                case UserSettings::REMEMBER_NEVER:
+                    $remember = false;
+                    break;
+                case UserSettings::REMEMBER_ASK:
+                    $remember = (bool) array_get($data, 'remember', false);
+                    break;
+            }
+
+
+            Event::fire('rainlab.user.beforeAuthenticate', [$this, $credentials]);
+
+            $user = Auth::authenticate($credentials, $remember);
+            if ($user->isBanned()) {
+                Auth::logout();
+                throw new AuthException(/*Sorry, this user is currently not activated. Please contact us for further assistance.*/'rainlab.user::lang.account.banned');
+            }
+
+
+            /*
+             * Redirect
+             */
+
+
+        }
+        catch (Exception $ex) {
+            if (Request::ajax()) throw $ex;
+            else Flash::error($ex->getMessage());
+        }
+    }
 
     /**
      * Register the user

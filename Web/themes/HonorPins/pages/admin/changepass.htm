@@ -1,0 +1,153 @@
+title = "Admin Panel - Settings"
+url = "/admin/accountsetting"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+  $org->status =1;
+  $org->save();
+}
+function onSuspendOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =2;
+    $org->save();
+}
+function onUpdateSetting(){
+    $org = Codersocean\HonorPins\Models\Setting::where('id',1)->first();
+    $org->email =post('email');
+    $org->sec_email =post('sec_email');
+    $org->phone =post('phone');
+    $org->sec_phone =post('sec_phone');
+    $org->footer_about =post('footer_about');
+    $org->facebook =post('facebook');
+    $org->pin =post('pin');
+    $org->insta =post('insta');
+    $org->twiter =post('twiter');
+    $org->website_name =post('website_name');
+    $org->location =post('location');
+    $org->office_hour =post('office_hour');
+    if (Input::hasFile('logo'))
+    {
+    $images = Input::file('logo');
+    $fileName = 'logo'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->logo ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    if (Input::hasFile('fav'))
+    {
+    $images = Input::file('fav');
+    $fileName = 'fav'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->fav_ico ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    if (Input::hasFile('banner'))
+    {
+    $images = Input::file('banner');
+    $fileName = 'banner'.'_'.'.'.$images->getClientOriginalExtension();
+    $fileName = str_replace(' ', '_', $fileName);
+    $org->banner_image ='/storage/app/uploads/web/'.$fileName;
+      $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+    }
+    $org->save();
+}
+function onDeleteOrganization(){
+  $delete = Codersocean\HonorPins\Models\Pin::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\HolderPins::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Certificate::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->delete();
+}
+function onStart(){
+  $this['setting'] = Codersocean\HonorPins\Models\Setting::where('id',1)->first();
+}
+?>
+==
+<link rel="stylesheet" href="{{'assets/css/dropify.min.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">Account Setting</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item active">Account Settings</li>
+                      </ol>
+                  </div>
+                  <div class="card mb-4">
+                                       <h6 class="card-header">Form row</h6>
+                                       <div class="card-body">
+                                           <form data-request="onUpdate">
+
+                                               <div class="form-row">
+                                                 <div class="form-group col-md-12">
+                                                     <label class="form-label">New Password</label>
+                                                     <input type="password"  name="password" class="form-control" placeholder="Password">
+                                                     <div class="clearfix"></div>
+                                                 </div>
+                                                 <div class="form-group col-md-12">
+                                                     <label class="form-label">New Confirm Password</label>
+                                                     <input type="password"  name="password_confirmation" class="form-control" placeholder="Confirm Password">
+                                                     <div class="clearfix"></div>
+                                                 </div>
+
+                                               </div>
+
+
+
+
+
+
+
+                                               <button type="submit" class="btn btn-primary">Update</button>
+                                           </form>
+                                       </div>
+                                   </div>
+
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+          <script type="text/javascript">
+              $('.dropify').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Website Logo',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              $('.dropify-fav').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Fav Icon',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              $('.dropify-banner').dropify({
+                  messages: {
+                      'default': 'Drag and drop a Banner Image',
+                      'replace': 'Drag and drop or click to replace',
+                      'remove': 'Remove',
+                      'error': 'Ooops, something wrong appended.'
+                  },
+                  error: {
+                      'fileSize': 'The file size is too big (1M max).'
+                  }
+              });
+              </script>

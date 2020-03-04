@@ -15,14 +15,29 @@ class HolderPins extends Model
      */
     public $table = 'codersocean_honorpins_holder_pins';
 
-    /**
-     * @var array Validation rules
-     */
-     public $belongsTo [
-       'certificate' => ['Codersocean\Honopins\Models\Certificate','key'=>'certificate_id'],
-       'organization' => ['Codersocean\Honorpins\Models\Organization','key'=>'org_id'],
-       'pin' => ['Codersocean\Honorpins\Models\Pin','key'=>'pin_id'],
-       'holder' => ['Codersocean\Honorpins\Models\Holder','key'=>'holder_id']
+
+     public $belongsTo =[
+       'certificate' => [
+           'Codersocean\Honorpins\Models\Certificate',
+           'table' => 'codersocean_honorpins_certificates',
+           'key' => 'certificate_id',
+       ],
+       'organization' => [
+           'Codersocean\Honorpins\Models\Organization',
+           'table' => 'codersocean_honorpins_organizarions',
+           'key' => 'org_id',
+       ],
+       'pin' => [
+           'Codersocean\Honorpins\Models\Pin',
+           'table' => 'codersocean_honorpins_pins',
+           'key' => 'pin_id',
+       ],
+       'holder' => [
+           'Codersocean\Honorpins\Models\Holder',
+           'table' => 'codersocean_honorpins_holders',
+           'key' => 'holder_id',
+       ]
+
      ];
     public $rules = [
     ];

@@ -2,6 +2,18 @@ description = "Default layout"
 [account]
 [session]
 ==
+<?php
+function onSendQuoate(){
+  $add = new Codersocean\HonorPins\Models\Quotes;
+  $add->name = post('name');
+  $add->email = post('email');
+  $add->phone = post('phone');
+  $add->messege = post('messege');
+  $add->save();
+  return $add;
+}
+?>
+==
 <!DOCTYPE html>
 <html>
 
@@ -42,7 +54,7 @@ description = "Default layout"
 
     <!-- Footer -->
 
-    
+
     {% partial 'site/footer' %}
 
 

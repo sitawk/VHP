@@ -1,0 +1,75 @@
+<div id="layout-sidenav" class="layout-sidenav sidenav sidenav-vertical bg-white logo-dark">
+
+              <div class="app-brand demo">
+                  <span class="app-brand-logo demo">
+                      <img src="{{'assets/img/user.png'|theme}}" style="width:50px" alt="Brand Logo" class="img-fluid">
+                  </span>
+                  <a href="/adminpanel" class="app-brand-text demo sidenav-text font-weight-normal ml-2">Admin</a>
+                  <a href="javascript:" class="layout-sidenav-toggle sidenav-link text-large ml-auto">
+                      <i class="ion ion-md-menu align-middle"></i>
+                  </a>
+              </div>
+              <div class="sidenav-divider mt-0"></div>
+
+              <ul class="sidenav-inner py-1">
+
+                  <li class="sidenav-item {%if this.page.url == '/adminpanel'%} active {%endif%}">
+                      <a href="/adminpanel" class="sidenav-link">
+                          <i class="sidenav-icon feather icon-home"></i>
+                          <div>Dashboards</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/organizations'%} active {%endif%}">
+                      <a href="/admin/organizations" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-book"></i>
+                          <div>Organizations</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/users'%} active {%endif%}">
+                      <a href="/admin/users" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-users"></i>
+                          <div>Users</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/categories'%} active {%endif%}">
+                      <a href="/admin/categories" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-grid"></i>
+                          <div>Categories</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/settings'%} active {%endif%}">
+                      <a href="/admin/settings" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-settings"></i>
+                          <div>Settings</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/contacts'%} active {%endif%}">
+                      <a href="/admin/contacts" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-help-circle"></i>
+                          <div>Contact Support</div>
+
+                      </a>
+                  </li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/quotes'%} active {%endif%}">
+                      <a href="/admin/quotes" class="sidenav-link">
+                      <i class="sidenav-icon feather icon-mail"></i>
+                          <div>Quotes</div>
+
+                      </a>
+                  </li>
+                    <li class="sidenav-divider mb-1"></li>
+                  <li class="sidenav-item {%if this.page.url == '/admin/organizations'%} active {%endif%}">
+                      <a href="#" data-request="onLogout" data-request-data="redirect: '/adminpanel'" class="sidenav-link">
+                        <i class="sidenav-icon feather icon-power"></i>
+                          <div>Logout</div>
+
+                      </a>
+                  </li>
+
+              </ul>
+          </div>

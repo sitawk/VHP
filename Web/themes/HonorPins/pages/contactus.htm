@@ -2,6 +2,16 @@ title = "Home"
 url = "/contact-us"
 layout = "default"
 ==
+function onSendMess(){
+  $add = new Codersocean\HonorPins\Models\Contact;
+  $add->name = post('name');
+  $add->email = post('email');
+  $add->phone = post('phone');
+  $add->messege = post('messege');
+  $add->save();
+  return $add;
+}
+==
 <style>
 .default-padding {
     padding-top: 120px;
@@ -98,7 +108,7 @@ layout = "default"
                            <div class="col-md-12">
 
                                    <div class="form-group">
-                                       <input class="form-control" id="name" name="name" placeholder="Name" type="text">
+                                       <input class="form-control" id="cname" name="name" placeholder="Name" type="text">
                                        <span class="alert-error"></span>
                                    </div>
 
@@ -106,13 +116,13 @@ layout = "default"
 
                                <div class="col-md-6">
                                    <div class="form-group">
-                                       <input class="form-control" id="email" name="email" placeholder="Email*" type="email">
+                                       <input class="form-control" id="cemail" name="email" placeholder="Email*" type="email">
                                        <span class="alert-error"></span>
                                    </div>
                                </div>
                                <div class="col-md-6">
                                    <div class="form-group">
-                                       <input class="form-control" id="phone" name="phone" placeholder="Phone" type="text">
+                                       <input class="form-control" id="cphone" name="phone" placeholder="Phone" type="text">
                                        <span class="alert-error"></span>
                                    </div>
                                </div>
@@ -120,13 +130,17 @@ layout = "default"
                            <div class="col-md-12">
 
                                    <div class="form-group comments">
-                                       <textarea class="form-control" id="comments" name="comments" placeholder="Tell Us About Project *"></textarea>
+                                       <textarea class="form-control" id="cmessege" name="comments" placeholder="Tell Us About Project *"></textarea>
                                    </div>
-
                            </div>
                            <div class="col-md-12">
+                             <p style="font-size:13px;display:none" class="text-success text-center" id="cmessegea">Your request is successfully received. You will be contacted soon!</p>
 
-                                   <button type="submit" class="btn btn-primary" name="submit" id="submit">
+</div>
+                           <div class="col-md-12">
+
+<button  class="btn btn-primary" style="display:none" id="cspinnerquote"><i class="fa-spin fa fa-spinner text-white"></i></button>
+                                   <button type="button" class="btn btn-primary" onclick="sendmess()" id="csendbutton">
                                        Send Message <i class="fa fa-paper-plane"></i>
                                    </button>
 
@@ -146,7 +160,36 @@ layout = "default"
 
     <!-- Start Google Maps
    ============================================= -->
+   <script>
+   function sendmess() {
 
+       document.getElementById('cspinnerquote').style.display = 'block'
+       document.getElementById('csendbutton').style.display = 'none'
+              var name = document.getElementById('cname').value
+       var email = document.getElementById('cemail').value
+       var phone =document.getElementById('cphone').value
+
+       var messege = document.getElementById('cmessege').value
+
+       $.request('onSendMess', {
+           data: {
+               email: email,
+               phone: phone,
+               name: name,
+               messege: messege,
+           }
+       }).done(function(data) {
+         console.log('asdasd')
+           document.getElementById('cspinnerquote').style.display = 'none'
+           document.getElementById('csendbutton').style.display = 'block'
+           document.getElementById('cmessegea').style.display = 'block'
+           // $('#quote').modal('hide');
+
+           return data;
+       });
+
+   }
+   </script>
        <div class="container-fluid">
            <div class="row">
            <div class="col-lg-12">

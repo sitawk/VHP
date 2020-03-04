@@ -6,7 +6,11 @@ class Plugin extends PluginBase
 {
     public function registerComponents()
     {
-      return [\Codersocean\Honorpins\Components\Dashboard::class  => 'Dashboard'              ];
+      return [
+        \Codersocean\Honorpins\Components\Dashboard::class  => 'Dashboard',
+        \Codersocean\Honorpins\Components\AdminAuth::class  => 'AdminAuth'
+
+          ];
     }
 
     public function registerSettings()

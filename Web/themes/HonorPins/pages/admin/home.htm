@@ -1,0 +1,170 @@
+title = "Home"
+url = "/adminpanel"
+layout = "admin"
+[AdminAuth]
+==
+<?php
+function onStart(){
+  $this['organizations'] = Codersocean\HonorPins\Models\Organization::get();
+  $this['latestorganizations'] = Codersocean\HonorPins\Models\Organization::orderBy('created_at','desc')->take(6)->get();
+  $this['certificates'] = Codersocean\HonorPins\Models\Certificate::get();
+  $this['users'] = RainLab\User\Models\User::get();
+  $this['latestusers'] = RainLab\User\Models\User::orderBy('created_at','desc')->take(6)->get();
+  $this['holderpins'] = Codersocean\HonorPins\Models\HolderPins::get();
+}
+?>
+==
+
+
+
+
+
+<div class="layout-content">
+
+    <div class="container-fluid flex-grow-1 container-p-y">
+        <h4 class="font-weight-bold py-3 mb-0">Dashboard</h4>
+        <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#"><i class="feather icon-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item active">Main</li>
+            </ol>
+        </div>
+        <div class="row">
+
+            <div class="col-lg-5">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="">
+                                        <h2 class="mb-2"> {{organizations.count}} </h2>
+                                        <p class="text-muted mb-0"><span class="badge badge-primary">Organizations</span> Registered</p>
+                                    </div>
+                                    <div class="feather icon-book display-4 text-primary"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="">
+                                        <h2 class="mb-2">{{certificates.count}}</h2>
+                                        <p class="text-muted mb-0"><span class="badge badge-success">Certificates</span> Added</p>
+                                    </div>
+                                    <div class="feather icon-award display-4 text-success"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="">
+                                        <h2 class="mb-2"> {{users.count}} <small></small></h2>
+                                        <p class="text-muted mb-0">New <span class="badge badge-danger"></span> Customer</p>
+                                    </div>
+                                    <div class="feather icon-users display-4 text-danger"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="">
+                                        <h2 class="mb-2">{{holderpins.count}}</h2>
+                                        <p class="text-muted mb-0"><span class="badge badge-warning">Pins</span> Ordered</p>
+                                    </div>
+                                    <div class="lnr lnr-cart display-4 text-warning"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-7">
+      <div class="card mb-4">
+      <div class="card-header with-elements">
+      <h6 class="card-header-title mb-0">Statistics</h6>
+      <div class="card-header-elements ml-auto">
+      <label class="text m-0">
+      <span class="text-light text-tiny font-weight-semibold align-middle">SHOW STATS</span>
+      <span class="switcher switcher-primary switcher-sm d-inline-block align-middle mr-0 ml-2"><input type="checkbox" class="switcher-input" checked=""><span class="switcher-indicator"><span class="switcher-yes"></span><span class="switcher-no"></span></span></span>
+      </label>
+      </div>
+      </div>
+      <div class="card-body">
+      <div id="statistics-chart-1" style="height: 300px; position: relative;"><div dir="ltr" class="resize-sensor" style="pointer-events: none; position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; z-index: -1; visibility: hidden; max-width: 100%;"><div class="resize-sensor-expand" style="pointer-events: none; position: absolute; left: 0px; top: 0px; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden; max-width: 100%;"><div style="position: absolute; left: 0px; top: 0px; transition: all 0s ease 0s; width: 655px; height: 310px;"></div></div><div class="resize-sensor-shrink" style="pointer-events: none; position: absolute; left: 0px; top: 0px; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden; max-width: 100%;"><div style="position: absolute; left: 0; top: 0; transition: 0s; width: 200%; height: 200%"></div></div></div><div style="width: 100%; height: 100%; position: relative; left: 0.162537px; top: -0.199982px;"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="group" style="width: 100%; height: 100%; overflow: visible;"><desc>JavaScript chart by amCharts</desc><defs><clipPath id="id-27"><rect width="645" height="300"></rect></clipPath><linearGradient id="gradient-id-50" x1="1%" x2="99%" y1="59%" y2="41%"><stop stop-color="#474758" offset="0"></stop><stop stop-color="#474758" stop-opacity="1" offset="0.75"></stop><stop stop-color="#3cabff" stop-opacity="1" offset="0.755"></stop></linearGradient><filter id="filter-id-56" width="200%" height="200%" x="-50%" y="-50%"></filter><filter id="filter-id-75" width="200%" height="200%" x="-50%" y="-50%"></filter><clipPath id="id-110"><path d="M0,0 L570,0 L570,233.19 L0,233.19 L0,0"></path></clipPath><clipPath id="id-127"><path d="M0,0 L570,0 L570,233.19 L0,233.19 L0,0"></path></clipPath><clipPath id="id-326"><rect width="570" height="233.19"></rect></clipPath><filter id="filter-id-29" width="200%" height="200%" x="-50%" y="-50%"><feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1.5"></feGaussianBlur><feOffset result="offsetBlur" dx="1" dy="1"></feOffset><feFlood flood-color="#000000" flood-opacity="0.5"></feFlood><feComposite in2="offsetBlur" operator="in"></feComposite><feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><filter id="filter-id-47" width="120%" height="120%" x="-10%" y="-10%"><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><filter id="filter-id-112" width="200%" height="200%" x="-50%" y="-50%"><feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1.5"></feGaussianBlur><feOffset result="offsetBlur" dx="1" dy="1"></feOffset><feFlood flood-color="#000000" flood-opacity="0.5"></feFlood><feComposite in2="offsetBlur" operator="in"></feComposite><feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><filter id="filter-id-129" width="200%" height="200%" x="-50%" y="-50%"><feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="1.5"></feGaussianBlur><feOffset result="offsetBlur" dx="1" dy="1"></feOffset><feFlood flood-color="#000000" flood-opacity="0.5"></feFlood><feComposite in2="offsetBlur" operator="in"></feComposite><feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><filter id="filter-id-122" width="200%" height="200%" x="-50%" y="-50%"><feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="8"></feGaussianBlur><feOffset result="offsetBlur" dx="1" dy="15"></feOffset><feFlood flood-color="#ff4a00" flood-opacity="0.5"></feFlood><feComposite in2="offsetBlur" operator="in"></feComposite><feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><filter id="filter-id-128" width="200%" height="200%" x="-50%" y="-50%"><feGaussianBlur result="blurOut" in="SourceGraphic" stdDeviation="8"></feGaussianBlur><feOffset result="offsetBlur" dx="1" dy="15"></feOffset><feFlood flood-color="#ff4a00" flood-opacity="0.5"></feFlood><feComposite in2="offsetBlur" operator="in"></feComposite><feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><g><g fill="#ffffff" fill-opacity="0"><rect width="645" height="300"></rect></g><g><g role="region" clip-path="url(#id-27)" opacity="1" aria-label="Chart"><g transform="translate(15,15)"><g><g><g><g><g><g><g transform="translate(45,0)" style="touch-action: none; user-select: none; -webkit-user-drag: none;"><g fill="#ffffff" fill-opacity="0"><rect width="570" height="233.19"></rect></g><g><g><g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,349.8)" display="none"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,349.8)" display="none"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;" display="none"><path d="M0,233.19 L0,233.19 L570,233.19 L570,233.19 L0,233.19"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,291.5)" display="none"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,291.5)" display="none"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;"><path d="M0,233.19 L0,233.19 L570,233.19 L570,233.19 L0,233.19"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,233.2)"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,233.2)"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;" display="none"><path d="M0,174.9 L0,233.19 L570,233.19 L570,174.9 L0,174.9"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,174.9)"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,174.9)"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;"><path d="M0,116.6 L0,174.9 L570,174.9 L570,116.6 L0,116.6"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,116.6)"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,116.6)"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;" display="none"><path d="M0,58.3 L0,116.6 L570,116.6 L570,58.3 L0,58.3"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,58.3)"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,58.3)"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;"><path d="M0,0 L0,58.3 L570,58.3 L570,0 L0,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;" display="none"><path d="M0,0 L0,0 L570,0 L570,0 L0,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(0,-58.3)" display="none"><path d=" M0,0  L-5,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(0,-58.3)" display="none"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" style="pointer-events: none;"><path d="M0,0 L0,0 L570,0 L570,0 L0,0"></path></g></g></g><g><g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(40.7151,233.19)"><path d=" M0,0  L0,5 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0" fill="none" transform="translate(40.7151,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" opacity="0" style="pointer-events: none;" display="none"><path d="M0,0 L0,233.19 L162.8547,233.19 L162.8547,0 L0,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" display="none" transform="translate(610.7150999999999,233.19)"><path d=" M0,0  L0,5 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0" fill="none" display="none" transform="translate(610.7150999999999,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" opacity="1" style="pointer-events: none;"><path d="M570,0 L570,233.19 L570,233.19 L570,0 L570,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(203.56980000000001,233.19)"><path d=" M0,0  L0,5 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0" fill="none" transform="translate(203.56980000000001,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" opacity="1" style="pointer-events: none;"><path d="M162.8547,0 L162.8547,233.19 L325.7151,233.19 L325.7151,0 L162.8547,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(366.4302,233.19)"><path d=" M0,0  L0,5 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0" fill="none" transform="translate(366.4302,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" opacity="0" style="pointer-events: none;" display="none"><path d="M325.7151,0 L325.7151,233.19 L488.5698,233.19 L488.5698,0 L325.7151,0"></path></g><g fill-opacity="0" stroke-opacity="0" stroke="#000000" stroke-width="1" transform="translate(529.2849,233.19)"><path d=" M0,0  L0,5 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0" fill="none" transform="translate(529.2849,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g><g fill="#000000" fill-opacity="0" opacity="1" style="pointer-events: none;"><path d="M488.5698,0 L488.5698,233.19 L570,233.19 L570,0 L488.5698,0"></path></g></g></g><g><g><g role="group" stroke-opacity="1" fill-opacity="0" fill="#c4c2c3" stroke="#c4c2c3" aria-label="iphone" stroke-width="4" stroke-dasharray="10"><g><g clip-path="url(#id-110)"><g><g><g><g fill="#c4c2c3" fill-opacity="0" stroke="#c4c2c3" stroke-opacity="1" stroke-width="4" stroke-dasharray="10" style="pointer-events: none;"><g><g stroke-opacity="0"><path></path></g><g fill-opacity="0"><path d=" M40.5151,233  M40.7151,233.2  C57.002,233.1994 89.5727,174.9002 122.1453,174.9 C154.7179,174.8998 170.9972,209.9001 203.5698,209.9 C236.1424,209.8999 252.4263,163.2 285,163.2 C317.5737,163.2 333.8576,209.9 366.4302,209.9 C399.0028,209.9 415.2821,163.1999 447.8547,163.2 C480.4273,163.2001 512.998,221.4994 529.2849,221.5"></path></g></g></g></g></g></g></g><g></g></g></g><g role="group" stroke-opacity="1" fill-opacity="0" fill="#ff4a00" stroke="#ff4a00" aria-label="itouch" stroke-width="4" filter="url(#filter-id-122)"><g><g clip-path="url(#id-127)"><g><g><g><g fill="#ff4a00" fill-opacity="0" stroke="#ff4a00" stroke-opacity="1" stroke-width="4" style="pointer-events: none;"><g><g stroke-opacity="0"><path></path></g><g fill-opacity="0"><path d=" M40.5151,163  M40.7151,163.2  C57.002,163.2006 89.5727,227.4005 122.1453,227.4 C154.7179,227.3995 170.9972,116.6006 203.5698,116.6 C236.1424,116.5994 252.4263,163.2008 285,163.2 C317.5737,163.1992 333.8576,34.9996 366.4302,35 C399.0028,35.0004 415.2821,203.9987 447.8547,204 C480.4273,204.0013 512.998,163.2004 529.2849,163.2"></path></g></g></g></g></g></g></g><g></g></g></g></g></g><g clip-path="url(#id-326)"><g><g fill="#c4c2c3" stroke="#c4c2c3"><g></g></g><g filter="url(#filter-id-128)" fill="#ff4a00" stroke="#ff4a00"><g></g></g></g></g><g><g></g></g><g><g></g></g><g opacity="0" visibility="hidden" style="touch-action: none; user-select: none; -webkit-user-drag: none;"><g><g fill-opacity="0.2" fill="#000000" style="pointer-events: none;" opacity="0" visibility="hidden"><path></path></g><g stroke="#000000" fill="none" stroke-dasharray="3,3" stroke-opacity="0.4" style="pointer-events: none;" transform="translate(63.4,0)"><path d=" M0,0  L0,233.19 "></path></g><g stroke="#000000" fill="none" stroke-dasharray="3,3" stroke-opacity="0.4" style="pointer-events: none;" transform="translate(0,233.19)"><path d=" M0,0  L570,0 "></path></g></g></g><g role="button" focusable="true" opacity="0" visibility="hidden" transform="translate(530,-3)" aria-labelledby="id-19-title"><g fill="#6794dc" stroke="#ffffff" fill-opacity="1" stroke-opacity="0" transform="translate(0,8)"><path d="M17,0 L18,0 a17,17 0 0 1 17,17 L35,17 a17,17 0 0 1 -17,17 L17,34 a17,17 0 0 1 -17,-17 L0,17 a17,17 0 0 1 17,-17 Z"></path></g><g transform="translate(9,9)"><g stroke="#ffffff" style="pointer-events: none;" transform="translate(0,8)"><path d=" M0,0  L11,0 " transform="translate(2.5,7.5)"></path></g><g fill="#000000" style="pointer-events: none;" transform="translate(17,8)"><g display="none"></g></g></g><title id="id-19-title">Zoom Out</title></g></g></g><g><g><g><g><g fill="#000000" transform="translate(0,116.595) rotate(-90)"><g display="none"></g></g><g stroke="#000000" stroke-opacity="0.15" fill="none" transform="translate(45,250)" opacity="0" visibility="hidden"><path transform="translate(-0.5,-0.5)" d=" M0,0  L570,0 "></path></g><g transform="translate(0,0)"><g><g fill="#000000" fill-opacity="0" opacity="0" stroke-opacity="0" transform="translate(45,116.6)"><g transform="translate(-35,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>250</tspan></text></g></g><g fill="#000000" transform="translate(45,349.8)" display="none"><g transform="translate(-39,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>-100</tspan></text></g></g><g fill="#000000" transform="translate(45,291.5)" display="none"><g transform="translate(-30,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>-50</tspan></text></g></g><g fill="#000000" transform="translate(45,233.2)"><g transform="translate(-19,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>0</tspan></text></g></g><g fill="#000000" transform="translate(45,174.9)"><g transform="translate(-27,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>50</tspan></text></g></g><g fill="#000000" transform="translate(45,116.6)"><g transform="translate(-35,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>100</tspan></text></g></g><g fill="#000000" transform="translate(45,58.3)"><g transform="translate(-35,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>150</tspan></text></g></g><g fill="#000000" transform="translate(45,0)"><g transform="translate(-35,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>200</tspan></text></g></g><g fill="#000000" transform="translate(45,-58.3)" display="none"><g transform="translate(-35,-8.406)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>250</tspan></text></g></g></g></g><g stroke="#000000" stroke-opacity="0" fill="none" style="pointer-events: none;" transform="translate(45,0)"><path d=" M0,0  L0,233.19 " transform="translate(-0.5,-0.5)"></path></g></g></g></g></g><g transform="translate(615,0)"><g></g></g></g></g><g><g transform="translate(45,0)"></g></g><g transform="translate(0,233.19)"><g transform="translate(45,0)"><g><g><g stroke="#000000" stroke-opacity="0" fill="none" style="pointer-events: none;"><path d=" M0,0  L570,0 " transform="translate(-0.5,-0.5)"></path></g><g stroke="#000000" stroke-opacity="0.15" fill="none" display="none" transform="translate(570,-233.19)" opacity="0" visibility="hidden"><path transform="translate(-0.5,-0.5)" d=" M0,0  L0,233.19 "></path></g><g><g><g fill="#000000" fill-opacity="0" opacity="0" stroke-opacity="0" transform="translate(285,0)"><g transform="translate(-4,10)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>L</tspan></text></g></g><g fill="#000000" transform="translate(40.7151,0)"><g transform="translate(-16.5,10)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>2010</tspan></text></g></g><g fill="#000000" display="none" transform="translate(610.7150999999999,0)"><g transform="translate(0,10)" display="none"></g></g><g fill="#000000" transform="translate(203.56980000000001,0)"><g transform="translate(-16.5,10)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>2012</tspan></text></g></g><g fill="#000000" transform="translate(366.4302,0)"><g transform="translate(-16.5,10)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>2014</tspan></text></g></g><g fill="#000000" transform="translate(529.2849,0)"><g transform="translate(-16.5,10)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>2016</tspan></text></g></g></g></g><g fill="#000000" transform="translate(285,36.8125)"><g display="none"></g></g></g></g></g></g></g></g></g></g></g></g><g><g><g filter="url(#filter-id-29)" role="tooltip" visibility="hidden" opacity="0"><g fill="#ffffff" fill-opacity="0.9" stroke-width="1" stroke-opacity="1" stroke="#ffffff" style="pointer-events: none;" transform="translate(0,6)"><path d="M3,0 L3,0 L0,-6 L13,0 L21,0 a3,3 0 0 1 3,3 L24,10 a3,3 0 0 1 -3,3 L3,13 a3,3 0 0 1 -3,-3 L0,3 a3,3 0 0 1 3,-3"></path></g><g><g fill="#ffffff" style="pointer-events: none;" transform="translate(12,6)"><g transform="translate(0,7)" display="none"></g></g></g></g><g visibility="hidden" display="none" style="pointer-events: none;"><g fill="#ffffff" opacity="1"><rect width="645" height="300"></rect></g><g><g transform="translate(322.5,150)"><g><g stroke-opacity="1" fill="#f3f3f3" fill-opacity="0.8"><g><g><path d=" M53,0  a53,53,0,0,1,-106,0 a53,53,0,0,1,106,0 M42,0  a42,42,0,0,0,-84,0 a42,42,0,0,0,84,0 L42,0 "></path></g></g></g><g stroke-opacity="1" fill="#000000" fill-opacity="0.2"><g><g><path d=" M50,0  a50,50,0,0,1,-100,0 a50,50,0,0,1,100,0 M45,0  a45,45,0,0,0,-90,0 a45,45,0,0,0,90,0 L45,0 "></path></g></g></g><g fill="#000000" fill-opacity="0.4"><g transform="translate(-17.5,-8.4062)" style="user-select: none;"><text x="0" y="16.8125" dy="-3.363"><tspan>100%</tspan></text></g></g></g></g></g></g><g opacity="0.3" aria-labelledby="id-47-title" filter="url(#filter-id-47)" style="cursor: pointer;" transform="translate(0,279)"><g fill="#ffffff" opacity="0"><rect width="66" height="21"></rect></g><g><g shape-rendering="auto" fill="none" stroke-opacity="1" stroke-width="1.7999999999999998" stroke="#3cabff"><path d=" M15,15  C17.4001,15 22.7998,15.0001 27,15 C31.2002,14.9999 33.2999,6 36,6 C38.7001,6 38.6999,10.5 40.5,10.5 C42.3001,10.5 42.2999,6 45,6 C47.7001,6 50.9999,14.9999 54,15 C57.0002,15.0001 58.7999,15 60,15"></path></g><g shape-rendering="auto" fill="none" stroke-opacity="1" stroke-width="1.7999999999999998" stroke="url(#gradient-id-50)"><path d=" M6,15  C8.2501,15 9.7498,15.0001 15,15 C20.2502,14.9999 20.7748,3.6 27,3.6 C33.2252,3.6 33.8998,14.9999 39.9,15 C45.9002,15.0001 45.9748,15 51,15 C56.0252,15 57.7499,15 60,15"></path></g></g><title id="id-47-title">Chart created using amCharts library</title></g><g role="tooltip" visibility="hidden" opacity="0"><g fill="#000000" fill-opacity="1" stroke-width="1" stroke-opacity="1" stroke="#000000" style="pointer-events: none;" transform="translate(60,248.19)"><path d="M0,0 L20,0 a0,0 0 0 1 0,0 L20,10 a0,0 0 0 1 -0,0 L0,10 a0,0 0 0 1 -0,-0 L0,0 a0,0 0 0 1 0,-0"></path></g><g><g fill="#ffffff" style="pointer-events: none;" transform="translate(70,248.19)"><g transform="translate(0,5)" display="none"></g></g></g></g><g role="tooltip" visibility="hidden" opacity="0"><g fill="#000000" fill-opacity="1" stroke-width="1" stroke-opacity="1" stroke="#000000" style="pointer-events: none;" transform="translate(-25,15)"><path d="M0,0 L20,0 a0,0 0 0 1 0,0 L20,0 L20,0 L25,0 L20,10 L20,10 a0,0 0 0 1 -0,0 L0,10 a0,0 0 0 1 -0,-0 L0,0 a0,0 0 0 1 0,-0"></path></g><g><g fill="#ffffff" style="pointer-events: none;" transform="translate(-15,15)"><g transform="translate(0,5)" display="none"></g></g></g></g><g filter="url(#filter-id-112)" role="tooltip" visibility="hidden" opacity="0"><g fill="#ffffff" fill-opacity="0.9" stroke-width="1" stroke-opacity="1" stroke="#ffffff" style="pointer-events: none;" transform="translate(6,0)"><path d="M3,0 L21,0 a3,3 0 0 1 3,3 L24,10 a3,3 0 0 1 -3,3 L3,13 a3,3 0 0 1 -3,-3 L0,10 L0,10 L-6,0 L0,0 L0,3 a3,3 0 0 1 3,-3"></path></g><g><g fill="#ffffff" style="pointer-events: none;" transform="translate(18,0)"><g transform="translate(0,7)" display="none"></g></g></g></g><g filter="url(#filter-id-129)" role="tooltip" visibility="hidden" opacity="0"><g fill="#ffffff" fill-opacity="0.9" stroke-width="1" stroke-opacity="1" stroke="#ffffff" style="pointer-events: none;" transform="translate(6,0)"><path d="M3,0 L21,0 a3,3 0 0 1 3,3 L24,10 a3,3 0 0 1 -3,3 L3,13 a3,3 0 0 1 -3,-3 L0,10 L0,10 L-6,0 L0,0 L0,3 a3,3 0 0 1 3,-3"></path></g><g><g fill="#ffffff" style="pointer-events: none;" transform="translate(18,0)"><g transform="translate(0,7)" display="none"></g></g></g></g></g></g></g></g></svg></div></div>
+      </div>
+      </div>
+      </div>
+        </div>
+        <div class="row">
+
+            <div class="col-xl-6 col-md-12">
+                <div class="card mb-4">
+                    <h5 class="card-header">Latest Users Registered</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-borderless mb-0">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th class="text-right">Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for user in latestusers%}
+                                <tr>
+                                    <td><img src="{%if user.avatar%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" alt="" class="img-fluid rounded-circle ui-w-40"></td>
+                                    <td>{{user.name}} {{user.surname}}</td>
+                                    <td>{{user.email}}</td>
+                                    <td class="text-right">{{user.phone}}</td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-12">
+                <div class="card mb-4">
+                    <h5 class="card-header">Latest Registered Organizations</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Logo</th>
+                                    <th>Country</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for organization in latestorganizations%}
+                                <tr>
+                                    <td>{{organization.org_name}}</td>
+                                    <td><img src="{{organization.logo}}" alt="" class="img-fluid  ui-w-40"></td>
+                                    <td>{{organization.country}}</td>
+
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        {% partial 'admin/footer'%}
+
+    </div>

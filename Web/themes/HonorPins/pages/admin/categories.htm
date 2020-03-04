@@ -1,0 +1,152 @@
+title = "Admin Panel - Categories"
+url = "/admin/categories"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+  $org->status =1;
+  $org->save();
+}
+function onEditCategory(){
+  $org = Codersocean\HonorPins\Models\Categories::where('id',post('id'))->first();
+  $org->name =post('name');
+  $org->desc =post('desc');
+  $org->save();
+}
+function onAddCategory(){
+    $org = new Codersocean\HonorPins\Models\Categories;
+    $org->name =post('name');
+    $org->desc =post('desc');
+    $org->save();
+}
+function onDeleteOrganization(){
+
+
+  $delete = Codersocean\HonorPins\Models\Categories::where('id',post('id'))->delete();
+}
+function onStart(){
+  $this['categories'] = Codersocean\HonorPins\Models\Categories::get();
+}
+?>
+==
+  <link rel="stylesheet" href="{{'adminassets/libs/datatables/datatables.css'|theme}}">
+  <link rel="stylesheet" href="{{'adminassets/libs/bootstrap-sweetalert/bootstrap-sweetalert.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">Categories</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item active">Categories</li>
+                      </ol>
+                  </div>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                    <div class="modal fade" id="modals-default">
+                          <div class="modal-dialog">
+                              <form class="modal-content" data-request="onAddCategory" data-request-redirect="/admin/categories">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title">Add Category
+                                            </h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <div class="form-row">
+                                          <div class="form-group col">
+                                              <label class="form-label">Name</label>
+                                              <input type="text" class="form-control" name="name" placeholder="Catergory Name">
+                                              <div class="clearfix"></div>
+                                          </div>
+                                      </div>
+                                      <div class="form-row">
+                                          <div class="form-group col mb-0">
+                                              <label class="form-label">Description</label>
+                                              <textarea type="text" name="desc" class="form-control" placeholder="Description"></textarea>
+                                              <div class="clearfix"></div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="modal-footer">
+
+                                      <button type="submit" class="btn btn-primary">Add</button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modals-default">Add New Category</button>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="datatables-demo table table-striped table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>Categories Name</th>
+                                  <th>Description</th>
+
+                                  <th>Edit/Delete</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {%for category in categories%}
+                              <tr class="odd gradeX">
+                                  <td>{{category.name}}</td>
+                                  <td>{{category.desc}}</td>
+
+                                  <td><a href="javascript:" data-toggle="modal" data-target="#modals-default{{category.id}}"><i class="lnr lnr-pencil mr-2"></i></a>
+                                    <div class="modal fade" id="modals-default{{category.id}}">
+                                          <div class="modal-dialog">
+                                              <form class="modal-content" data-request="onEditCategory" data-request-redirect="/admin/categories">
+                                                  <div class="modal-header">
+                                                      <h5 class="modal-title">Edit Category
+                                                            </h5>
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <div class="form-row">
+                                                          <div class="form-group col">
+                                                              <label class="form-label">Name</label>
+                                                              <input type="text" class="form-control" name="name" value="{{category.name}}" placeholder="Catergory Name">
+                                                              <input type="hidden" class="form-control" name="id" value="{{category.id}}" placeholder="Catergory Name">
+                                                              <div class="clearfix"></div>
+                                                          </div>
+                                                      </div>
+                                                      <div class="form-row">
+                                                          <div class="form-group col mb-0">
+                                                              <label class="form-label">Description</label>
+                                                              <textarea type="text" name="desc" class="form-control" placeholder="Description">{{category.desc}}</textarea>
+                                                              <div class="clearfix"></div>
+                                                          </div>
+                                                      </div>
+                                                  </div>
+                                                  <div class="modal-footer">
+
+                                                      <button type="submit" class="btn btn-primary">Edit</button>
+                                                  </div>
+                                              </form>
+                                          </div>
+                                      </div>
+
+                                    <a href="#"  data-request-confirm="Are you sure to Delete this Category?" data-request="onDeleteOrganization" data-request-redirect="/admin/categories" data-request-data="id:'{{category.id}}'"><i class="lnr lnr-trash text-danger"></i></a>
+                                  </td>
+                                  {%endfor%}
+                              </tr>
+
+                          </tbody>
+                      </table>
+                  </div>
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'adminassets/libs/datatables/datatables.js'|theme}}"></script>
+           <script src="{{'adminassets/js/pages/tables_datatables.js'|theme}}"></script>
+           <script src="{{'adminassets/js/pages/ui_modals.js'|theme}}"></script>
+           <script src="{{'adminassets/libs/bootbox/bootbox.js'|theme}}"></script>
+           <script src="{{'adminassets/libs/bootstrap-sweetalert/bootstrap-sweetalert.js'|theme}}"></script>

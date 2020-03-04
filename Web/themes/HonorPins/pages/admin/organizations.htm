@@ -1,0 +1,99 @@
+title = "Admin Panel - Organizations"
+url = "/admin/organizations"
+layout = "admin"
+[account]
+[session]
+[AdminAuth]
+==
+<?php
+function onActivateOrganization(){
+  $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+  $org->status =1;
+  $org->save();
+}
+function onSuspendOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =2;
+    $org->save();
+}
+function onReleaseOrganization(){
+    $org = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->first();
+    $org->status =1;
+    $org->save();
+}
+function onDeleteOrganization(){
+  $delete = Codersocean\HonorPins\Models\Pin::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\HolderPins::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Certificate::where('org_id',post('id'))->delete();
+  $delete = Codersocean\HonorPins\Models\Organization::where('id',post('id'))->delete();
+}
+function onStart(){
+  $this['organizations'] = Codersocean\HonorPins\Models\Organization::get();
+}
+?>
+==
+  <link rel="stylesheet" href="{{'adminassets/libs/datatables/datatables.css'|theme}}">
+<div class="layout-content">
+
+              <div class="container-fluid flex-grow-1 container-p-y">
+                  <h4 class="font-weight-bold py-3 mb-0">Registered Organizations</h4>
+                  <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
+                      <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item">Dashboard</li>
+                          <li class="breadcrumb-item active">Organizations</li>
+                      </ol>
+                  </div>
+                  <div class="table-responsive">
+                      <table class="datatables-demo table table-striped table-bordered">
+                          <thead>
+                              <tr>
+                                  <th>Organization Name</th>
+                                  <th>Logo</th>
+                                  <th>User</th>
+                                  <th>Status</th>
+                                  <th>Action</th>
+                                  <th>View</th>
+                                  <th>Delete</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            {%for organization in organizations%}
+                              <tr class="odd gradeX">
+                                  <td>{{organization.org_name}}</td>
+                                  <td><img src="{{organization.logo}}" alt="" class="img-fluid rounded-circle ui-w-40"></td>
+                                  <td>{{organization.user.name}} {{organization.user.surname}}</td>
+                                  <td>{%if organization.status == 0%}<a href="javascript:void(0)" class="badge badge-warning">Pending Activation</a>{%elseif organization.status == 1%}<a href="javascript:void(0)" class="badge badge-success">Activated</a>{%elseif organization.status == 2%}<a href="javascript:void(0)" class="badge badge-primary">Suspended</a>{%endif%}</td>
+
+
+                                  <td>
+                                    {%if organization.status == 0%}
+                                    <a  href="#" data-request-confirm="Are you sure to Activate this Organization?" data-request="onActivateOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'" class="btn btn-success btn-sm btn-round">
+                                      Activate now
+                                    </a>
+                                    {%elseif organization.status == 1%}
+                                    <a href="#"  data-request-confirm="Are you sure to Suspend this Organization?" data-request="onSuspendOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'" class="btn btn-danger btn-sm btn-round">
+                                      Suspend now
+                                    </a>
+                                    {%elseif organization.status == 2%}
+                                    <a href="#"  data-request-confirm="Are you sure to Release Suspension on this Organization?" data-request="onReleaseOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'" class="btn btn-warning btn-sm btn-round">
+                                      Release Suspension
+                                    </a>
+                                    {%endif%}
+                                  </td>
+                                  <td><a href="/admin/certificates/{{organization.id}}" type="button" class="btn btn-round btn-info">See Certificates</a></td>
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Organization?" data-request="onDeleteOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  {%endfor%}
+                              </tr>
+
+                          </tbody>
+                      </table>
+                  </div>
+                  <br>
+
+              </div>
+
+{% partial 'admin/footer'%}
+          </div>
+          <script src="{{'adminassets/libs/datatables/datatables.js'|theme}}"></script>
+           <script src="{{'adminassets/js/pages/tables_datatables.js'|theme}}"></script>

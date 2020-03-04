@@ -1,0 +1,77 @@
+title = "Admin Panel - Login"
+url = "/admin/login"
+layout = "login"
+[account]
+[session]
+==
+function onAdmin(){
+  $data = post();
+
+     $user = RainLab\User\Models\User::where('email',post('email'))->first();
+
+$data['login'] = post('username', post('email'));
+$credentials = [
+   'login'    => array_get($data, 'login'),
+   'password' => array_get($data, 'password')
+];
+$user = Auth::authenticate($credentials);
+
+$code = $user->getGroups();
+if(count($code) == 0){
+  Auth::logout();
+  return [
+    '#loginerrors' => $this->renderPartial('admin/loginerror')
+  ];
+}
+//echo json_encode($code);
+       foreach ($code as $group) {
+
+    if($group->code == 'user'){
+     Auth::logout();
+     return [
+       '#loginerrors' => $this->renderPartial('admin/loginerror')
+     ];     }elseif($group->code == 'admin'){
+       return Redirect::to('/adminpanel');
+       }
+   }
+}
+==
+<div class="authentication-wrapper authentication-1 px-4">
+      <div class="authentication-inner py-5">
+
+          <div class="d-flex justify-content-center align-items-center">
+              <div class="ui-w-60">
+                  <div class="w-100 position-relative">
+                    <h1>HonorPins</h1>
+                  </div>
+              </div>
+          </div>
+<div id="loginerrors">
+
+</div>
+        <form data-request="onAdmin"  method="post">
+              <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" name="email"  required class="form-control">
+                  <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                  <label class="form-label d-flex justify-content-between align-items-end">
+                      <span>Password</span>
+                      <a href="/admin/passwordreset" class="d-block small">Forgot password?</a>
+                  </label>
+                  <input type="password" name="password" required class="form-control">
+                  <div class="clearfix"></div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center m-0">
+                  <label class="custom-control custom-checkbox m-0">
+                      <input type="checkbox" class="custom-control-input">
+                      <span class="custom-control-label">Remember me</span>
+                  </label>
+                  <button type="submit" class="btn btn-primary">Sign In</button>
+              </div>
+          </form>
+
+
+      </div>
+  </div>
