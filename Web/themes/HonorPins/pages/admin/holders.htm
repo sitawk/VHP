@@ -39,7 +39,7 @@ function onStart(){
                   <h4 class="font-weight-bold py-3 mb-0">{{certificate.title}}'s Holders</h4>
                   <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                       <ol class="breadcrumb">
-                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="fas fa-home"></i></a></li>
                           <li class="breadcrumb-item">Dashboard</li>
                           <li class="breadcrumb-item"><a href="/admin/organizations">Organizations</a></li>
                           <li class="breadcrumb-item "><a href="/admin/certificates/{{certificate.org_id}}">Certificates</a></li>
@@ -73,7 +73,7 @@ function onStart(){
                                   <td>{{holder.phone}}</td>
                                   <td>{{holder.email}}</td>
 
-                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Holder?" data-request="onDeleteOrganization" data-request-redirect="/admin/holders/{{this.param.id}}" data-request-data="id:'{{holder.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Holder?" data-request="onDeleteOrganization" data-request-redirect="/admin/holders/{{this.param.id}}" data-request-data="id:'{{holder.id}}'"><i class="fas fa-trash text-danger"></i></a></td>
                                   {%endfor%}
                               </tr>
 

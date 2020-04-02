@@ -64,14 +64,14 @@ font-weight: normal;
     </div>
 
     <div class="col-lg-6">
-        <div class="col-lg-12 mmt-40">
-            <div class="about-single-image text-right">
-                <img src="{% if user.avatar %}{{ user.avatar.path }}{%else%}{{'assets/img/user.png'|theme}}{% endif%}" alt="">
+        <div class="col-lg-5 ml-auto mr-auto mmt-40">
+            <div class="about-single-image text-right" >
+                <img id="about-single-image" src="{% if user.avatar %}{{ user.avatar.path }}{%else%}{{'assets/img/user.png'|theme}}{% endif%}" alt="">
             </div>
         </div>
-        <div style="margin-top: 40px;" class="col-md-12  text-center">
+        <div style="margin-top: 40px;" class="col-md-7 ml-auto mr-auto  text-center">
             <div class="input-file-container js text-center" >
-                <input name="avatar" class="input-file" id="my-file" type="file">
+                <input name="avatar" onchange="preview_image(event)" class="input-file" id="my-file" type="file">
                 <label tabindex="0" for="my-file" class="input-file-trigger" style="font-size: 15px;">Select an Avatar...</label>
             </div>
 
@@ -79,6 +79,24 @@ font-weight: normal;
         </div>
     </div>
 </div>
+<script>
+function readURL(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+              //$('#blah').attr('src', e.target.result);
+              document.getElementById('about-single-image').src=e.target.result;
+          }
+
+          reader.readAsDataURL(input.files[0]);
+      }
+  }
+
+  $("#my-file").change(function(){
+      readURL(this);
+  });
+</script>
 <div class="row">
 
     <div class="col-lg-4">

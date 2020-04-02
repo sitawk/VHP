@@ -31,7 +31,7 @@ function onStart(){
                   <h4 class="font-weight-bold py-3 mb-0">Contact Us Messeges</h4>
                   <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                       <ol class="breadcrumb">
-                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="fas fa-home"></i></a></li>
                           <li class="breadcrumb-item">Dashboard</li>
                           <li class="breadcrumb-item active">Messeges</li>
                       </ol>
@@ -57,7 +57,7 @@ function onStart(){
                                   <td>{{user.phone}}</td>
                                   <td>{{user.messege}}</td>
 
-                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Messege?" data-request="onDeleteOrganization" data-request-redirect="/admin/contacts" data-request-data="id:'{{user.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Messege?" data-request="onDeleteOrganization" data-request-redirect="/admin/contacts" data-request-data="id:'{{user.id}}'"><i class="fas fa-trash text-danger"></i></a></td>
                                   {%endfor%}
                               </tr>
 

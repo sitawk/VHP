@@ -39,7 +39,7 @@ function onStart(){
                   <h4 class="font-weight-bold py-3 mb-0">Registered Organizations</h4>
                   <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                       <ol class="breadcrumb">
-                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="fas fa-home"></i></a></li>
                           <li class="breadcrumb-item">Dashboard</li>
                           <li class="breadcrumb-item active">Organizations</li>
                       </ol>
@@ -82,7 +82,7 @@ function onStart(){
                                     {%endif%}
                                   </td>
                                   <td><a href="/admin/certificates/{{organization.id}}" type="button" class="btn btn-round btn-info">See Certificates</a></td>
-                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Organization?" data-request="onDeleteOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'"><i class="lnr lnr-trash text-danger"></i></a></td>
+                                  <td><a href="#"  data-request-confirm="Are you sure to Delete this Organization?" data-request="onDeleteOrganization" data-request-redirect="/admin/organizations" data-request-data="id:'{{organization.id}}'"><i class="fas fa-trash text-danger"></i></a></td>
                                   {%endfor%}
                               </tr>
 

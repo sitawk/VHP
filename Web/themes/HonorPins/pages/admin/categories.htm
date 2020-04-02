@@ -41,7 +41,7 @@ function onStart(){
                   <h4 class="font-weight-bold py-3 mb-0">Categories</h4>
                   <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                       <ol class="breadcrumb">
-                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="feather icon-home"></i></a></li>
+                          <li class="breadcrumb-item"><a href="/adminpanel"><i class="fas fa-home"></i></a></li>
                           <li class="breadcrumb-item">Dashboard</li>
                           <li class="breadcrumb-item active">Categories</li>
                       </ol>
@@ -97,7 +97,7 @@ function onStart(){
                                   <td>{{category.name}}</td>
                                   <td>{{category.desc}}</td>
 
-                                  <td><a href="javascript:" data-toggle="modal" data-target="#modals-default{{category.id}}"><i class="lnr lnr-pencil mr-2"></i></a>
+                                  <td><a href="javascript:" data-toggle="modal" data-target="#modals-default{{category.id}}"><i class="fas fa-edit text-info mr-2"></i></a>
                                     <div class="modal fade" id="modals-default{{category.id}}">
                                           <div class="modal-dialog">
                                               <form class="modal-content" data-request="onEditCategory" data-request-redirect="/admin/categories">
@@ -131,7 +131,7 @@ function onStart(){
                                           </div>
                                       </div>
 
-                                    <a href="#"  data-request-confirm="Are you sure to Delete this Category?" data-request="onDeleteOrganization" data-request-redirect="/admin/categories" data-request-data="id:'{{category.id}}'"><i class="lnr lnr-trash text-danger"></i></a>
+                                    <a href="#"  data-request-confirm="Are you sure to Delete this Category?" data-request="onDeleteOrganization" data-request-redirect="/admin/categories" data-request-data="id:'{{category.id}}'"><i class="fas fa-trash text-danger"></i></a>
                                   </td>
                                   {%endfor%}
                               </tr>

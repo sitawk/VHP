@@ -7,6 +7,7 @@ redirect=0
 [Dashboard]
 ==
 <?php
+use Intervention\Image\ImageManagerStatic as Image;
 function onSendEmail(){
   $this['user'] = $user = Auth::getuser();
   $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
@@ -196,13 +197,15 @@ Mail::send('organization.verification.code', $datamail, function($message) use (
             $message->to($addorganization->org_email, $addorganization->org_email);
              $message->from('noreply@honorpins.com','Verification Messege');
         });
-if (Input::hasFile('logo'))
+if (Input::post('logo') != '')
 {
-$images = Input::file('logo');
-$fileName = 'logo'.time().'_'.'.'.$images->getClientOriginalExtension();
-$fileName = str_replace(' ', '_', $fileName);
-$addorganization->logo ='/storage/app/uploads/web/'.$fileName;
-  $images->move(public_path('/storage/app/uploads/web/'), $fileName);
+  $png_url = "logo-".time().".png";
+    $path = '/storage/app/uploads/web' . $png_url;
+
+    Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
+
+$addorganization->logo =$path;
+
 }else{
   $this['error'] = 'Logo is required for register an organization!';
   return [
@@ -370,7 +373,7 @@ return [
                                             <a href="/dashboard/organizations/certificates/{{organization.id}}" class="btn btn btn-success myshadow rounded">See Certificates</a>
                                             {% elseif organization.status == 0 %}
 
-                                            <a href="#" class="btn btn btn-success myshadow rounded" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
+                                            <a href="#" class="btn btn btn-outline-success myshadow" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
 
                                             <div class="modal fade " id="organization{{organization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">

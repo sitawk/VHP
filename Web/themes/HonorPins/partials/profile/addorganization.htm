@@ -69,37 +69,37 @@
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-  <form data-request="onAddOrganization" data-request-files>
+  <form>
     <div class="modal-body px-5">
 
           <div class="row" >
             <div class="col-lg-6">
                 <div class="form-group">
                     <label>Organization Name</label>
-                    <input type="text" required name="organization_name" class="form-control">
+                    <input type="text" required name="organization_name" id="organization_name" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Organization Website <span class="example-span">eg. https://www.org-name.com</span></label>
-                    <input type="text" required name="website" class="form-control">
+                    <input type="text" required name="website" id="orgwebsite" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Official Email <span class="wrapper"><i class="fas fa-exclamation-circle text-primary"></i><span class="tooltip bg-primary">This email needs to be verified to activate this organization!</span></span> <span
                           class="example-span">eg. yourname@org-name.com</span></label>
-                    <input type="email" required name="officialemail" class="form-control">
+                    <input type="email" required name="officialemail" id="orgofficialemail" class="form-control">
                     <span id="emailerror"></span>
                 </div>
             </div>
 
             <div class="col-lg-6">
 
-                  <input type="file" name="logo" class="dropify" data-max-file-size="3M" data-height="200"  />
+                  <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="200"  />
                 </div>
                 </div>
 <div class="row" >
                 <div class="col-lg-4">
                     <div class="form-group">
                         <label>Phone No.</label>
-                        <input id="phone" type="tel" required name="phone" class="form-control">
+                        <input type="tel" id="orgphone" required name="phone" class="form-control">
 
                     </div>
                 </div>
@@ -107,12 +107,12 @@
             <div class="col-lg-8">
                 <div class="form-group">
                     <label>Street Address</label>
-                    <input type="text" required name="street_address" class="form-control">
+                    <input type="text" required name="street_address" id="orgstreet_address" class="form-control">
                 </div>
             </div>
             </div>
             <div class="row" id="partialCountryState">
-                {% partial 'country-state' countryId=user.country_id stateId=user.state_id %}
+                {% partial 'country-state-org' countryId=user.country_id stateId=user.state_id %}
 
 
             </div>
@@ -120,38 +120,75 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <label>City</label>
-                    <input type="text" required name="city" class="form-control">
+                    <input type="text" required name="city" id="orgcity" class="form-control">
                 </div>
 
             </div>
             <div class="col-lg-6">
               <div class="form-group">
                   <label>Zip Code</label>
-                  <input type="text" id="zip" required name="zip" class="form-control">
+                  <input type="text" id="orgzip" required name="zip"  class="form-control">
               </div>
 
             </div>
             </div>
 
     </div>
+    <input type="hidden" id="orgbase64" />
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
+        <button type="button" onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
     </div>
 </form>
 {%endif%}
 <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
-<script type="text/javascript">
-    $('.dropify').dropify({
-        messages: {
-            'default': 'Drag and drop a Organization Logo',
-            'replace': 'Drag and drop or click to replace',
-            'remove': 'Remove',
-            'error': 'Ooops, something wrong appended.'
-        },
-        error: {
-            'fileSize': 'The file size is too big (1M max).'
+
+  <script type="text/javascript">
+  function orgreadURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                //$('#blah').attr('src', e.target.result);
+                document.getElementById('orgbase64').value=e.target.result;
+            }
+
+            reader.readAsDataURL(input.files[0]);
         }
+    }
+  $("#orglogo").change(function(){
+        orgreadURL(this);
     });
+  function addorganization(){
+    var image =   document.getElementById('orgbase64').value;
+    console.log(image)
+    var organization_name =   document.getElementById('organization_name').value;
+    console.log(organization_name)
+    var orgwebsite =   document.getElementById('orgwebsite').value;
+
+    var orgofficialemail =   document.getElementById('orgofficialemail').value;
+    var accountCountry =   document.getElementById('orgaccountCountry').value;
+    var accountState =   document.getElementById('orgaccountState').value;
+
+    var orgtel =   document.getElementById('orgphone').value;
+    var orgstreet_address =   document.getElementById('orgstreet_address').value;
+    var orgcity =   document.getElementById('orgcity').value;
+    var orgzip =   document.getElementById('orgzip').value;
+    var AddTrainer = $.request('onAddOrganization',{flash: 1,data:{organization_name:organization_name,country_id:accountCountry,state_id:accountState,website:orgwebsite,officialemail:orgofficialemail,logo:image,phone:orgtel,street_address:orgstreet_address,city:orgcity,zip:orgzip}}).done(function(data) {
+        console.log('data')
+
+   });
+  }
+      $('.dropify').dropify({
+          messages: {
+              'default': 'Drag and drop a Organization Logo',
+              'replace': 'Drag and drop or click to replace',
+              'remove': 'Remove',
+              'error': 'Ooops, something wrong appended.'
+          },
+          error: {
+              'fileSize': 'The file size is too big (1M max).'
+          }
+      });
         // $('.dropify').dropify({
         //     messages: {
         //         'default': 'Drag and drop a photo',
@@ -164,9 +201,9 @@
         //     }
         // });
         $(document).ready(function() {
-            $('#zip').mask('99999');
+            $('#orgzip').mask('99999');
         })
-        $("#phone").on("change paste keyup", function() {
+        $("#orgphone").on("change paste keyup", function() {
             // alert($(this).val());
 
             // const align = div1.getAttribute('placeholder');
@@ -189,12 +226,12 @@
 
             }
             console.log(string)
-            $('#phone').mask(string);
+            $('#orgphone').mask(string);
 
 
             // $(this).attr("data-inputmask","'mask': "+placeholder+"");
         });
-        $("#phone").intlTelInput({
+        $("#orgphone").intlTelInput({
             utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
         });
     </script>
