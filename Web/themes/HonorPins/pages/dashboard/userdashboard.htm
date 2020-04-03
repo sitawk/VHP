@@ -200,11 +200,12 @@ Mail::send('organization.verification.code', $datamail, function($message) use (
 if (Input::post('logo') != '')
 {
   $png_url = "logo-".time().".png";
-    $path = '/storage/app/uploads/web' . $png_url;
+    $path = public_path().'/storage/app/uploads/web/' . $png_url;
+    $datapath = '/storage/app/uploads/web/' . $png_url;
 
     Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
 
-$addorganization->logo =$path;
+$addorganization->logo =$datapath;
 
 }else{
   $this['error'] = 'Logo is required for register an organization!';
@@ -288,7 +289,7 @@ return [
                             </div>
                             {%endif%}
                             {%if this.param.certificate == 'certificates'%}
-                              {%  if myorganizations|length != 0 %}
+                              {%  if thisorganization.certificates|length != 0 %}
                             <div class="col-md-3 col-lg-3 ml-auto my-3">
                                 <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addcertificatemodal"><i class="fas fa-plus text-white"></i> Certificate</button>
                             </div>
@@ -370,10 +371,10 @@ return [
                                         </div>
                                         <div class="col-sm-4 my-sm">
                                             {%if organization.status == 1%}
-                                            <a href="/dashboard/organizations/certificates/{{organization.id}}" class="btn btn btn-success myshadow rounded">See Certificates</a>
+                                            <a href="/dashboard/organizations/certificates/{{organization.id}}" style="border-radius:3.25rem" class="btn btn btn-outline-primary myshadow pull-right">See Certificates</a>
                                             {% elseif organization.status == 0 %}
 
-                                            <a href="#" class="btn btn btn-outline-success myshadow" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
+                                            <a href="#" class="btn btn btn-outline-success myshadow pull-right" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
 
                                             <div class="modal fade " id="organization{{organization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg" role="document">

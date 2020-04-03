@@ -51,3 +51,9 @@
 1.0.18:
     - 'Created table codersocean_honorpins_quotes'
     - builder_table_create_codersocean_honorpins_quotes.php
+1.0.19:
+    - 'Updated table codersocean_honorpins_holders'
+    - builder_table_update_codersocean_honorpins_holders_3.php
+1.0.20:
+    - 'Updated table codersocean_honorpins_holders'
+    - builder_table_update_codersocean_honorpins_holders_4.php

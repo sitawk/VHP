@@ -2,14 +2,14 @@
 <div class="col-lg-12">
     <div class="job-listings">
         <div class="row">
-            <div class="col-lg-4 col-md-3  col-xs-12">
+            <div class="col-lg-4 col-md-3 align-self-end col-xs-12">
                 <div class="job-details">
                     <h4>{{certificate.title}}</h4>
                 </div>
             </div>
             <div class="col-lg-2 col-md-2 col-xs-12 text-center">
                 <div class="location">
-                  4 Holders
+                  {{certificate.holders|length}} Holders
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-xs-12 text-center">
@@ -19,7 +19,7 @@
             </div>
 
             <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                <a href="#" class="btn-apply ">Certificate Holders</a>
+                <a href="/dashboard/organizations/certificates/{{certificate.id}}/holders" style="border-radius:3.25rem;padding: 0px 1.5rem;"  class="btn  btn-outline-primary myshadow pull-right">Certificate Holders</a>
             </div>
 
             <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">

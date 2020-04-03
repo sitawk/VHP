@@ -1,0 +1,250 @@
+<link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+{% if addholder == 1%}
+<div class="modal-header">
+    <h3>Holder Submited</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row px-5">
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="row">
+                <div class="col-md-6 text-center ml-auto mr-auto my-4">
+                    <i class="fas fa-check-circle text-success" style="font-size:150px;"></i>
+                </div>
+                <div class="col-md-12">
+                    <h2 class="text-primary text-center">Holder Information is Successfully Added!</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <a href="/dashboard/organizations/certificates/{{certificate.id}}/holders" class="btn btn-primary"> Close</a>
+</div>
+{%else%}
+<div class="modal-header">
+    <h3 id="exampleModalLongTitle">Add Holder Information</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+  <form>
+    <div class="modal-body px-5">
+
+          <div class="row" >
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Certificate</label>
+                    <input type="text" required name="" id="" disabled value="{{certificate.title}}" class="form-control">
+
+                </div>
+                <div class="form-group">
+                    <label>Registration No</label>
+                    <input type="text" required name="registrationno" id="holderregistrationno" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="holderregistrationnoerror">This field is required!</span>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" required name="email" id="holderemail" class="form-control">
+                    <span id="emailerror"></span>
+                      <span style="color:red;display:none; font-size:11px;" id="holderemailerror">This field is required!</span>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+
+                  <input type="file" id="holderavatar" name="avatar" class="dropify" data-max-file-size="3M" data-height="200"  />
+                    <span style="color:red;display:none; font-size:11px;" id="holderavatarerror">This field is required!</span>
+                </div>
+                </div>
+<div class="row" >
+  <div class="col-lg-6">
+      <div class="form-group">
+          <label>First Name</label>
+          <input type="text" required name="first_name" id="first_name" class="form-control">
+            <span style="color:red;display:none; font-size:11px;" id="first_nameerror">This field is required!</span>
+      </div>
+
+  </div>
+  <div class="col-lg-6">
+  <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" required name="last_name" id="holderlast_name" class="form-control">
+      <span style="color:red;display:none; font-size:11px;" id="holderlast_nameerror">This field is required!</span>
+  </div>
+  </div>
+
+</div>
+<div class="row" >
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Phone No.</label>
+                        <input type="tel" id="holderphone" required name="phone" class="form-control">
+    <span style="color:red;display:none; font-size:11px;" id="holderphoneerror">This field is required!</span>
+                    </div>
+                </div>
+
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label>Street Address (optional)</label>
+                    <input type="text" required name="street_address" id="holderstreet_address" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="holderstreet_addresserror">This field is required!</span>
+                </div>
+            </div>
+            </div>
+
+    </div>
+    <input type="hidden" id="holderbase64" />
+    <div class="modal-footer">
+        <button type="button" id="addholderspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
+        <button type="button" id="addholder"  onclick="addholderanization()" class="btn btn-primary"><i class="fas fa-plus"></i> Holder</button>
+    </div>
+</form>
+{%endif%}
+<script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+
+  <script type="text/javascript">
+  function holderreadURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                //$('#blah').attr('src', e.target.result);
+                document.getElementById('holderbase64').value=e.target.result;
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+  $("#holderavatar").change(function(){
+        holderreadURL(this);
+    });
+  function addholderanization(){
+    document.getElementById('holderavatarerror').style.display = 'none';
+      document.getElementById('holderregistrationnoerror').style.display = 'none';
+document.getElementById('first_nameerror').style.display = 'none';
+document.getElementById('holderlast_nameerror').style.display = 'none';
+      document.getElementById('holderemailerror').style.display = 'none';
+document.getElementById('holderphoneerror').style.display = 'none';
+
+    var button =   document.getElementById('addholderspin').style.display = 'block';
+    var button =   document.getElementById('addholder').style.display = 'none';
+    // var button =   document.getElementById('addholderspin).value;
+    var holderregistrationno =   document.getElementById('holderregistrationno').value;
+    if(holderregistrationno === ''){
+      document.getElementById('holderregistrationnoerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+    var image =   document.getElementById('holderbase64').value;
+    if(image === ''){
+      document.getElementById('holderavatarerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+
+
+    var holderemail =   document.getElementById('holderemail').value;
+    if(holderemail === ''){
+      document.getElementById('holderemailerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+    var first_name =   document.getElementById('first_name').value;
+    if(first_name === ''){
+      document.getElementById('first_nameerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+
+    var holderlast_name =   document.getElementById('holderlast_name').value;
+    if(holderlast_name === ''){
+      document.getElementById('holderlast_nameerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+    var holdertel =   document.getElementById('holderphone').value;
+    if(holdertel === ''){
+      document.getElementById('holderphoneerror').style.display = 'block';
+      var button =   document.getElementById('addholderspin').style.display = 'none';
+      var button =   document.getElementById('addholder').style.display = 'block';
+      return 'error'
+    }
+    var holderstreet_address =   document.getElementById('holderstreet_address').value;
+
+
+    var AddTrainer = $.request('onAddholder',{flash: 1,data:{first_name:first_name,registrationno:holderregistrationno,last_name:holderlast_name,email:holderemail,avatar:image,phone:holdertel,street_address:holderstreet_address}}).done(function(data) {
+        console.log('data')
+        var button =   document.getElementById('addholderspin').style.display = 'none';
+        var button =   document.getElementById('addholder').style.display = 'block';
+
+   }).fail(function()  {
+     var button =   document.getElementById('addholderspin').style.display = 'none';
+     var button =   document.getElementById('addholder').style.display = 'block';
+   });
+  }
+      $('.dropify').dropify({
+          messages: {
+              'default': 'Drag and drop a Holder avatar',
+              'replace': 'Drag and drop or click to replace',
+              'remove': 'Remove',
+              'error': 'Ooops, something wrong appended.'
+          },
+          error: {
+              'fileSize': 'The file size is too big (1M max).'
+          }
+      });
+        // $('.dropify').dropify({
+        //     messages: {
+        //         'default': 'Drag and drop a photo',
+        //         'replace': 'Drag and drop or click to replace',
+        //         'remove': 'Remove',
+        //         'error': 'Ooops, something wrong appended.'
+        //     },
+        //     error: {
+        //         'fileSize': 'The file size is too big (1M max).'
+        //     }
+        // });
+        $(document).ready(function() {
+            $('#holderzip').mask('99999');
+        })
+        $("#holderphone").on("change paste keyup", function() {
+            // alert($(this).val());
+
+            // const align = div1.getAttribute('placeholder');
+            // console.log($(this).context.placeholder)
+            var placeholder = $(this).context.placeholder;
+            var i;
+            var string = '';
+            for (i = 0; i < placeholder.length; i++) {
+                if (placeholder[i] === ')') {
+                    string = string + ')'
+                } else if (placeholder[i] === '(') {
+                    string = string + '('
+                } else if (placeholder[i] === '-') {
+                    string = string + '-'
+                } else if (placeholder[i] === ' ') {
+                    string = string + ' '
+                } else {
+                    string = string + '9'
+                }
+
+            }
+            console.log(string)
+            $('#holderphone').mask(string);
+
+
+            // $(this).attr("data-inputmask","'mask': "+placeholder+"");
+        });
+        $("#holderphone").intlTelInput({
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        });
+    </script>

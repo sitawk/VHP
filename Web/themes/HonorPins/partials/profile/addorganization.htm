@@ -71,28 +71,31 @@
 </div>
   <form>
     <div class="modal-body px-5">
-
           <div class="row" >
             <div class="col-lg-6">
                 <div class="form-group">
                     <label>Organization Name</label>
                     <input type="text" required name="organization_name" id="organization_name" class="form-control">
+                      <span style="color:red;display:none; font-size:11px;" id="organization_nameerror">This field is required!</span>
                 </div>
                 <div class="form-group">
                     <label>Organization Website <span class="example-span">eg. https://www.org-name.com</span></label>
                     <input type="text" required name="website" id="orgwebsite" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="orgwebsiteerror">This field is required!</span>
                 </div>
                 <div class="form-group">
                     <label>Official Email <span class="wrapper"><i class="fas fa-exclamation-circle text-primary"></i><span class="tooltip bg-primary">This email needs to be verified to activate this organization!</span></span> <span
                           class="example-span">eg. yourname@org-name.com</span></label>
                     <input type="email" required name="officialemail" id="orgofficialemail" class="form-control">
                     <span id="emailerror"></span>
+                      <span style="color:red;display:none; font-size:11px;" id="orgofficialemailerror">This field is required!</span>
                 </div>
             </div>
 
             <div class="col-lg-6">
 
                   <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="200"  />
+                    <span style="color:red;display:none; font-size:11px;" id="orglogoerror">This field is required!</span>
                 </div>
                 </div>
 <div class="row" >
@@ -100,7 +103,7 @@
                     <div class="form-group">
                         <label>Phone No.</label>
                         <input type="tel" id="orgphone" required name="phone" class="form-control">
-
+    <span style="color:red;display:none; font-size:11px;" id="orgphoneerror">This field is required!</span>
                     </div>
                 </div>
 
@@ -108,6 +111,7 @@
                 <div class="form-group">
                     <label>Street Address</label>
                     <input type="text" required name="street_address" id="orgstreet_address" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="orgstreet_addresserror">This field is required!</span>
                 </div>
             </div>
             </div>
@@ -121,6 +125,7 @@
                 <div class="form-group">
                     <label>City</label>
                     <input type="text" required name="city" id="orgcity" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="orgcityerror">This field is required!</span>
                 </div>
 
             </div>
@@ -128,6 +133,7 @@
               <div class="form-group">
                   <label>Zip Code</label>
                   <input type="text" id="orgzip" required name="zip"  class="form-control">
+                  <span style="color:red;display:none; font-size:11px;" id="orgziperror">This field is required!</span>
               </div>
 
             </div>
@@ -136,7 +142,8 @@
     </div>
     <input type="hidden" id="orgbase64" />
     <div class="modal-footer">
-        <button type="button" onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
+        <button type="button" id="addorgspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
+        <button type="button" id="addorg"  onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
     </div>
 </form>
 {%endif%}
@@ -159,23 +166,98 @@
         orgreadURL(this);
     });
   function addorganization(){
+    document.getElementById('orglogoerror').style.display = 'none';
+document.getElementById('organization_nameerror').style.display = 'none';
+document.getElementById('orgwebsiteerror').style.display = 'none';
+document.getElementById('orgaccountCountryerror').style.display = 'none';
+document.getElementById('orgaccountStateerror').style.display = 'none';
+document.getElementById('orgphoneerror').style.display = 'none';
+document.getElementById('orgstreet_addresserror').style.display = 'none';
+document.getElementById('orgcityerror').style.display = 'none';
+document.getElementById('orgziperror').style.display = 'none';
+    var button =   document.getElementById('addorgspin').style.display = 'block';
+    var button =   document.getElementById('addorg').style.display = 'none';
+    // var button =   document.getElementById('addorgspin).value;
     var image =   document.getElementById('orgbase64').value;
-    console.log(image)
+    if(image === ''){
+      document.getElementById('orglogoerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var organization_name =   document.getElementById('organization_name').value;
-    console.log(organization_name)
+    if(organization_name === ''){
+      document.getElementById('organization_nameerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
+
     var orgwebsite =   document.getElementById('orgwebsite').value;
-
+    if(orgwebsite === ''){
+      document.getElementById('orgwebsiteerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var orgofficialemail =   document.getElementById('orgofficialemail').value;
-    var accountCountry =   document.getElementById('orgaccountCountry').value;
-    var accountState =   document.getElementById('orgaccountState').value;
-
+    if(orgofficialemail === ''){
+      document.getElementById('orgofficialemailerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var orgtel =   document.getElementById('orgphone').value;
+    if(orgtel === ''){
+      document.getElementById('orgphoneerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var orgstreet_address =   document.getElementById('orgstreet_address').value;
+    if(orgstreet_address === ''){
+      document.getElementById('orgstreet_addresserror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
+    var accountCountry =   document.getElementById('orgaccountCountry').value;
+    if(accountCountry === ''){
+      document.getElementById('orgaccountCountryerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
+    var accountState =   document.getElementById('orgaccountState').value;
+    if(accountState === ''){
+      document.getElementById('orgaccountStateerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
+
     var orgcity =   document.getElementById('orgcity').value;
+    if(orgcity === ''){
+      document.getElementById('orgcityerror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var orgzip =   document.getElementById('orgzip').value;
+    if(orgzip === ''){
+      document.getElementById('orgziperror').style.display = 'block';
+      var button =   document.getElementById('addorgspin').style.display = 'none';
+      var button =   document.getElementById('addorg').style.display = 'block';
+      return 'error'
+    }
     var AddTrainer = $.request('onAddOrganization',{flash: 1,data:{organization_name:organization_name,country_id:accountCountry,state_id:accountState,website:orgwebsite,officialemail:orgofficialemail,logo:image,phone:orgtel,street_address:orgstreet_address,city:orgcity,zip:orgzip}}).done(function(data) {
         console.log('data')
+        var button =   document.getElementById('addorgspin').style.display = 'none';
+        var button =   document.getElementById('addorg').style.display = 'block';
 
+   }).fail(function()  {
+     var button =   document.getElementById('addorgspin').style.display = 'none';
+     var button =   document.getElementById('addorg').style.display = 'block';
    });
   }
       $('.dropify').dropify({

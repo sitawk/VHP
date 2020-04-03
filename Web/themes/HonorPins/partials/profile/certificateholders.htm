@@ -1,0 +1,44 @@
+{% for holder in holders%}
+<div class="col-md-12 myshadow card b-0 mb-5 py-4">
+
+    <div class="card-body px-3 pb-0 b-0">
+        <div class="row ">
+            <div class="col-sm-3 mt--50">
+                <img style="width:150px;height:150px; object-fit:contain;" src="{{holder.image}}" alt="Medi Test Labs &amp;  Diagnostic Center" class="rounded-circle img-center  ">
+            </div>
+            <div class="col-sm-5 ">
+                <div class="ml-3">
+                    <h3 class="display-4 font-weight-bold">{{holder.first_name}} {{holder.last_name}}</h3>
+                    <h4>{{holder.certificate.title}}'s Holder</h4>
+
+                    <p class="mb-0 font-13">Reg No# {{holder.reg_number}}</p>
+                </div>
+            </div>
+            <div class="col-sm-4 text-center">
+                <div class=" ">
+                  <p class="mb-0" style="font-size:15px"><i class="fas fa-phone mr-4"></i> {{holder.phone}}</p>
+                  <p class="mb-0" style="font-size:15px"><i class="fas fa-envelope mr-4"></i> {{holder.email}}</p>
+
+                </div>
+                <div class=" py-1 ">
+                {%if holder.pin_status == 1%}
+                                <span class="badge badge-success ">Pin Purchased</span>
+                                  {% elseif holder.pin_status == 0 %}
+                                    <span class="badge badge-warning">Pin not purchased!</span>
+
+                                    {%endif%}
+            </div>
+            <div style="" class="mt-15">
+    <button type="button" onclick="ondelete({{holder.id}})" style="border-radius:3.25rem; line-height:2.55"  class="btn  btn-outline-danger myshadow ">Delete</button>
+
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}
+<script type="text/javascript">
+function ondelete(id){
+  alert(id)
+}
+</script>

@@ -1,7 +1,8 @@
 <?php namespace Codersocean\Honorpins;
 
 use System\Classes\PluginBase;
-
+use Codersocean\Honorpins\Models\Holder;
+use Codersocean\Honorpins\Models\Certificate;
 class Plugin extends PluginBase
 {
     public function registerComponents()
@@ -16,4 +17,9 @@ class Plugin extends PluginBase
     public function registerSettings()
     {
     }
+    public function boot(){
+  Certificate::extend(function($model) {
+            $model->hasMany['holders'] = ['Codersocean\Honorpins\Models\Holder', 'key' => 'certificate_id'];
+        });
+      }
 }
