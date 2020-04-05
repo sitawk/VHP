@@ -1,0 +1,201 @@
+title = "User Dashboard"
+url = "/dashboard/create-order"
+layout = "default"
+[account]
+redirect=0
+[session]
+[Dashboard]
+==
+<?php
+use Intervention\Image\ImageManagerStatic as Image;
+function onAddPin(){
+  $addpin = new Codersocean\Honorpins\Models\Pin;
+  $addpin->title = post('title');
+  $addpin->template = post('template');
+  $addpin->org_id = $this->param('id');
+  $png_url = "pin-".time().".png";
+    $path = public_path().'/storage/app/uploads/web/' . $png_url;
+    $datapath = '/storage/app/uploads/web/' . $png_url;
+
+    Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
+
+  $addpin->image = $datapath;
+  $addpin->certificate_id = 0;
+  $addpin->save();
+
+  $this['addpin'] = 1;
+
+
+    $this['organization'] = $addpin->organization;
+return [
+  '#completepin' => $this->renderPartial('profile/addpin')
+];
+}
+function onSendEmail(){
+  $this['user'] = $user = Auth::getuser();
+  $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+  $datamail = [
+              'name' => $user->name.' '.$user->surname,
+              'code' => $addorganization->verification_code,
+
+          ];
+  Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+              $message->to($addorganization->org_email, $addorganization->org_email);
+               $message->from('noreply@honorpins.com','Verification Messege');
+          });
+  return post('id');
+}
+function onStart(){
+  $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
+  $this['user'] = $user = Auth::getuser();
+
+  if(!$user){
+    $redrect = '/login';
+    return Redirect::to($redrect);
+  }
+  $organization =$this['organizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->where('status',1)->get();
+  //$certificates=  $this['certificates'] = Codersocean\Honorpins\Models\Certificate::where('org_id',$organization->id)->get();
+  $cartitems=  $this['cartitems'] = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+
+}
+
+
+?>
+==
+<link href="{{'assets/dashboard/quill.core.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{'assets/dashboard/quill.bubble.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{'assets/dashboard/quill.snow.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
+<section>
+    <style>
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn-file {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            cursor: pointer;
+            top: 0;
+            opacity: 0;
+            line-height: 1;
+        }
+    </style>
+    <div class="header-space"></div>
+    <div class="container mt-65 py-5">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Order Certificate Virtual Pin</h2>
+            </div>
+            <div class="col-lg-3">
+                <div class="acc-leftbar">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link" id="nav-acc-tab" data-toggle="tab" href="/dashboard" role="tab" aria-controls="nav-acc" aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i
+                              class="fas fa-user-alt"></i>Profile</a>
+
+                        <a class="nav-item nav-link  " href="/dashboard/organizations"><i class="fas fa-building"></i>Organizations</a>
+
+                        <a class="nav-item nav-link" href="/dashboard/personal-certificates"><i class="fas fa-medal"></i>Personal Certificates</a>
+                        <a class="nav-item nav-link" href="/dashboard/personal-pins"><i class="fas fa-certificate"></i>Personal Pins</a>
+                        <a class="nav-item nav-link active" href="/dashboard/my-orders"><i class="fas fa-shopping-cart"></i>Order VHPs</a>
+                        <a class="nav-item nav-link" href="/dashboard/change-password"><i class="fas fa-key"></i>Change Password</a>
+                        <a class="nav-item nav-link" href="#" data-request="onLogout" data-request-data="redirect: '/'"><i class="fas fa-power-off"></i>Logout</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active " id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
+                        <div class="row">
+
+
+
+
+
+                            <div class="col-md-3 col-lg-3 ml-auto text-right my-3">
+
+                                <div class="upload-btn-wrapper myshadow">
+                                    <button class="btn btn-primary">Get from a file</button>
+                                    <input type="file" name="myfile" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-lg-2   my-3">
+
+                                <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addpinmodal"><i class="fas fa-plus text-white"></i> Certificate</button>
+                            </div>
+
+
+
+                        </div>
+                        <div class="modal fade " id="addpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="completepin">
+                                    {% partial 'profile/myorders' organizations = organizations %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" id="orderdata">
+                              {%partial 'profile/orderdata' cartitems=cartitems%}
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-space"></div>
+</section>
+
+<script type="text/javascript">
+    function sendemail(id) {
+        console.log(id)
+        var loader = 'spinner' + id;
+        var messege = 'successfullysent' + id;
+        document.getElementById(loader).style.display = 'block'
+        document.getElementById(messege).style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById(loader).style.display = 'none'
+            document.getElementById(messege).style.display = 'block'
+            return data;
+        });
+
+    }
+
+    function sendemailadd(id) {
+        console.log(id)
+        document.getElementById('spinneradd').style.display = 'block'
+        document.getElementById('successfullysentadd').style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById('spinneradd').style.display = 'none'
+            document.getElementById('successfullysentadd').style.display = 'block'
+            return data;
+        });
+
+    }
+</script>

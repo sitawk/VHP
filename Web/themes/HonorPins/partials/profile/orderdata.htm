@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-body">
+        <table id="app-invoice-table" class="table" style="width: 100%;">
+            <thead class="border-bottom border-dark">
+                <tr>
+                    <th>
+                        Reg No#
+                    </th>
+                    <th>Certificate Name</th>
+                    <th>Pin Title</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  {% if cartitems|length > 0%}
+                  {%for cartitem in cartitems%}
+                  <td>
+                    {{cartitem.reg_number}}
+                  </td>
+
+                  <td><span class="invoice-customer">{{cartitem.certificate.title}}</span></td>
+                  <td>
+
+                    {{cartitem.pin.title}}
+                  </td>
+                  <td>    {{cartitem.name}}</td>
+                  <td>{{cartitem.email}}</td>
+                  <td>{{cartitem.start_date}}</td>
+                  <td>{{cartitem.end_date}}</td>
+                  {%endfor%}
+                  {%else%}
+                  <td colspan="7" class="text-center">
+                  <p>No Item added yet!</p>
+                </td>
+                  {%endif%}
+                    <!--
+               -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

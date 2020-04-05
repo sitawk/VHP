@@ -24,8 +24,10 @@ class Organization extends Model
         'country' => ['RainLab\Location\Models\Country','key'=> 'country_id']
     ];
     public $hasMany = [
-        'certificates'=> ['Codersocean\Honorpins\Models\Certificate','key' => 'org_id']
+        'certificates'=> ['Codersocean\Honorpins\Models\Certificate','key' => 'org_id'],
+          'pins'=> ['Codersocean\Honorpins\Models\Pin','key' => 'org_id']
     ];
+
     public $rules = [
     ];
 }

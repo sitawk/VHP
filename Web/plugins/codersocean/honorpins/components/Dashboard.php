@@ -22,6 +22,8 @@ class Dashboard extends ComponentBase
       $addcertificate->url = post('url');
       $addcertificate->title = post('title');
       $addcertificate->category_id = post('category');
+      $addcertificate->category_id = post('category');
+      $addcertificate->pin_id = post('pin');
       $addcertificate->desc = post('desc');
       $addcertificate->org_id = post('org_id');
       $addcertificate->save();

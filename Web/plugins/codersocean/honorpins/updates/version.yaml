@@ -57,3 +57,24 @@
 1.0.20:
     - 'Updated table codersocean_honorpins_holders'
     - builder_table_update_codersocean_honorpins_holders_4.php
+1.0.21:
+    - 'Updated table codersocean_honorpins_certificates'
+    - builder_table_update_codersocean_honorpins_certificates.php
+1.0.22:
+    - 'Created table codersocean_honorpins_orders'
+    - builder_table_create_codersocean_honorpins_orders.php
+1.0.23:
+    - 'Created table codersocean_honorpins_order_detail'
+    - builder_table_create_codersocean_honorpins_order_detail.php
+1.0.24:
+    - 'Created table codersocean_honorpins_cart'
+    - builder_table_create_codersocean_honorpins_cart.php
+1.0.25:
+    - 'Updated table codersocean_honorpins_cart'
+    - builder_table_update_codersocean_honorpins_cart.php
+1.0.26:
+    - 'Updated table codersocean_honorpins_cart'
+    - builder_table_update_codersocean_honorpins_cart_2.php
+1.0.27:
+    - 'Updated table codersocean_honorpins_cart'
+    - builder_table_update_codersocean_honorpins_cart_3.php
