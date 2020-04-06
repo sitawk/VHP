@@ -1,0 +1,97 @@
+<script>
+var checkBox = document.getElementById("myCheck");
+if (checkBox.checked == true){
+// If the checkbox is checked, display the output text
+document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
+document.getElementById('bill').style.display = 'block'
+document.getElementById('checkedtotal').style.display = 'block'
+document.getElementById('uncheckedtotal').style.display = 'none'
+} else {
+console.log('uncheck')
+document.getElementById('total').value = 0
+document.getElementById('bill').style.display = 'none'
+document.getElementById('checkedtotal').style.display = 'none'
+document.getElementById('uncheckedtotal').style.display = 'block'
+}
+$(document).ready(function() {
+$('#addfilemodal').modal('hide');
+ $('#addpinmodal').modal('hide');
+});
+</script>
+<div class="col-md-12 border-bottom" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+
+    <div class="row">
+        <div class="col-md-4">
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;">Total No of Certificates:</span>
+        </div>
+        <div class="col-md-3">
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"><span class="text-primary">{{cartitems|length}}</span></span>
+
+        </div>
+    </div>
+</div>
+<div class="col-md-12 border-bottom" id="bill" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+
+    <div class="row">
+        <div class="col-md-4">
+
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;">Unit Price: </span>
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;">Total Price: </span>
+            {%if cartitems|length > 0%}
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;">Tax: </span>
+            {%endif%}
+
+        </div>
+        <div class="col-md-3">
+
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">${{unitprice}}</span></span>
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;"><span class="text-primary">${{cartitems|length * unitprice}}</span></span>
+            {%if cartitems|length > 0%}
+            <span style="font-size:16px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">${{tax}}</span></span>
+            {%endif%}
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12 border-bottom" id="checkedtotal" style="padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+
+    <div class="row">
+        <div class="col-md-4">
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;">Payable Amount:</span>
+        </div>
+        <div class="col-md-3">
+            {%if cartitems|length > 0%}
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">${{cartitems|length * unitprice + tax}}</span></span>
+            {%else%}
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">$0</span></span>
+            {%endif%}
+
+        </div>
+    </div>
+</div>
+<div class="col-md-12 border-bottom" id="uncheckedtotal" style="padding-top: 1rem!important;    padding-bottom: 1rem!important;display:none">
+
+    <div class="row">
+        <div class="col-md-4">
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;">Payable Amount:</span>
+        </div>
+        <div class="col-md-3">
+            {%if cartitems|length > 0%}
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">$0</span></span>
+            {%else%}
+            <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"> <span class="text-primary">$0</span></span>
+            {%endif%}
+
+        </div>
+    </div>
+</div>
+{%if cartitems|length > 0%}
+<div class="col-md-12" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+    <button type="submit" class="btn btn btn-primary"> Checkout</button>
+</div>
+{%else%}
+<div class="col-md-12" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+    <a href="#" class="btn btn btn-primary disabled" style="cursor: not-allowed;"> Checkout</a>
+</div>
+{%endif%}

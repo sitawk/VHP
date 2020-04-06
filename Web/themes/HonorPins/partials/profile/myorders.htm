@@ -24,12 +24,15 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Select Organization</label>
-                    <select name="pin" class="selectpicker" data-style="btn-default" data-live-search="true">
-                      {%for organization in organizations %}
+                    <select name="pin" id="selectorganization" class="selectpicker" data-style="btn-default" data-live-search="true">
+                      {%for organization in organizations if organization.certificates|length != 0  %}
                             <option value="{{organization.id}}">{{organization.org_name}}</option>
                         {%endfor%}
                     </select>
                 </div>
+            </div>
+            <div class="col-md-6" id="selectcertificatenow">
+                {% partial 'site/selectcertificate'%}
             </div>
             <div class="col-md-6">
                 <div class="form-group">
@@ -64,3 +67,12 @@
         <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
     </div>
 </form>
+<script>
+$('#selectorganization').on('change', function() {
+  var AddTrainer = $.request('onSelectOrganization',{data:{id:this.value}}).done(function(data) {
+
+
+ })
+});
+
+</script>

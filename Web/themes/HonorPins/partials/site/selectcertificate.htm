@@ -1,0 +1,14 @@
+
+
+
+<div class="form-group">
+    <label>Select Certificate</label>
+    <select name="pin" id="selectcertificate" class="selectpicker" data-style="btn-default" data-live-search="true">
+
+
+        {%for certificate in selectedorganizations %}
+              <option value="{{certificate.id}}">{{certificate.title}}</option>
+          {%endfor%}
+
+    </select>
+</div>

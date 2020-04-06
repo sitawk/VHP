@@ -113,9 +113,8 @@ function onStart(){
 
                         {%  if myorganization.pins|length > 0 %}
                         <div class="row ">
-                            {% for pin in myorganization.oins%}
 
-                            {%endfor%}
+                              {% partial 'profile/allpins' allpins=myorganization.pins %}
                         </div>
                         {%else%}
                         <div class="row " style="height: 250px;">

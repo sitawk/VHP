@@ -20,8 +20,8 @@ class Organization extends Model
      */
      public $belongsTo = [
         'user'       => [User::class, 'table' => 'users','key'=> 'user_id'],
-        'state' => ['RainLab\Location\Models\State','key'=> 'state_id'],
-        'country' => ['RainLab\Location\Models\Country','key'=> 'country_id']
+        'states' => ['RainLab\Location\Models\State','key'=> 'state_id'],
+        'countries' => ['RainLab\Location\Models\Country','key'=> 'country_id']
     ];
     public $hasMany = [
         'certificates'=> ['Codersocean\Honorpins\Models\Certificate','key' => 'org_id'],

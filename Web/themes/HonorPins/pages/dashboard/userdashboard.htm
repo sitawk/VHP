@@ -248,14 +248,14 @@ return [
                         <a class="nav-item nav-link {%if this.page.url == '/dashboard'%}} active {%endif%}" id="nav-acc-tab" data-toggle="tab" href="/dashboard/organizations" role="tab" aria-controls="nav-acc"
                           aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i class="fas fa-user-alt"></i>Profile</a>
 
-                        <a class="nav-item nav-link {%if this.page.url == '/dashboard/organizations'%} active {%endif%}" href="/dashboard/organizations"><i class="fas fa-building"></i>Organizations</a>
+                        <a class="nav-item nav-link  active " href="/dashboard/organizations"><i class="fas fa-building"></i>Organizations</a>
                         <!-- {%if myorganizations|length > 0%}
                         <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
                         <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
                         {%endif%} -->
                         <a class="nav-item nav-link"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>Personal Certificates</a>
                         <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>Personal Pins</a>
-                        <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-key"></i>Order VHPs</a>
+                        <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>Order VHPs</a>
                         <a class="nav-item nav-link"  href="/dashboard/change-password" ><i class="fas fa-key"></i>Change Password</a>
                         <a class="nav-item nav-link" href="#" data-request="onLogout" data-request-data="redirect: '/'"><i class="fas fa-power-off"></i>Logout</a>
                     </div>
@@ -266,7 +266,7 @@ return [
                     <div class="tab-pane fade show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
                         <div class="row">
 
-                          
+
 
                             {%  if myorganizations|length > 0 %}
                             <div class="col-md-3 col-lg-3 ml-auto my-3">
@@ -291,7 +291,7 @@ return [
                                 <div class="card-body px-3 pb-0 b-0">
                                     <div class="row ">
                                         <div class="col-sm-3 mt--50">
-                                              <img class="avatar rounded-circle" style="width:150px;height:150px,margin-top:-90px;" src="{{organization.logo}}" alt="Bologna">
+                                              <img class="avatar rounded-circle" style="width:150px;height:150px;object-fit: contain;background-color: rgba(0,0,0,0.1);" src="{{organization.logo}}" alt="Bologna">
                                         </div>
                                         <div class="col-sm-5 ">
                                             <div class="ml-3">
@@ -300,7 +300,7 @@ return [
                                                 </p>
                                                 <p class="mb-0 font-13">
                                                 </p>
-                                                <p class="mb-0 font-13">{{organization.city}}, {{organization.state}}, {{organization.country}}</p>
+                                                <p class="mb-0 font-13">{{organization.city}}, {{organization.states.name}}, {{organization.countries.name}}</p>
                                             </div>
                                         </div>
                                         <div class="col-sm-4 ">
@@ -308,7 +308,7 @@ return [
                                             Total Pins: {{organization.pins|length}}
                                           </p>
                                           <p class="mb-0 font-13">
-                                            Total Certificates: {{organization.certificate|length}}
+                                            Total Certificates: {{organization.certificates|length}}
                                           </p>
                                         </div>
                                     </div>

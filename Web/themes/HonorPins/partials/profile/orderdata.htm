@@ -1,3 +1,4 @@
+<div class="col-md-12" >
 <div class="card">
     <div class="card-body">
         <table id="app-invoice-table" class="table" style="width: 100%;">
@@ -16,9 +17,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+
                   {% if cartitems|length > 0%}
                   {%for cartitem in cartitems%}
+                  <tr>
                   <td>
                     {{cartitem.reg_number}}
                   </td>
@@ -32,16 +34,24 @@
                   <td>{{cartitem.email}}</td>
                   <td>{{cartitem.start_date}}</td>
                   <td>{{cartitem.end_date}}</td>
+                    </tr>
                   {%endfor%}
                   {%else%}
+                  <tr>
                   <td colspan="7" class="text-center">
                   <p>No Item added yet!</p>
                 </td>
+                  </tr>
                   {%endif%}
-                    <!--
-               -->
-                </tr>
+
             </tbody>
         </table>
     </div>
 </div>
+</div>
+<script>
+$(document).ready(function() {
+$('#addfilemodal').modal('hide');
+ $('#addpinmodal').modal('hide');
+});
+</script>

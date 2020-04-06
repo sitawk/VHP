@@ -5,6 +5,7 @@ layout = "default"
 redirect=0
 [session]
 [Dashboard]
+[Csv]
 ==
 <?php
 use Intervention\Image\ImageManagerStatic as Image;
@@ -31,6 +32,53 @@ return [
   '#completepin' => $this->renderPartial('profile/addpin')
 ];
 }
+
+function onSelectOrganization(){
+  $addorganization = $this['organization'] = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+  $this['selectedorganizations'] = $addorganization->certificates;
+  $this['notselect'] = 0;
+
+
+  return [
+    '#selectcertificatenow' => $this->renderPartial('site/selectcertificate')
+  ];
+}
+function onAddOrder(){
+    $this['user'] = $user = Auth::getuser();
+    $check =Codersocean\Honorpins\Models\Cart::where('email',post('email'))->where('reg_number',post('reg_number'))->where('certificate_id',post('certificate'))->count();
+    if($check == 0){
+      $addcart = new Codersocean\Honorpins\Models\Cart;
+      $certificate = Codersocean\Honorpins\Models\Certificate::where('id',post('certificate'))->first();
+      $addcart->name = post('name');
+      $addcart->user_id = $user->id;
+      $addcart->email = post('email');
+      $addcart->phone = post('phone');
+      $addcart->start_date = post('start_date');
+      $addcart->end_date = post('end_date');
+      $addcart->reg_number = post('reg_number');
+      $addcart->certificate_id = post('certificate');
+      $addcart->pin_id = $certificate->pin_id;
+      $addcart->org_id = $certificate->org_id;
+      $addcart->save();
+      $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+$this['cartitems']  =   $cartitems;
+$this['unitprice'] = 5;
+$this['tax'] = 2;
+return [
+  '#orderdata' => $this->renderPartial('profile/orderdata'),
+  '#orderbilldata' => $this->renderPartial('profile/orderbilldata')
+];
+    }else{
+      $this['error'] = "Error: Dupilcate Entry";
+      return [
+        '#duplicateerror' => $this->renderPartial('profile/csverror')
+      ];
+
+    }
+
+
+
+}
 function onSendEmail(){
   $this['user'] = $user = Auth::getuser();
   $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
@@ -54,8 +102,12 @@ function onStart(){
     return Redirect::to($redrect);
   }
   $organization =$this['organizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->where('status',1)->get();
+  $organiz = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->where('status',1)->first();
+  $this['selectedorganizations'] = $organiz;
   //$certificates=  $this['certificates'] = Codersocean\Honorpins\Models\Certificate::where('org_id',$organization->id)->get();
   $cartitems=  $this['cartitems'] = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
 
 }
 
@@ -66,6 +118,11 @@ function onStart(){
 <link href="{{'assets/dashboard/quill.bubble.css'|theme}}" rel="stylesheet" type="text/css" />
 <link href="{{'assets/dashboard/quill.snow.css'|theme}}" rel="stylesheet" type="text/css" />
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
+<link href="{{ 'assets/css/switch.css'|theme }}" rel="stylesheet">
+<link rel="stylesheet" href="{{'assets/css/bootstrap-datetimepicker.min.css'|theme}}">
+    <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="{{'assets/css/bootstrapValidator.min.css'|theme}}">
 <section>
     <style>
         .upload-btn-wrapper {
@@ -92,6 +149,12 @@ function onStart(){
             top: 0;
             opacity: 0;
             line-height: 1;
+        }
+
+        .dropdown-header>.text {
+            font-size: 20px !important;
+            font-weight: bold !important;
+            color: #000 !important;
         }
     </style>
     <div class="header-space"></div>
@@ -125,11 +188,11 @@ function onStart(){
 
 
 
-                            <div class="col-md-3 col-lg-3 ml-auto text-right my-3">
+                            <div class="col-md-3 col-lg-3 text-right my-3">
 
                                 <div class="upload-btn-wrapper myshadow">
-                                    <button class="btn btn-primary">Get from a file</button>
-                                    <input type="file" name="myfile" />
+                                  <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addfilemodal"> Get from a file</button>
+
                                 </div>
                             </div>
 
@@ -141,21 +204,254 @@ function onStart(){
 
 
                         </div>
-                        <div class="modal fade " id="addpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <link href="{{ 'adminassets/libs/select2/select2.css'|theme }}" rel="stylesheet">
+
+                        <style>
+                            .bootstrap-select .dropdown-menu {
+                                top: 27px !important;
+                            }
+
+                            .bootstrap-select .dropdown-menu li a {
+                                padding-top: 12px;
+                                padding-bottom: 12px;
+                                font-size: 18px;
+                            }
+                        </style>
+                        <div class="modal fade " id="addfilemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content" id="completepin">
-                                    {% partial 'profile/myorders' organizations = organizations %}
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 id="exampleModalLongTitle">Create Order</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form data-request='onSaveFile' data-request-files method="post">
+                                        <div class="modal-body">
+                                            <div class="row px-5">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Select Certificate</label>
+                                                        <select name="certificate" required class="selectpicker" data-style="btn-default" data-live-search="true">
+                                                            {%for organization in organizations %}
+                                                            <optgroup label="{{organization.org_name}}">
+                                                                {%for certificate in organization.certificates %}
+                                                                <option value="{{certificate.id}}">{{certificate.title}}</option>
+                                                                {%endfor%}
+                                                            </optgroup>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-8 col-lg-8 ml-auto mr-auto my-3">
+  <input type="file" name="excelfile" class="dropify" required  data-height="200" data-allowed-file-extensions="xlsx csv"  />
+
+                                                </div>
+                                                <div class="col-md-12 text-center" id="csverror">
+
+
+
+                                                </div>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary"> Get from file</button>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        $('#selectorganization').on('change', function() {
+                                            var AddTrainer = $.request('onSelectOrganization', {
+                                                data: {
+                                                    id: this.value
+                                                }
+                                            }).done(function(data) {
+                                            })
+                                        });
+                                    </script>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12" id="orderdata">
-                              {%partial 'profile/orderdata' cartitems=cartitems%}
+                        <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+
+                          <script type="text/javascript">
+                        $('.dropify').dropify({
+                                  messages: {
+                                      'default': 'Drag and drop a Excel Sheet for Bulk order',
+                                      'replace': 'Drag and drop or click to replace',
+                                      'remove': 'Remove',
+                                      'error': 'Ooops, something wrong appended.'
+                                  },
+                                  error: {
+                                      'fileSize': 'The file size is too big ({{value}} max).',
+                                       'imageFormat': 'The image format is not allowed ({{ value }} only).'
+                                  }
+                              });
+                              </script>
+                        <div class="modal fade " id="addpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="completepin">
+                                    <div class="modal-header">
+                                        <h3 id="exampleModalLongTitle">Create Order</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form data-request='onAddOrder'>
+                                        <div class="modal-body">
+                                            <div class="row px-5">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Select Certificate</label>
+                                                        <select name="certificate" required class="selectpicker" data-style="btn-default" data-live-search="true">
+                                                            {%for organization in organizations %}
+                                                            <optgroup label="{{organization.org_name}}">
+                                                                {%for certificate in organization.certificates %}
+                                                                <option value="{{certificate.id}}">{{certificate.title}}</option>
+                                                                {%endfor%}
+                                                            </optgroup>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                  <div class="form-group">
+                                                      <label>Full Name</label>
+                                                      <input type="text" required name="name" class="form-control">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                  <div class="form-group">
+                                                      <label>Registration Number</label>
+                                                      <input type="text" required name="reg_number" class="form-control">
+                                                  </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="startDate">Start Date</label>
+                                                        <input id="startDate" required name="start_date" type="text" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="endDate">End Date</label>
+                                                        <input id="endDate" required name="end_date" type="text" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                  <div class="form-group">
+                                                      <label>Email</label>
+                                                      <input type="email" required name="email" class="form-control">
+                                                  </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                  <div class="form-group">
+                                                      <label>Phone</label>
+                                                      <input type="tel" required name="phone" class="form-control">
+                                                  </div>
+                                                </div>
+                                            </div>
+                                            <div class="row text-center">
+                                            <div class="col-md-12 text-center" id="duplicateerror">
+
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Add</button>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        $('#selectorganization').on('change', function() {
+                                            var AddTrainer = $.request('onSelectOrganization', {
+                                                data: {
+                                                    id: this.value
+                                                }
+                                            }).done(function(data) {
+                                            })
+                                        });
+                                    </script>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="row" id="orderdata">
+
+                                {%partial 'profile/orderdata'%}
 
 
 
                         </div>
+                        <div class="col-md-12 ml-1 row border-bottom border-top mt-5" style=" padding-bottom: 1rem!important;">
+                            <div class="col-md-2  " style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
+                                <p>Pins Included</p>
+                            </div>
+                            <div class="col-md-2  " style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
+
+                                <div class="switch-block">
+                                    <label class="switch-light switch-material float-right">
+                                        <input type="checkbox" id="myCheck" onclick="myFunction()" checked />
+
+                                        <span>
+                                            <span>on</span>
+                                            <span>off</span>
+                                            <a></a>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="total" id="total"/>
+
+                        <script>
+                        function myFunction() {
+                          // Get the checkbox
+                          var checkBox = document.getElementById("myCheck");
+                            var text = document.getElementById("text");
+                            console.log('hello')
+                            if (checkBox.checked == true){
+                          // If the checkbox is checked, display the output text
+                          document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
+                          document.getElementById('bill').style.display = 'block'
+                          document.getElementById('checkedtotal').style.display = 'block'
+                          document.getElementById('uncheckedtotal').style.display = 'none'
+                          } else {
+                            console.log('uncheck')
+                          document.getElementById('total').value = 0
+                          document.getElementById('bill').style.display = 'none'
+                          document.getElementById('checkedtotal').style.display = 'none'
+                          document.getElementById('uncheckedtotal').style.display = 'block'
+                          }
+                        }
+                        $(document).ready(function() {
+                          var checkBox = document.getElementById("myCheck");
+                          if (checkBox.checked == true){
+                        // If the checkbox is checked, display the output text
+                        document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
+                        document.getElementById('bill').style.display = 'block'
+                        document.getElementById('checkedtotal').style.display = 'block'
+                        document.getElementById('uncheckedtotal').style.display = 'none'
+                        } else {
+                          console.log('uncheck')
+                        document.getElementById('total').value = 0
+                        document.getElementById('bill').style.display = 'none'
+                        document.getElementById('checkedtotal').style.display = 'none'
+                        document.getElementById('uncheckedtotal').style.display = 'block'
+                        }
+                         $('#addfilemodal').modal('hide');
+                         $('#addpinmodal').modal('hide');
+                        });
+                        </script>
+
+                        <div class="row"  id="orderbilldata">
+
+                                {%partial 'profile/orderbilldata'%}
+
+
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -164,7 +460,117 @@ function onStart(){
         <div class="header-space"></div>
 </section>
 
+<script src="{{'assets/js/moment.min.js'|theme}}"></script>
+
+<script src="{{'assets/js/datetimepicker.min.js'|theme}}"></script>
+<script src="{{'assets/js/bootstrapValidator.min.js'|theme}}"></script>
+
 <script type="text/javascript">
+    var bindDateRangeValidation = function(f, s, e) {
+        if (!(f instanceof jQuery)) {
+            console.log("Not passing a jQuery object");
+        }
+
+        var jqForm = f,
+            startDateId = s,
+            endDateId = e;
+
+        var checkDateRange = function(startDate, endDate) {
+            var isValid = (startDate != "" && endDate != "") ? startDate <= endDate : true;
+            return isValid;
+        }
+
+        var bindValidator = function() {
+            var bstpValidate = jqForm.data('bootstrapValidator');
+            var validateFields = {
+                startDate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'This field is required.'
+                        },
+                        callback: {
+                            message: 'Start Date must less than or equal to End Date.',
+                            callback: function(startDate, validator, $field) {
+                                return checkDateRange(startDate, $('#' + endDateId).val())
+                            }
+                        }
+                    }
+                },
+                endDate: {
+                    validators: {
+                        notEmpty: {
+                            message: 'This field is required.'
+                        },
+                        callback: {
+                            message: 'End Date must greater than or equal to Start Date.',
+                            callback: function(endDate, validator, $field) {
+                                return checkDateRange($('#' + startDateId).val(), endDate);
+                            }
+                        }
+                    }
+                },
+                customize: {
+                    validators: {
+                        customize: {
+                            message: 'customize.'
+                        }
+                    }
+                }
+            }
+            if (!bstpValidate) {
+                jqForm.bootstrapValidator({
+                    excluded: [':disabled'],
+                })
+            }
+
+            jqForm.bootstrapValidator('addField', startDateId, validateFields.startDate);
+            jqForm.bootstrapValidator('addField', endDateId, validateFields.endDate);
+
+        };
+
+        var hookValidatorEvt = function() {
+            var dateBlur = function(e, bundleDateId, action) {
+                jqForm.bootstrapValidator('revalidateField', e.target.id);
+            }
+
+            $('#' + startDateId).on("dp.change dp.update blur", function(e) {
+                $('#' + endDateId).data("DateTimePicker").setMinDate(e.date);
+                dateBlur(e, endDateId);
+            });
+
+            $('#' + endDateId).on("dp.change dp.update blur", function(e) {
+                $('#' + startDateId).data("DateTimePicker").setMaxDate(e.date);
+                dateBlur(e, startDateId);
+            });
+        }
+
+        bindValidator();
+        hookValidatorEvt();
+    };
+
+
+    $(function() {
+        var sd = new Date(),
+            ed = new Date();
+
+        $('#startDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY/MM/DD",
+            defaultDate: sd,
+            maxDate: ed
+        });
+
+        $('#endDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY/MM/DD",
+            defaultDate: ed,
+            minDate: sd
+        });
+
+        //passing 1.jquery form object, 2.start date dom Id, 3.end date dom Id
+        bindDateRangeValidation($("#form"), 'startDate', 'endDate');
+    });
+
     function sendemail(id) {
         console.log(id)
         var loader = 'spinner' + id;
