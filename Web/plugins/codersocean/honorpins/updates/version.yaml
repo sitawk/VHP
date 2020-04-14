@@ -78,3 +78,9 @@
 1.0.27:
     - 'Updated table codersocean_honorpins_cart'
     - builder_table_update_codersocean_honorpins_cart_3.php
+1.0.28:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins_3.php
+1.0.29:
+    - 'Created table codersocean_honorpins_paymentmethods'
+    - builder_table_create_codersocean_honorpins_paymentmethods.php

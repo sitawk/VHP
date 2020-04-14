@@ -176,10 +176,12 @@ return [
       $addcertificate->save();
       $this->page['addcertificate'] = 1;
       $this->page['thisorganization'] = Organization::where('id',post('org_id'))->first();
+      $this->page['user'] = Auth::getuser();
       return [
-          '#completecertificate' => $this->renderPartial('profile/addcertificate')
-      ];
+          '#completecertificate' => $this->renderPartial('profile/addcertificate'),
+          '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
 
+      ];
 
     }
 

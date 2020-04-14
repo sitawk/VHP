@@ -31,7 +31,7 @@ function onStart(){
     return Redirect::to($redrect);
   }
 
-  $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
+  $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
 }
 function onVerifyOrganization(){
   $organization  = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
@@ -70,6 +70,14 @@ function onAcitvateOrganization(){
   }
 
 
+}
+function onCloseModal(){
+$user = Auth::getuser();
+  $this['user'] = $user;
+
+  return [
+      '#renderorganizations' => $this->renderPartial('userdashboard/renderorganizations')
+  ];
 }
 function onAvatar(){
 $user = Auth::getuser();
@@ -209,6 +217,8 @@ $addorganization->logo =$datapath;
 
   $addorganization->save();
     $this['org'] = $addorganization;
+    $user =Auth::getuser();
+      $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
 return [
   '#completeorganization' => $this->renderPartial('profile/addorganization')
 ];
@@ -240,27 +250,62 @@ return [
     <div class="container mt-65 py-5">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h2>My Organizations</h2>
+                <h2>Organization Profile</h2>
             </div>
+            <style>
+            .collapse .nav-item {
+
+            }
+            .rotateas{
+ -webkit-transform: rotate(90deg);  /* Chrome, Safari, Opera */
+   -moz-transform: rotate(90deg);  /* Firefox */
+   -ms-transform: rotate(90deg);  /* IE 9 */
+     transform: rotate(90deg);  /* Standard syntax */
+ }
+            </style>
+            <script>
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+$(this).addClass("nav-tabs");
+          	$(this).parent().find(".pull-right").removeClass("fa-angle-right");
+
+              	$(this).parent().find(".pull-right").addClass("fa-angle-down");
+        }).on('hide.bs.collapse', function(){
+          	$(this).removeClass("nav-tabs");
+          $(this).parent().find(".pull-right").removeClass("fa-angle-down");
+
+              $(this).parent().find(".pull-right").addClass("fa-angle-right");
+        });
+    });
+</script>
             <div class="col-lg-3">
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link {%if this.page.url == '/dashboard'%}} active {%endif%}" id="nav-acc-tab" data-toggle="tab" href="/dashboard/organizations" role="tab" aria-controls="nav-acc"
-                          aria-selected="{%if this.param.slug == ''%}true{%else%}false{%endif%}"><i class="fas fa-user-alt"></i>Profile</a>
+                        <a class="nav-item nav-link" href="/dashboard" ><i class="fas fa-user-alt"></i>Profile</a>
 
-                        <a class="nav-item nav-link  active " href="/dashboard/organizations"><i class="fas fa-building"></i>Organizations</a>
+                        <a class="nav-item nav-link  active collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
                         <!-- {%if myorganizations|length > 0%}
                         <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
                         <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
                         {%endif%} -->
-                        <a class="nav-item nav-link"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>Personal Certificates</a>
-                        <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>Personal Pins</a>
-                        <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>Order VHPs</a>
+                        <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
+                            <a class="nav-item nav-link active"   href="/dashboard/organizations" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i>My Organization</a>
+                            <a class="nav-item nav-link"  href="/dashboard/organization-pins" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i> Organization Pins</a>
+                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
+                            <a class="nav-item nav-link"  href="/dashboard/my-orders" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Orders</a>
+                        </div>
+                        <a class="nav-item nav-link"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>My Certificates</a>
+                        <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>My Pins</a>
+                        <a class="nav-item nav-link"  href="/dashboard/paymentmethods" ><i class="fas fa-credit-card"></i>Payment Methods</a>
                         <a class="nav-item nav-link"  href="/dashboard/change-password" ><i class="fas fa-key"></i>Change Password</a>
-                        <a class="nav-item nav-link" href="#" data-request="onLogout" data-request-data="redirect: '/'"><i class="fas fa-power-off"></i>Logout</a>
-                    </div>
+                      </div>
                 </div>
             </div>
+
             <div class="col-lg-9">
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
@@ -268,11 +313,11 @@ return [
 
 
 
-                            {%  if myorganizations|length > 0 %}
+                            <!-- {%  if myorganizations|length > 0 %}
                             <div class="col-md-3 col-lg-3 ml-auto my-3">
                                 <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
                             </div>
-                            {%endif%}
+                            {%endif%} -->
 
                         </div>
                         <div class="modal fade " id="addorganizationmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -283,89 +328,11 @@ return [
                             </div>
                         </div>
 
-                        {%  if myorganizations|length > 0 %}
-                        <div class="row ">
-                            {% for organization in myorganizations%}
-                            <div class="col-md-12 myshadow card b-0 mb-5 py-4">
 
-                                <div class="card-body px-3 pb-0 b-0">
-                                    <div class="row ">
-                                        <div class="col-sm-3 mt--50">
-                                              <img class="avatar rounded-circle" style="width:150px;height:150px;object-fit: contain;background-color: rgba(0,0,0,0.1);" src="{{organization.logo}}" alt="Bologna">
-                                        </div>
-                                        <div class="col-sm-5 ">
-                                            <div class="ml-3">
-                                                <h3 class="display-4 font-weight-bold">{{organization.org_name}}</h3>
-                                                <p class="mb-0 font-13">
-                                                </p>
-                                                <p class="mb-0 font-13">
-                                                </p>
-                                                <p class="mb-0 font-13">{{organization.city}}, {{organization.states.name}}, {{organization.countries.name}}</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 ">
-                                          <p class="mb-0 font-13">
-                                            Total Pins: {{organization.pins|length}}
-                                          </p>
-                                          <p class="mb-0 font-13">
-                                            Total Certificates: {{organization.certificates|length}}
-                                          </p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-5 my-sm">
-
-                                            <p class="mb-0" style="font-size:15px"><i class="fas fa-phone mr-4"></i> {{organization.phone}}</p>
-                                            <p class="mb-0" style="font-size:15px"><i class="fas fa-envelope mr-4"></i> {{organization.org_email}}</p>
-                                        </div>
-                                        <div class="col-sm-2 my-4">
-{%if organization.status == 1%}
-                                            <span class="badge badge-success">Activated</span>
-                                              {% elseif organization.status == 0 %}
-                                                <span class="badge badge-warning">Activation Pending</span>
-                                                {% elseif organization.status == 2 %}
-                                                <span class="badge badge-danger">Suspended</span>
-                                                {%endif%}
-                                        </div>
-
-                                            {%if organization.status == 0%}
-  <div class="col-sm-5 my-sm float-left">
-                                            <a href="#" class="btn btn btn-outline-success myshadow pull-right" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{organization.id}}">Activate Now</a>
-
-                                            <div class="modal fade " id="organization{{organization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg" role="document">
-                                                    <div class="modal-content" id="activation{{organization.id}}completed">
-                                                        {% partial 'profile/activateorganization' organization=organization%}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            </div>
-                                            {%else%}
-                                              <div class="col-sm-5 my-sm pull-right text-right">
-                                              <a href="/dashboard/organization-pins/{{organization.id}}" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem">Pins</a>
-                                                {%if organization.pins|length > 0%}
-                                                <a href="/dashboard/organization-certificates/{{organization.id}}" class="btn btn btn-outline-primary myshadow" style="border-radius:3.25rem">Certificates</a>
-                                                {%else%}
-                                                <a href="#" class="btn btn btn-outline-primary myshadow" onclick="zeropins()" style="border-radius:3.25rem">Certificates</a>
-                                                {%endif%}
-                                                </div>
-                                            {%endif%}
-
-                                    </div>
-
-                                </div>
-                            </div>
-                {%endfor%}
+                        <div   id="renderorganizations">
+                            {% partial 'userdashboard/renderorganizations' %}
                         </div>
-                        {%else%}
-                        <div class="row " style="height: 250px;">
-                            <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
-                                <img src="{{'assets/img/add.svg'|theme}}" />
-                                <h4 class="text-primary mt-5">No Organization registered yet!</h4>
-                                    <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
-                            </div>
-                        </div>
-                        {%endif%}
+
 
                     </div>
                     </div>

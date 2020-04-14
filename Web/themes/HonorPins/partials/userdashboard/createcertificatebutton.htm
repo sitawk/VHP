@@ -1,0 +1,10 @@
+<div class="col-md-9 col-lg-9">
+    <!-- <h3>{{user.myorganization.org_name}}'s Certificates</h3> -->
+</div>
+
+
+  {%  if user.myorganization.certificates|length > 0 %}
+<div class="col-md-3 col-lg-3 ml-auto my-3">
+    <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addcertificatemodal"><i class="fas fa-plus text-white"></i> Certificate</button>
+</div>
+{%endif%}

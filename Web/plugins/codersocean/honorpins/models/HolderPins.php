@@ -32,11 +32,6 @@ class HolderPins extends Model
            'table' => 'codersocean_honorpins_pins',
            'key' => 'pin_id',
        ],
-       'holder' => [
-           'Codersocean\Honorpins\Models\Holder',
-           'table' => 'codersocean_honorpins_holders',
-           'key' => 'holder_id',
-       ]
 
      ];
     public $rules = [

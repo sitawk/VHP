@@ -6,12 +6,16 @@ document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}
 document.getElementById('bill').style.display = 'block'
 document.getElementById('checkedtotal').style.display = 'block'
 document.getElementById('uncheckedtotal').style.display = 'none'
+  document.getElementById('finishbutton').style.display = 'none'
+  document.getElementById('checkoutbutton').style.display = 'block'
 } else {
 console.log('uncheck')
 document.getElementById('total').value = 0
 document.getElementById('bill').style.display = 'none'
 document.getElementById('checkedtotal').style.display = 'none'
-document.getElementById('uncheckedtotal').style.display = 'block'
+document.getElementById('uncheckedtotal').style.display = 'none'
+  document.getElementById('finishbutton').style.display = 'block'
+  document.getElementById('checkoutbutton').style.display = 'none'
 }
 $(document).ready(function() {
 $('#addfilemodal').modal('hide');
@@ -86,12 +90,26 @@ $('#addfilemodal').modal('hide');
         </div>
     </div>
 </div>
+<div id="checkoutbutton">
 {%if cartitems|length > 0%}
-<div class="col-md-12" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+<div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
     <button type="submit" class="btn btn btn-primary"> Checkout</button>
 </div>
 {%else%}
-<div class="col-md-12" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+<div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
     <a href="#" class="btn btn btn-primary disabled" style="cursor: not-allowed;"> Checkout</a>
 </div>
 {%endif%}
+</div>
+<div id="finishbutton">
+  {%if cartitems|length > 0%}
+<div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button type="submit" class="btn btn btn-primary"> Finish</button>
+</div>
+{%else%}
+<div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
+    <a href="#" class="btn btn btn-primary disabled" style="cursor: not-allowed;"> Finish</a>
+</div>
+{%endif%}
+
+</div>

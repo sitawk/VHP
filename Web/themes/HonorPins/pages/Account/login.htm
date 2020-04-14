@@ -4,7 +4,15 @@ layout = "default"
 [account]
 [session]
 ==
-
+<?php
+function onStart(){
+  $user = Auth::getuser();
+  if($user){
+    return Redirect::to('/');
+  }
+}
+?>
+==
 <style>
 .btn-facebook:hover {
     color: #5DC560;

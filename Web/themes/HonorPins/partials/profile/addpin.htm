@@ -2,7 +2,7 @@
 {% if addpin == 1%}
 <div class="modal-header">
     <h3>Pin Created</h3>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <button type="button" class="close" data-request="onCloseModal" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -21,8 +21,9 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a href="/dashboard/organization-pins/{{organization.id}}" class="btn btn-primary "> Close</a>
+    <a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary "> Close</a>
 </div>
+{% set addpin = 0%}
 {%else%}
 <div class="modal-header">
     <h3 id="exampleModalLongTitle">Add New Pin</h3>
@@ -36,7 +37,7 @@
             <div class="col-lg-8 ">
                 <div class="form-group">
                     <h4 class="header-title">Organization</h4>
-                    <input type="text" disabled  name="" id="" value="{{organization.org_name}}" class="form-control">
+                    <input type="text" disabled  name="" id="" value="{{user.myorganization.org_name}}" class="form-control">
 
                 </div>
                 <div class="form-group">

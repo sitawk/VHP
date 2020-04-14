@@ -21,7 +21,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a href="/dashboard/organization-certificates/{{thisorganization.id}}" class="btn btn-primary"> Close</a>
+    <a href="#" data-request="onCloseModal" data-dismiss="modal" class="btn btn-primary"> Close</a>
 </div>
 {%else%}
 <style>
@@ -54,7 +54,7 @@
                 <div class="form-group">
                     <label>Select Related Pin</label>
                     <select name="pin" class="selectpicker" data-style="btn-default" data-live-search="true">
-                      {%for pin in pins %}
+                      {%for pin in user.myorganization.pins %}
                                       <option value="{{pin.id}}">{{pin.title}}</option>
                                     {%endfor%}
                                   </select>
@@ -64,7 +64,7 @@
                 <div class="form-group">
                     <label>Url</label>
                     <input type="url" required name="url" class="form-control">
-                    <input type="hidden" value="{{thisorganization.id}}" name="org_id" class="form-control">
+                    <input type="hidden" value="{{user.myorganization.id}}" name="org_id" class="form-control">
                 </div>
             </div>
             <div class="col-lg-6">

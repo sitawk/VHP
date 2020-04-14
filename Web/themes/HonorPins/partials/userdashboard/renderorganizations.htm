@@ -1,0 +1,111 @@
+{%  if user.myorganization %}
+
+<div class="container">
+        <div class="row ">
+            <div class="col-sm-3 align-self-center">
+              <img class="avatar rounded-circle" style="width:150px;height:150px;background-color: rgba(0,0,0,0.01);" src="{{user.myorganization.logo}}" alt="Bologna">
+            </div>
+            <div class="col-md-6">
+                <div class="bg-picture card-box">
+                    <div class="profile-info-name pt-50">
+                        <div class="profile-info-detail pt-50">
+                            <h3 class="m-t-0 m-b-0">{{user.myorganization.org_name}}</h3>                             <span class="text-muted mb-5">{{user.myorganization.city}}, {{user.myorganization.state}}
+                              </span><br><br>
+
+                        </div>
+
+                        <div class="profile-info-detail pt-50">
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="bg-picture card-box pt-50">
+                    <div class="profile-info- mt-50">
+
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <button class="btn btn btn-outline-primary myshadow pull-right" style="border-radius:3.25rem" data-toggle="modal" data-target="#custom-width-modal">Edit</button>
+
+                {%if user.myorganization.status == 1%}
+                                <span class="badge badge-success pull-right mt-15">Activated</span>
+                                  {% elseif user.myorganization.status == 0 %}
+                                    <span class="badge badge-warning pull-right mt-15">Activation Pending</span>
+                                    {% elseif user.myorganization.status == 2 %}
+                                    <span class="badge badge-danger pull-right mt-15">Suspended</span>
+                                    {%endif%}
+            </div>
+
+        </div>
+        <div class="row bt-1 mb-3 pt-3 border-bottom border-top mt-15">
+                                        <div class="col-sm-3 pt-30 pb-30 text-center">
+                                            <span> <span class="bold font-34">{{user.myorganization.pins.count}}</span>
+                                                <span class="font-8">
+                                                </span> </span><br>
+                                            <span> <span class="font-12">Pins</span> </span><br>
+                                        </div>
+                                        <div class="col-sm-3 pt-30 pb-30 text-center">
+                                            <span> <span class="bold font-34">{{user.myorganization.certificates.count}}</span> <span class="font-8"></span>
+                                            </span><br>
+                                            <span> <span class="font-12">Certificates</span> </span><br>
+                                        </div>
+                                        <div class="col-sm-3 pt-30 pb-30 text-center">
+                                                                                                        <span> <span class="bold font-34 text-warning">{{user.myorganization.orders.count}}</span>
+
+                                                            </span><br>
+                                                            <span> <span class="font-12">Orders</span> </span><br>
+                                        </div>
+                                        <div class="col-sm-3 pt-30 pb-30 text-center">
+                                            <span> <span class="bold font-34 ">{{user.myorganization.holders.count}}</span>
+                                            </span><br>
+                                            <span> <span class="font-12">Holders</span> </span><br>
+                                        </div>
+                                    </div>
+        <div class="row bt-1 mb-3 pt-3 border-bottom mt-15 pb-3">
+            {%if user.myorganization.status != 0%}
+                                        <div class="col-sm-5 mr-auto">
+                                            <a href="/dashboard/my-orders" class="btn btn-outline-dark myshadow pull-left" style="border-radius:3.25rem">Make an Order</a>
+                                        </div>
+                                        {%endif%}
+                                        <div class="col-sm-5 ml-auto">
+                                          {%if user.myorganization.status == 0%}
+                                          <a href="#" class="btn btn btn-outline-success myshadow pull-right" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{user.myorganization.id}}">Activate Now</a>
+                                          <div class="modal fade " id="organization{{user.myorganization.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                              <div class="modal-dialog modal-lg" role="document">
+                                                  <div class="modal-content" id="activation{{user.myorganization.id}}completed">
+                                                      {% partial 'profile/activateorganization' organization=user.myorganization%}
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          {%else%}
+                                            <a href="/dashboard/organization-pins/{{user.myorganization.id}}" class="btn btn-outline-dark myshadow pull-right ml-5" style="border-radius:3.25rem">Pins</a>
+                                              {%if user.myorganization.pins|length > 0%}
+                                              <a href="/dashboard/organization-certificates/{{user.myorganization.id}}" class="btn btn btn-outline-primary myshadow pull-right" style="border-radius:3.25rem">Certificates</a>
+                                              {%else%}
+                                              <a href="#" class="btn btn btn-outline-primary myshadow" onclick="zeropins()" style="border-radius:3.25rem">Certificates</a>
+                                              {%endif%}
+                                          {%endif%}
+                                        </div>
+                                    </div>
+    </div>
+
+{%else%}
+<div class="row " style="height: 250px;">
+    <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
+        <img src="{{'assets/img/add.svg'|theme}}" />
+        <h4 class="text-primary mt-5">No Organization registered yet!</h4>
+            <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addorganizationmodal"><i class="fas fa-plus text-white"></i> Register</button>
+    </div>
+</div>
+{%endif%}
+
+
+<script>
+  $(document).ready(function() {
+  $('#addorganizationmodal').modal('hide');
+
+  });
+</script>

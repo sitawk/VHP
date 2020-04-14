@@ -1,5 +1,5 @@
 title = "User Dashboard"
-url = "/dashboard/organization-certificates"
+url = "/dashboard/paymentmethods"
 layout = "default"
 [account]
 redirect=0
@@ -13,20 +13,6 @@ function onEditCertificate(){
   return $addorganization;
 }
 
-function onSendEmail(){
-  $this['user'] = $user = Auth::getuser();
-  $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
-  $datamail = [
-              'name' => $user->name.' '.$user->surname,
-              'code' => $addorganization->verification_code,
-
-          ];
-  Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
-              $message->to($addorganization->org_email, $addorganization->org_email);
-               $message->from('noreply@honorpins.com','Verification Messege');
-          });
-  return post('id');
-}
 function onStart(){
   $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
   $this['user'] = $user = Auth::getuser();
@@ -49,82 +35,8 @@ function onRedirect(){
         '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
     ];
 }
-function onVerifyOrganization(){
-  $organization  = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
-  if($organization->verification_code == post('code')){
-    $organization->status = 1;
-    $organization->save();
-    $this['addorganization'] = 1;
-    $this['verifiedorganization'] = 1;
-    return [
-        '#completeorganization' => $this->renderPartial('profile/addorganization')
-    ];
-  }else{
-    $this['error'] = 'Your Verification Code is not Valid!';
-    return [
-        '#verifycheck' => $this->renderPartial('profile/error')
-    ];
-  }
 
 
-}
-function onAcitvateOrganization(){
-  $organization  = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
-  if($organization->verification_code == post('code')){
-    $organization->status = 1;
-    $organization->save();
-  //dd('hello');
-    $this['verifiedorganization'] = 1;
-    return [
-        "#activation".post('id')."completed" => $this->renderPartial('profile/activateorganization')
-    ];
-  }else{
-    $this['error'] = 'Your Verification Code is not Valid!';
-    return [
-        '#activateverifycheck' => $this->renderPartial('profile/error')
-    ];
-  }
-
-
-}
-function onDeleteCertificate(){
-  $deletecertificate  = Codersocean\Honorpins\Models\Certificate::where('id',post('id'))->delete();
-  $user = Auth::getuser();
-    $this['user'] = $user;
-  $this['addpin'] = 0;
-    $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
-    return [
-    '#completecertificate' => $this->renderPartial('profile/addcertificate'),
-        '#createcertificatebutton' => $this->renderPartial('userdashboard/createcertificatebutton'),
-        '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
-    ];
-}
-function onAvatar(){
-$user = Auth::getuser();
-$update = RainLab\User\Models\User::where('id',$user->id)->first();
-$update->avatar = Input::file('customFile');
-$update->save();
-$this['user'] = $user = Auth::getuser();
-return [
-        '#updateprofile' => $this->renderPartial('profile/profilesetting')
-    ];
-
-}
-
-function onGetLogo(){
-  $images = Input::file('customFile');
-$user =Auth::getuser();
-$fileName = 'logo'.$user->id.'_'.'.'.$images->getClientOriginalExtension();
-$fileName = str_replace(' ', '_', $fileName);
-$image='logo';
-  $this['prganizationlogo'] ='/storage/app/uploads/web/'.$fileName;
-    $images->move(public_path('/storage/app/uploads/web/'), $fileName);
-$this['photocaptured'] = 1;
-return [
-        '#addlogo' => $this->renderPartial('profile/addlogo')
-    ];
-
-}
 function onCloseModal(){
 $user = Auth::getuser();
   $this['user'] = $user;
@@ -183,7 +95,7 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                   <div class="nav nav-tabs" id="nav-tab" role="tablist">
                     <a class="nav-item nav-link"  href="/dashboard"><i
                           class="fas fa-user-alt"></i>Profile</a>
-                        <a class="nav-item nav-link  active collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
+                        <a class="nav-item nav-link  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
                         <!-- {%if myorganizations|length > 0%}
                         <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
                         <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
@@ -191,51 +103,47 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                         <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
                             <a class="nav-item nav-link"   href="/dashboard/organizations" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i>My Organization</a>
                             <a class="nav-item nav-link"  href="/dashboard/organization-pins" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i> Organization Pins</a>
-                          <a class="nav-item nav-link active"  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
+                          <a class="nav-item nav-link "  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
   <a class="nav-item nav-link"  href="/dashboard/my-orders" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Orders</a>
                         </div>
 
                       <a class="nav-item nav-link"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>My Certificates</a>
                       <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>My Pins</a>
-                      <a class="nav-item nav-link"  href="/dashboard/paymentmethods" ><i class="fas fa-credit-card"></i>Payment Methods</a>
+                      <a class="nav-item nav-link active"  href="/dashboard/paymentmethods" ><i class="fas fa-credit-card"></i>Payment Methods</a>
                       <a class="nav-item nav-link"   href="/dashboard/change-password" ><i class="fas fa-key"></i>Change Password</a>
                   </div>
               </div>
             </div>
             <div class="col-lg-9">
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
-                        <div class="row" id="createcertificatebutton">
-
-                          {% partial 'userdashboard/createcertificatebutton'%}
-                        </div>
 
 
-                        <div class="modal fade " id="addcertificatemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content" id="completecertificate">
-                                    {% partial 'profile/addcertificate' categories=categories %}
-                                </div>
+              <div class="bg-light shadow-sm rounded p-4 mb-4">
+                          <h3 class="text-5 font-weight-400 mb-4">Credit or Debit Cards <span class="text-muted text-4">(for payments)</span></h3>
+                          <div class="row">
+                            <div class="col-12 col-sm-6 col-lg-4">
+                              <div class="account-card account-card-primary text-white rounded p-3 mb-4 mb-lg-0">
+                                <p class="text-4">XXXX-XXXX-XXXX-4151</p>
+                                <p class="d-flex align-items-center"> <span class="account-card-expire text-uppercase d-inline-block opacity-6 mr-2">Valid<br>
+                                  thru<br>
+                                  </span> <span class="text-4 opacity-9">07/24</span> <span class="bg-light text-0 text-body font-weight-500 rounded-pill d-inline-block px-2 line-height-4 opacity-8 ml-auto">Primary</span> </p>
+                                <p class="d-flex align-items-center m-0"> <span class="text-uppercase font-weight-500">Smith Rhodes</span> <img class="ml-auto" src="images/payment/visa.png" alt="visa" title=""> </p>
+                                <div class="account-card-overlay rounded"> <a href="#" data-target="#edit-card-details" data-toggle="modal" class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> <a href="#" class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-minus-circle"></i></span>Delete</a> </div>
+                              </div>
                             </div>
-                        </div>
-
-
-                        {%  if user.myorganization.pins|length > 0 %}
-                        <div id="organizationcertificate">
-                            {% partial 'profile/organizationcertificates'%}
-                        </div>
-                        {%else%}
-                        <div class="row " style="height: 250px;">
-                            <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
-                                  <i class="fas fa-medal text-primary mt-15" style="font-size:100px;"></i>
-                                <h4 class="text-primary mt-15">You need to create a pin to add certificate!</h4>
-
+                            <div class="col-12 col-sm-6 col-lg-4">
+                              <div class="account-card text-white rounded p-3 mb-4 mb-lg-0">
+                                <p class="text-4">XXXX-XXXX-XXXX-6296</p>
+                                <p class="d-flex align-items-center"> <span class="account-card-expire text-uppercase d-inline-block opacity-6 mr-2">Valid<br>
+                                  thru<br>
+                                  </span> <span class="text-4 opacity-9">07/23</span> </p>
+                                <p class="d-flex align-items-center m-0"> <span class="text-uppercase font-weight-500">Smith Rhodes</span> <img class="ml-auto" src="images/payment/mastercard.png" alt="mastercard" title=""> </p>
+                                <div class="account-card-overlay rounded"> <a href="#" data-target="#edit-card-details" data-toggle="modal" class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-edit"></i></span>Edit</a> <a href="#" class="text-light btn-link mx-2"><span class="mr-1"><i class="fas fa-minus-circle"></i></span>Delete</a> </div>
+                              </div>
                             </div>
-                        </div>
-                        {%endif%}
-
-                    </div>
-
+                            <div class="col-12 col-sm-6 col-lg-4"> <a href="#" data-target="#add-new-card-details" data-toggle="modal" class="account-card-new d-flex align-items-center rounded h-100 p-3 mb-4 mb-lg-0">
+                              <p class="w-100 text-center line-height-4 m-0"> <span class="text-3"><i class="fas fa-plus-circle"></i></span> <span class="d-block text-body text-3">Add New Card</span> </p>
+                              </a> </div>
+                          </div>
                         </div>
                         </div>
                         </div>

@@ -13,6 +13,7 @@
                     <th>Email</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Action</th>
 
                 </tr>
             </thead>
@@ -32,8 +33,12 @@
                   </td>
                   <td>    {{cartitem.name}}</td>
                   <td>{{cartitem.email}}</td>
-                  <td>{{cartitem.start_date}}</td>
-                  <td>{{cartitem.end_date}}</td>
+                  <td>{{cartitem.start_date|date("m-d-Y")}}</td>
+                  <td>{{cartitem.end_date|date("m-d-Y")}}</td>
+                  <td>
+                    <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="onedit({{cartitem.id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+                    <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="cartitemdelete({{cartitem.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
+                  </td>
                     </tr>
                   {%endfor%}
                   {%else%}
