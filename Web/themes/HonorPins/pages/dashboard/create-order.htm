@@ -43,6 +43,187 @@ function onSelectOrganization(){
     '#selectcertificatenow' => $this->renderPartial('site/selectcertificate')
   ];
 }
+
+function onCheckoutwithourSavedCards(){
+  $this['user'] = $user = Auth::getuser();
+
+  $certificates = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->groupBy('certificate_id')->get();
+  foreach($certificates as $certificate){
+        $order = new Codersocean\Honorpins\Models\Order;
+        $order->certificate_id = $certificate->certificate_id;
+        $card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+        $thiscertificate = Codersocean\Honorpins\Models\Certificate::where('id',$certificate->certificate_id)->first();
+        $order->pin_id = $thiscertificate->pin_id;
+        $order->org_id = $thiscertificate->org_id;
+        $order->order_status = 0;
+        $order->payment_status = 1;
+        $order->amount_paid =post('amountpaid');
+        $order->payment_method =$card->type;
+        $order->user_id =$user->id;
+        $order->pin_status = 0;
+        $order->save();
+        $cartitems = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->where('certificate_id',$certificate->certificate_id)->get();
+        foreach($cartitems as $item){
+          $orderdetail = new Codersocean\Honorpins\Models\OrderDetail;
+          $orderdetail->order_id = $order->id;
+          $orderdetail->user_id = $user->id;
+          $orderdetail->email = $item->email;
+          $orderdetail->start_date = $item->start_date;
+          $orderdetail->end_date = $item->end_date;
+          $orderdetail->reg_number = $item->reg_number;
+          $orderdetail->phone = $item->phone;
+          $orderdetail->save();
+        }
+  }
+  $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
+
+  $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+$this['cartitems']  =   $cartitems;
+$this['unitprice'] = 5;
+$this['tax'] = 2;
+return [
+'#orderdata' => $this->renderPartial('profile/orderdata'),
+'#ordermade' => $this->renderPartial('profile/ordermade'),
+'#orderbilldata' => $this->renderPartial('profile/orderbilldata')
+];
+}
+function onCreateOrder(){
+    $this['user'] = $user = Auth::getuser();
+
+    $certificates = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->groupBy('certificate_id')->get();
+    foreach($certificates as $certificate){
+          $order = new Codersocean\Honorpins\Models\Order;
+          $order->certificate_id = $certificate->certificate_id;
+          $thiscertificate = Codersocean\Honorpins\Models\Certificate::where('id',$certificate->certificate_id)->first();
+          $order->pin_id = $thiscertificate->pin_id;
+          $order->org_id = $thiscertificate->org_id;
+          $order->order_status = 0;
+          $order->payment_status = 1;
+          $order->amount_paid =0;
+          $order->payment_method ='none';
+          $order->user_id =$user->id;
+          $order->pin_status = 0;
+          $order->save();
+          $cartitems = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->where('certificate_id',$certificate->certificate_id)->get();
+          foreach($cartitems as $item){
+            $orderdetail = new Codersocean\Honorpins\Models\OrderDetail;
+            $orderdetail->order_id = $order->id;
+            $orderdetail->user_id = $user->id;
+            $orderdetail->email = $item->email;
+            $orderdetail->start_date = $item->start_date;
+            $orderdetail->end_date = $item->end_date;
+            $orderdetail->reg_number = $item->reg_number;
+            $orderdetail->phone = $item->phone;
+            $orderdetail->save();
+          }
+    }
+    $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
+
+    $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+  $this['cartitems']  =   $cartitems;
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
+  return [
+  '#orderdata' => $this->renderPartial('profile/orderdata'),
+  '#ordermade' => $this->renderPartial('profile/ordermade'),
+  '#orderbilldata' => $this->renderPartial('profile/orderbilldata')
+  ];
+
+}
+function onCheckoutWithPins(){
+  if(post('is_saving') == 1){
+    $user = $this['user']= Auth::getuser();
+    $add = new Codersocean\Honorpins\Models\PaymentMethod;
+    $add->cus_id = post('cus_id');
+    $add->name = post('name');
+    $add->type = post('type');
+    $add->brand = post('brand');
+    $add->last_digit = post('last_digit');
+    $add->ex_date = post('exp');
+    $add->user_id = $user->id;
+    $add->save();
+  }
+  $this['user'] = $user = Auth::getuser();
+
+  $certificates = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->groupBy('certificate_id')->get();
+  foreach($certificates as $certificate){
+        $order = new Codersocean\Honorpins\Models\Order;
+        $order->certificate_id = $certificate->certificate_id;
+        $thiscertificate = Codersocean\Honorpins\Models\Certificate::where('id',$certificate->certificate_id)->first();
+        $order->pin_id = $thiscertificate->pin_id;
+        $order->org_id = $thiscertificate->org_id;
+        $order->order_status = 1;
+        $order->payment_status = 1;
+        $order->amount_paid =post('amountpaid');
+        $order->payment_method =post('type');
+        $order->user_id =$user->id;
+        $order->pin_status = 1;
+        $order->save();
+        $cartitems = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->where('certificate_id',$certificate->certificate_id)->get();
+        foreach($cartitems as $item){
+          $orderdetail = new Codersocean\Honorpins\Models\OrderDetail;
+          $orderdetail->order_id = $order->id;
+          $orderdetail->user_id = $user->id;
+          $orderdetail->email = $item->email;
+          $orderdetail->start_date = $item->start_date;
+          $orderdetail->end_date = $item->end_date;
+          $orderdetail->reg_number = $item->reg_number;
+          $orderdetail->phone = $item->phone;
+          $orderdetail->save();
+        }
+  }
+  $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
+
+  $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+$this['cartitems']  =   $cartitems;
+$this['unitprice'] = 5;
+$this['tax'] = 2;
+return [
+'#orderdata' => $this->renderPartial('profile/orderdata'),
+'#ordermade' => $this->renderPartial('profile/ordermade'),
+'#orderbilldata' => $this->renderPartial('profile/orderbilldata')
+];
+
+
+
+}
+
+function onSelectmySavedCard(){
+    $this['user'] = $user = Auth::getuser();
+    $card =$this['card']= Codersocean\Honorpins\Models\PaymentMethod::where('id',post('id'))->first();
+    $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+  $this['cartitems']  =   $cartitems;
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
+    return [
+    '#selectedcardnowed' => $this->renderPartial('addcredit/selectedcards')
+    ];
+}
+function onEditOrder(){
+  $this['user'] = $user = Auth::getuser();
+  $addcart = Codersocean\Honorpins\Models\Cart::where('id',post('id'))->first();
+  $certificate = Codersocean\Honorpins\Models\Certificate::where('id',post('certificate'))->first();
+  $addcart->name = post('name');
+  $addcart->user_id = $user->id;
+  $addcart->email = post('email');
+  $addcart->phone = post('phone');
+  $addcart->start_date = post('start_date');
+  $addcart->end_date = post('end_date');
+  $addcart->reg_number = post('reg_number');
+  $addcart->certificate_id = post('certificate');
+  $addcart->pin_id = $certificate->pin_id;
+  $addcart->org_id = $certificate->org_id;
+  $addcart->save();
+
+  $cartitems= Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->get();
+$this['cartitems']  =   $cartitems;
+$this['unitprice'] = 5;
+$this['tax'] = 2;
+return [
+'#orderdata' => $this->renderPartial('profile/orderdata'),
+'#orderbilldata' => $this->renderPartial('profile/orderbilldata')
+];
+}
 function onDeleteCartItem(){
     $this['user'] = $user = Auth::getuser();
   $deletecartitem  = Codersocean\Honorpins\Models\Cart::where('id',post('id'))->delete();
@@ -143,12 +324,264 @@ function onStart(){
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <link href="{{ 'assets/css/switch.css'|theme }}" rel="stylesheet">
 <link rel="stylesheet" href="{{'assets/css/bootstrap-datetimepicker.min.css'|theme}}">
-    <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="{{'assets/sweetalert.css'|theme}}">
+<link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="{{'assets/sweetalert.css'|theme}}">
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="{{'assets/css/bootstrapValidator.min.css'|theme}}">
+<style>
+    .account-card-master {
+        background: -webkit-linear-gradient(135deg, #f79e1b, #f79e1b);
+        background: -moz-linear-gradient(135deg, #f79e1b, #f79e1b);
+        background: -o-linear-gradient(135deg, #f79e1b, #f79e1b);
+        background: -ms-linear-gradient(135deg, #f79e1b, #f79e1b);
+        background: linear-gradient(-45deg, #f79e1b, #f79e1b);
+
+    }
+
+    .account-card-dinner {
+        background: -webkit-linear-gradient(135deg, #ef6c00, #ef6c00);
+        background: -moz-linear-gradient(135deg, #ef6c00, #ef6c00);
+        background: -o-linear-gradient(135deg, #ef6c00, #ef6c00);
+        background: -ms-linear-gradient(135deg, #ef6c00, #ef6c00);
+        background: linear-gradient(-45deg, #ef6c00, #ef6c00);
+
+    }
+
+    .account-card-jcb {
+        background: -webkit-linear-gradient(135deg, #d32f2f, #d32f2f);
+        background: -moz-linear-gradient(135deg, #d32f2f, #d32f2f);
+        background: -o-linear-gradient(135deg, #d32f2f, #d32f2f);
+        background: -ms-linear-gradient(135deg, #d32f2f, #d32f2f);
+        background: linear-gradient(-45deg, #d32f2f, #d32f2f);
+
+    }
+
+    .account-card-union {
+        background: -webkit-linear-gradient(135deg, #0097a7, #0097a7);
+        background: -moz-linear-gradient(135deg, #0097a7, #0097a7);
+        background: -o-linear-gradient(135deg, #0097a7, #0097a7);
+        background: -ms-linear-gradient(135deg, #0097a7, #0097a7);
+        background: linear-gradient(-45deg, #0097a7, #0097a7);
+
+    }
+
+    .account-card-american {
+        background: -webkit-linear-gradient(135deg, #388e3c, #388e3c);
+        background: -moz-linear-gradient(135deg, #388e3c, #388e3c);
+        background: -o-linear-gradient(135deg, #388e3c, #388e3c);
+        background: -ms-linear-gradient(135deg, #388e3c, #388e3c);
+        background: linear-gradient(-45deg, #388e3c, #388e3c);
+
+    }
+
+    .account-card-discover {
+        background: -webkit-linear-gradient(135deg, #7b1fa2, #7b1fa2);
+        background: -moz-linear-gradient(135deg, #7b1fa2, #7b1fa2);
+        background: -o-linear-gradient(135deg, #7b1fa2, #7b1fa2);
+        background: -ms-linear-gradient(135deg, #7b1fa2, #7b1fa2);
+        background: linear-gradient(-45deg, #7b1fa2, #7b1fa2);
+
+    }
+</style>
+
 <section>
     <style>
+        .mainContainer {
+
+            margin: 0 auto;
+            box-shadow: 0 0 10px #2323;
+            margin-top: 50px;
+            background: white;
+        }
+
+        .cardHolder {
+            height: 300px;
+            background: linear-gradient(to right,
+                    #6480ef,
+                    #7775e8,
+                    #806ce8);
+            /*   border-bottom-left-radius:50%;
+  border-bottom-right-radius:50%; */
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vcenter {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkoutheading {
+            height: 40px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: white;
+        }
+
+        .stepHeading {
+            height: 20px;
+            font-size: 16px;
+            font-weight: bolder;
+            letter-spacing: 2px;
+            color: white;
+        }
+
+        .checkoutcard {
+            height: 180px;
+            width: 280px;
+            background: white;
+            margin: 0 auto;
+            border-radius: 1.2em;
+            margin-top: 25px;
+            padding: 12px 20px;
+        }
+
+        .checkoutcard>.part {
+            height: 50px;
+            margin-bottom: 4px;
+        }
+
+        .checkoutcard>.top {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .checkoutcard>.top>img {
+            height: 48px;
+        }
+
+        .infoheader {
+            height: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #95a5a6
+        }
+
+        .checkoutcard>.middle>.infocontent {
+            justify-content: space-between;
+            height: 30px;
+        }
+
+        .number {
+            width: 150px;
+        }
+
+        .checkoutcard>.middle>.infocontent>.num {
+            height: 25px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+        }
+
+        .card>.bottom {
+            display: flex;
+            justify-content: space-between
+        }
+
+        .holderInfo {
+            width: 150px;
+        }
+
+        .holderInfo>.name,
+        .expDate>.date {
+            font-size: 12px;
+            font-weight: bolder;
+            letter-spacing: 2px;
+        }
+
+        .status {
+            height: 35px;
+            width: 300px;
+            margin: 0 auto;
+            box-shadow: 0 0 10px #2323;
+            margin-top: 16px;
+            padding: 0 16px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            font-weight: bolder;
+        }
+
+        .status>i {
+            color: #16a085;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+
+        .h5 {
+
+            margin: 0 auto;
+            padding: 8px;
+            margin-top: 14px;
+            border-bottom: 2px solid #bdc3c7;
+            letter-spacing: 2px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .options {
+            /*
+  height:75px;
+  margin:0 auto; */
+        }
+
+        .options>.opt {
+            height: 100px;
+            width: 150px;
+            box-shadow: 0 0 10px #2323;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .options>.opt>.icon {
+            height: 30px;
+            color: #95a5a6;
+            font-size: 20px;
+        }
+
+        .optname {
+            height: 30px;
+            font-size: 10px;
+            color: #232323;
+            letter-spacing: 2px;
+            font-weight: bolder
+        }
+
+        .payment {
+            height: 80px;
+            position: relative;
+            top: 24px;
+            box-shadow: 0 -5px 5px -5px #2323;
+            justify-content: space-around;
+        }
+
+        .val {
+            height: 40px;
+            font-size: 24px;
+            font-weight: bolder;
+            letter-spacing: 2px;
+            color: #6480ef;
+        }
+
+        .button {
+            width: 120px;
+            height: 35px;
+            border-radius: 1.2em;
+            background: linear-gradient(to right,
+                    #6480ef,
+                    #7775e8,
+                    #806ce8);
+            color: white;
+            font-weight: bolder;
+            letter-spacing: 2px;
+        }
+
         .upload-btn-wrapper {
             position: relative;
             overflow: hidden;
@@ -182,35 +615,38 @@ function onStart(){
         }
     </style>
     <style>
-    .collapse .nav-item {
+        .collapse .nav-item {}
 
-    }
-    .rotateas{
--webkit-transform: rotate(90deg);  /* Chrome, Safari, Opera */
--moz-transform: rotate(90deg);  /* Firefox */
--ms-transform: rotate(90deg);  /* IE 9 */
-transform: rotate(90deg);  /* Standard syntax */
-}
+        .rotateas {
+            -webkit-transform: rotate(90deg);
+            /* Chrome, Safari, Opera */
+            -moz-transform: rotate(90deg);
+            /* Firefox */
+            -ms-transform: rotate(90deg);
+            /* IE 9 */
+            transform: rotate(90deg);
+            /* Standard syntax */
+        }
     </style>
     <script>
-$(document).ready(function(){
-// Add minus icon for collapse element which is open by default
+        $(document).ready(function() {
+            // Add minus icon for collapse element which is open by default
 
 
-// Toggle plus minus icon on show hide of collapse element
-$(".collapse").on('show.bs.collapse', function(){
-$(this).addClass("nav-tabs");
-    $(this).parent().find(".pull-right").removeClass("fa-angle-right");
+            // Toggle plus minus icon on show hide of collapse element
+            $(".collapse").on('show.bs.collapse', function() {
+                $(this).addClass("nav-tabs");
+                $(this).parent().find(".pull-right").removeClass("fa-angle-right");
 
-        $(this).parent().find(".pull-right").addClass("fa-angle-down");
-}).on('hide.bs.collapse', function(){
-    $(this).removeClass("nav-tabs");
-  $(this).parent().find(".pull-right").removeClass("fa-angle-down");
+                $(this).parent().find(".pull-right").addClass("fa-angle-down");
+            }).on('hide.bs.collapse', function() {
+                $(this).removeClass("nav-tabs");
+                $(this).parent().find(".pull-right").removeClass("fa-angle-down");
 
-      $(this).parent().find(".pull-right").addClass("fa-angle-right");
-});
-});
-</script>
+                $(this).parent().find(".pull-right").addClass("fa-angle-right");
+            });
+        });
+    </script>
     <div class="header-space"></div>
     <div class="container mt-65 py-5">
         <div class="row">
@@ -221,26 +657,26 @@ $(this).addClass("nav-tabs");
             <div class="col-lg-3">
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link"  href="/dashboard"><i
-                              class="fas fa-user-alt"></i>Profile</a>
+                        <a class="nav-item nav-link" href="/dashboard"><i class="fas fa-user-alt"></i>Profile</a>
 
-                              <a class="nav-item nav-link active  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
-                              <!-- {%if myorganizations|length > 0%}
+                        <a class="nav-item nav-link active  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i
+                              class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
+                        <!-- {%if myorganizations|length > 0%}
                               <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
                               <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
                               {%endif%} -->
-                              <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
-                                  <a class="nav-item nav-link"   href="/dashboard/organizations" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i>My Organization</a>
-                                  <a class="nav-item nav-link"  href="/dashboard/organization-pins" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i> Organization Pins</a>
-                                <a class="nav-item nav-link"  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
-                                <a class="nav-item nav-link active"  href="/dashboard/my-orders" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Orders</a>
+                        <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
+                            <a class="nav-item nav-link" href="/dashboard/organizations" style="font-size:15px;"><i style="font-size:14px" class="fas "></i>My Organization</a>
+                            <a class="nav-item nav-link" href="/dashboard/organization-pins" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Pins</a>
+                            <a class="nav-item nav-link" href="/dashboard/organization-certificates" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Certificates</a>
+                            <a class="nav-item nav-link active" href="/dashboard/my-orders" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Orders</a>
 
-                              </div>
+                        </div>
                         <a class="nav-item nav-link" href="/dashboard/personal-certificates"><i class="fas fa-medal"></i>My Certificates</a>
                         <a class="nav-item nav-link" href="/dashboard/personal-pins"><i class="fas fa-certificate"></i>My Pins</a>
                         <a class="nav-item nav-link" href="/dashboard/paymentmethods"><i class="fas fa-credit-card"></i>Payment Methods</a>
                         <a class="nav-item nav-link" href="/dashboard/change-password"><i class="fas fa-key"></i>Change Password</a>
-                      </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -255,7 +691,7 @@ $(this).addClass("nav-tabs");
                             <div class="col-md-3 col-lg-3 text-right my-3">
 
                                 <div class="upload-btn-wrapper myshadow">
-                                  <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addfilemodal">upload from a file</button>
+                                    <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addfilemodal">upload from a file</button>
 
                                 </div>
                             </div>
@@ -265,23 +701,23 @@ $(this).addClass("nav-tabs");
                                 <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addpinmodal">manual</button>
                             </div>
 
-                                <div class="col-md-2  ml-auto" style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
-                                    <p>Pins Included</p>
-                                </div>
-                                <div class="col-md-2  " style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
+                            <div class="col-md-2  ml-auto" style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
+                                <p>Pins Included</p>
+                            </div>
+                            <div class="col-md-2  " style="    padding-top: 3rem!important;    padding-bottom: 1rem!important;">
 
-                                    <div class="switch-block">
-                                        <label class="switch-light switch-material float-right">
-                                            <input type="checkbox" id="myCheck" onclick="myFunction()"  />
+                                <div class="switch-block">
+                                    <label class="switch-light switch-material float-right">
+                                        <input type="checkbox" id="myCheck" onclick="myFunction()" />
 
-                                            <span>
-                                                <span>on</span>
-                                                <span>off</span>
-                                                <a></a>
-                                            </span>
-                                        </label>
-                                    </div>
+                                        <span>
+                                            <span>on</span>
+                                            <span>off</span>
+                                            <a></a>
+                                        </span>
+                                    </label>
                                 </div>
+                            </div>
 
 
 
@@ -300,6 +736,96 @@ $(this).addClass("nav-tabs");
                                 font-size: 18px;
                             }
                         </style>
+                        <div class="modal fade " id="checkoutmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 id="checkoutmodalTitle" class="ml-5">Make Payment</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row px-5">
+                                            <div class="col-md-7 ml-auto mr-auto mt-5">
+                                                <h5 class="center h5">SELECT PAYMENT METHODS</h5>
+                                            </div>
+                                            <div class="col-md-6 ml-auto mr-auto mt-5">
+
+                                                <div class="options vcenter">
+                                                    <a href="#" onclick="selectcreditcard()" id="creditcardselect" class="opt ml-2">
+                                                        <div class="icon center">
+                                                            <i class="fas fa-credit-card creditcardselect"></i>
+                                                        </div>
+                                                        <div class="optname center creditcardselect">Credit/Debit Card</div>
+                                                    </a>
+
+                                                    <a href="#" onclick="paypalselect()" class="opt ml-5" id="paypalselect">
+                                                        <div class="icon center">
+                                                            <i class="fab fa-paypal paypalselect"></i>
+                                                        </div>
+                                                        <div class="optname center paypalselect">PayPal</div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 mt-15 row ml-auto mr-auto" style="display:none;" id="creditc">
+                                                <div class="col-md-9">
+                                                    <div class="form-group">
+                                                        <select name="certificate" id="onchangeselectcard" required class="selectpicker" data-style="btn-default" data-live-search="true">
+                                                            <option value="0">Select from Your Saved Cards</option>
+                                                            {%for card in user.cards %}
+                                                            <option value="{{card.id}}">XXX-XXXX-XXXX-{{card.last_digit}} - {{card.brand}}</option>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a href="#" onclick="addnewcard()" class="btn btn-outline-dark myshadow pull-right ml-5" style="border-radius: 3.25rem;"><i class="fas fa-plus text-dark"></i> New</a>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 mt-15 row ml-auto mr-auto" style="display:none;" id="paypal">
+                                                <p>Paypal Inte3gration is not Completed yet</p>
+
+                                            </div>
+                                            <div class="col-md-12 mt-15 row" style="display:none" id="addnewcard">
+                                                {%partial 'addcredit/addcredit'%}
+
+
+                                            </div>
+                                            <div class="col-md-12 mt-15 row" style="display:none" id="selectedcardnowed">
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <script>
+                                        function addnewcard() {
+                                            document.getElementById('addnewcard').style.display = 'flex'
+                                            document.getElementById('selectedcardnowed').style.display = 'none'
+                                        }
+
+                                        $('#onchangeselectcard').change(function() {
+                                            var selectedItem = $('.selectpicker').val();
+                                            document.getElementById('addnewcard').style.display = 'none'
+                                            document.getElementById('selectedcardnowed').style.display = 'flex'
+                                            document.getElementById('selectedcardnowed').innerHTML = '  <div class="col-md-3 ml-auto mr-auto"><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div>'
+
+                                            var AddTrainer = $.request('onSelectmySavedCard', {
+                                                flash: 1,
+                                                data: {
+                                                    id: selectedItem
+                                                }
+                                            }).done(function(data) {
+
+                                                return data;
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
                         <div class="modal fade " id="addfilemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
@@ -327,18 +853,21 @@ $(this).addClass("nav-tabs");
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-8 col-lg-8 ml-auto mr-auto my-3">
-  <input type="file" name="excelfile" class="dropify" required  data-height="200" data-allowed-file-extensions="xlsx csv"  />
+                                                <div class="col-md-5 col-lg-5 ml-auto mr-auto my-3">
+                                                    <input type="file" name="excelfile" class="dropify" required data-height="200" data-allowed-file-extensions="xlsx csv" />
 
                                                 </div>
+
                                                 <div class="col-md-12 text-center" id="csverror">
 
 
 
                                                 </div>
-                                          </div>
+
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
+                                            <a class="btn btn-primary" href="/storage/app/uploads/example/example_holders.xlsx" download>Download Example File</a>
                                             <button type="submit" class="btn btn-primary">Upload</button>
                                         </div>
                                     </form>
@@ -348,8 +877,7 @@ $(this).addClass("nav-tabs");
                                                 data: {
                                                     id: this.value
                                                 }
-                                            }).done(function(data) {
-                                            })
+                                            }).done(function(data) {})
                                         });
                                     </script>
                                 </div>
@@ -357,20 +885,20 @@ $(this).addClass("nav-tabs");
                         </div>
                         <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
 
-                          <script type="text/javascript">
-                        $('.dropify').dropify({
-                                  messages: {
-                                      'default': 'Drag and drop a Excel Sheet for Bulk order',
-                                      'replace': 'Drag and drop or click to replace',
-                                      'remove': 'Remove',
-                                      'error': 'Ooops, something wrong appended.'
-                                  },
-                                  error: {
-                                      'fileSize': 'The file size is too big ({{value}} max).',
-                                       'imageFormat': 'The image format is not allowed ({{ value }} only).'
-                                  }
-                              });
-                              </script>
+                        <script type="text/javascript">
+                            $('.dropify').dropify({
+                                messages: {
+                                    'default': 'Drag and drop a Excel Sheet for Bulk order',
+                                    'replace': 'Drag and drop or click to replace',
+                                    'remove': 'Remove',
+                                    'error': 'Ooops, something wrong appended.'
+                                },
+                                error: {
+                                    'fileSize': 'The file size is too big ({{value}} max).',
+                                    'imageFormat': 'The image format is not allowed ({{ value }} only).'
+                                }
+                            });
+                        </script>
                         <div class="modal fade " id="addpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content" id="completepin">
@@ -399,16 +927,16 @@ $(this).addClass("nav-tabs");
                                                 </div>
 
                                                 <div class="col-lg-6">
-                                                  <div class="form-group">
-                                                      <label>Full Name</label>
-                                                      <input type="text" required name="name" class="form-control">
-                                                  </div>
+                                                    <div class="form-group">
+                                                        <label>Full Name</label>
+                                                        <input type="text" required name="name" class="form-control">
+                                                    </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                  <div class="form-group">
-                                                      <label>Registration Number</label>
-                                                      <input type="text" required name="reg_number" class="form-control">
-                                                  </div>
+                                                    <div class="form-group">
+                                                        <label>Registration Number</label>
+                                                        <input type="text" required name="reg_number" class="form-control">
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -423,22 +951,22 @@ $(this).addClass("nav-tabs");
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                  <div class="form-group">
-                                                      <label>Email</label>
-                                                      <input type="email" required name="email" class="form-control">
-                                                  </div>
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="email" required name="email" class="form-control">
+                                                    </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                  <div class="form-group">
-                                                      <label>Phone</label>
-                                                      <input type="tel" required name="phone" class="form-control">
-                                                  </div>
+                                                    <div class="form-group">
+                                                        <label>Phone</label>
+                                                        <input type="tel" required name="phone" class="form-control">
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row text-center">
-                                            <div class="col-md-12 text-center" id="duplicateerror">
+                                                <div class="col-md-12 text-center" id="duplicateerror">
 
-                                            </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -451,75 +979,163 @@ $(this).addClass("nav-tabs");
                                                 data: {
                                                     id: this.value
                                                 }
-                                            }).done(function(data) {
-                                            })
+                                            }).done(function(data) {})
                                         });
                                     </script>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade " id="editcartitemmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="editcartitemmodalpin">
+                                    <div class="modal-header">
+                                        <h3 id="editcartitemmodalTitle">Create Order</h3>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form data-request='onEditOrder'>
+                                        <div class="modal-body">
+                                            <div class="row px-5">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label>Select Certificate</label>
+                                                        <input type="hidden" name="id" id="edit-order-id" />
+                                                        <select name="certificate" id="edit-order-certificate-id" required class="selectpicker" data-style="btn-default" data-live-search="true">
+                                                            {%for organization in organizations %}
+                                                            <optgroup label="{{organization.org_name}}">
+                                                                {%for certificate in organization.certificates %}
+                                                                <option value="{{certificate.id}}">{{certificate.title}}</option>
+                                                                {%endfor%}
+                                                            </optgroup>
+                                                            {%endfor%}
+                                                        </select>
+                                                    </div>
+                                                </div>
 
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Full Name</label>
+                                                        <input type="text" id="edit-order-name" required name="name" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Registration Number</label>
+                                                        <input type="text" required id="edit-order-reg" name="reg_number" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="editstartDate">Start Date</label>
+                                                        <input id="editstartDate" required name="start_date" type="text" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="editendDate">End Date</label>
+                                                        <input id="editendDate" required name="end_date" type="text" class="form-control" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Email</label>
+                                                        <input type="email" required id="edit-order-email" name="email" class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label>Phone</label>
+                                                        <input type="tel" required id="edit-order-phone" name="phone" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row text-center">
+                                                <div class="col-md-12 text-center" id="duplicateerror">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Edit</button>
+                                        </div>
+                                    </form>
+                                    <script>
+                                        $('#selectorganization').on('change', function() {
+                                            var AddTrainer = $.request('onSelectOrganization', {
+                                                data: {
+                                                    id: this.value
+                                                }
+                                            }).done(function(data) {})
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="total" id="total" />
                         <div class="row" id="orderdata">
 
-                                {%partial 'profile/orderdata'%}
+                            {%partial 'profile/orderdata'%}
 
 
 
                         </div>
+                        <div id="ordermade">
+                        </div>
 
-                        <input type="hidden" name="total" id="total"/>
+
 
                         <script>
-                        function myFunction() {
-                          // Get the checkbox
-                          var checkBox = document.getElementById("myCheck");
-                            var text = document.getElementById("text");
-                            console.log('hello')
-                            if (checkBox.checked == true){
-                          // If the checkbox is checked, display the output text
-                          document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
-                          document.getElementById('bill').style.display = 'block'
-                          document.getElementById('checkedtotal').style.display = 'block'
-                          document.getElementById('uncheckedtotal').style.display = 'none'
-                            document.getElementById('finishbutton').style.display = 'none'
-                            document.getElementById('checkoutbutton').style.display = 'block'
-                          } else {
-                            console.log('uncheck')
-                          document.getElementById('total').value = 0
-                          document.getElementById('bill').style.display = 'none'
-                          document.getElementById('checkedtotal').style.display = 'none'
-                          document.getElementById('uncheckedtotal').style.display = 'none'
-                          document.getElementById('finishbutton').style.display = 'block'
-                          document.getElementById('checkoutbutton').style.display = 'none'
-                          }
-                        }
-                        $(document).ready(function() {
-                          var checkBox = document.getElementById("myCheck");
-                          if (checkBox.checked == true){
-                        // If the checkbox is checked, display the output text
-                        document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
-                        document.getElementById('bill').style.display = 'block'
-                        document.getElementById('checkedtotal').style.display = 'block'
-                        document.getElementById('uncheckedtotal').style.display = 'none'
-                          document.getElementById('finishbutton').style.display = 'none'
-                          document.getElementById('checkoutbutton').style.display = 'block'
-                        } else {
-                          console.log('uncheck')
-                        document.getElementById('total').value = 0
-                        document.getElementById('bill').style.display = 'none'
-                        document.getElementById('checkedtotal').style.display = 'none'
-                        document.getElementById('uncheckedtotal').style.display = 'none'
-                        document.getElementById('finishbutton').style.display = 'block'
-                        document.getElementById('checkoutbutton').style.display = 'none'
-                        }
-                         $('#addfilemodal').modal('hide');
-                         $('#addpinmodal').modal('hide');
-                        });
+                            function myFunction() {
+                                // Get the checkbox
+                                var checkBox = document.getElementById("myCheck");
+                                var text = document.getElementById("text");
+                                console.log('hello')
+                                if (checkBox.checked == true) {
+                                    // If the checkbox is checked, display the output text
+                                    document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
+                                    document.getElementById('billtable').style.display = 'block'
+                                    document.getElementById('checkedtotal').style.display = 'block'
+                                    document.getElementById('uncheckedtotal').style.display = 'none'
+                                    document.getElementById('finishbutton').style.display = 'none'
+                                    document.getElementById('checkoutbutton').style.display = 'block'
+                                } else {
+                                    console.log('uncheck')
+                                    document.getElementById('total').value = 0
+                                    document.getElementById('billtable').style.display = 'none'
+                                    document.getElementById('checkedtotal').style.display = 'none'
+                                    document.getElementById('uncheckedtotal').style.display = 'none'
+                                    document.getElementById('finishbutton').style.display = 'block'
+                                    document.getElementById('checkoutbutton').style.display = 'none'
+                                }
+                            }
+                            $(document).ready(function() {
+                                var checkBox = document.getElementById("myCheck");
+                                if (checkBox.checked == true) {
+                                    // If the checkbox is checked, display the output text
+                                    document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
+                                    document.getElementById('billtable').style.display = 'block'
+                                    document.getElementById('checkedtotal').style.display = 'block'
+                                    document.getElementById('uncheckedtotal').style.display = 'none'
+                                    document.getElementById('finishbutton').style.display = 'none'
+                                    document.getElementById('checkoutbutton').style.display = 'block'
+                                } else {
+                                    console.log('uncheck')
+                                    document.getElementById('total').value = 0
+                                    document.getElementById('billtable').style.display = 'none'
+                                    document.getElementById('checkedtotal').style.display = 'none'
+                                    document.getElementById('uncheckedtotal').style.display = 'none'
+                                    document.getElementById('finishbutton').style.display = 'block'
+                                    document.getElementById('checkoutbutton').style.display = 'none'
+                                }
+                                $('#addfilemodal').modal('hide');
+                                $('#addpinmodal').modal('hide');
+                            });
                         </script>
 
-                        <div class="row"  id="orderbilldata">
+                        <div class="row" id="orderbilldata">
 
-                                {%partial 'profile/orderbilldata'%}
+                            {%partial 'profile/orderbilldata'%}
 
 
 
@@ -539,46 +1155,78 @@ $(this).addClass("nav-tabs");
 <script src="{{'assets/js/bootstrapValidator.min.js'|theme}}"></script>
 <script src="{{'assets/js/sweet-alert.min.js'|theme}}"></script>
 <script type="text/javascript">
-function cartitemdelete(id) {
-
-swal({
-title: "Delete Confirmation?",
-text: "Are you sure you want to delete this Order Item?",
-type: "error",
-showCancelButton: true,
-confirmButtonColor: '#DD6B55',
-confirmButtonText: 'Yes, delete it!',
-cancelButtonText: "No, cancel plx!",
-closeOnConfirm: false,
-closeOnCancel: false
-},
-function(isConfirm){
-if (isConfirm){
-  var AddTrainer = $.request('onDeleteCartItem',{data:{id:id}}).done(function(data) {
-      swal("Deleted!", "Order Item has been deleted!", "success");
-      swal({
-        title: "Deleted!",
-        text: "Order Item has been deleted!",
-        type: "success",
-        showCancelButton: false,
-        confirmButtonColor: '#DD6B55',
-        confirmButtonText: 'OK',
-        closeOnConfirm: true,
-        closeOnCancel: false
-      },
-      function(isConfirm){
-        var AddTrainer = $.request('onRedirect',{data:{redirect:'/dashboard/organization-certificates/{{this.param.id}}'}}).done(function(data) {
+    function editcartitem(id, certificate_id, email, start_date, end_date, regnumber, phone, name) {
+        document.getElementById('edit-order-id').value = id;
+        document.getElementById('edit-order-certificate-id').value = certificate_id;
+        document.getElementById('edit-order-name').value = name;
+        document.getElementById('edit-order-reg').value = regnumber;
+        document.getElementById('editstartDate').value = start_date;
+        document.getElementById('editendDate').value = end_date;
+        document.getElementById('edit-order-email').value = email;
+        document.getElementById('edit-order-phone').value = phone;
+        $('#editstartDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY-MM-DD",
+            defaultDate: start_date
         });
 
-      });
- })
+        $('#editendDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY-MM-DD",
+            defaultDate: end_date,
+            minDate: start_date
+        });
+        $('.selectpicker').selectpicker('refresh')
 
-} else {
-  swal("Cancelled", "Your Item is safe :)", "error");
-}
-});
+    }
 
-}
+    function cartitemdelete(id) {
+
+        swal({
+                title: "Delete Confirmation?",
+                text: "Are you sure you want to delete this Order Item?",
+                type: "error",
+                showCancelButton: true,
+                confirmButtonColor: '#DD6B55',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: "No, cancel plx!",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    var AddTrainer = $.request('onDeleteCartItem', {
+                        data: {
+                            id: id
+                        }
+                    }).done(function(data) {
+                        swal("Deleted!", "Order Item has been deleted!", "success");
+                        swal({
+                                title: "Deleted!",
+                                text: "Order Item has been deleted!",
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: '#DD6B55',
+                                confirmButtonText: 'OK',
+                                closeOnConfirm: true,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm) {
+                                var AddTrainer = $.request('onRedirect', {
+                                    data: {
+                                        redirect: '/dashboard/organization-certificates/{{this.param.id}}'
+                                    }
+                                }).done(function(data) {});
+
+                            });
+                    })
+
+                } else {
+                    swal("Cancelled", "Your Item is safe :)", "error");
+                }
+            });
+
+    }
     var bindDateRangeValidation = function(f, s, e) {
         if (!(f instanceof jQuery)) {
             console.log("Not passing a jQuery object");
@@ -668,14 +1316,26 @@ if (isConfirm){
 
         $('#startDate').datetimepicker({
             pickTime: false,
-            format: "YYYY/MM/DD",
+            format: "YYYY-MM-DD",
             defaultDate: sd,
             maxDate: ed
         });
 
         $('#endDate').datetimepicker({
             pickTime: false,
-            format: "YYYY/MM/DD",
+            format: "YYYY-MM-DD",
+
+        });
+
+        $('#editstartDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY-MM-DD",
+
+        });
+
+        $('#editendDate').datetimepicker({
+            pickTime: false,
+            format: "YYYY-MM-DD",
             defaultDate: ed,
             minDate: sd
         });
@@ -700,6 +1360,26 @@ if (isConfirm){
             return data;
         });
 
+    }
+
+    function selectcreditcard() {
+
+
+        document.getElementById('paypal').style.display = 'none'
+        document.getElementById('creditc').style.display = 'flex'
+        $('#creditcardselect').addClass('bg-primary');
+        $('.creditcardselect').addClass('text-white');
+        $('#paypalselect').removeClass('bg-primary');
+        $('.paypalselect').removeClass('text-white');
+    }
+
+    function paypalselect() {
+        document.getElementById('paypal').style.display = 'block'
+        document.getElementById('creditc').style.display = 'none'
+        $('#paypalselect').addClass('bg-primary');
+        $('.paypalselect').addClass('text-white');
+        $('#creditcardselect').removeClass('bg-primary');
+        $('.creditcardselect').removeClass('text-white');
     }
 
     function sendemailadd(id) {

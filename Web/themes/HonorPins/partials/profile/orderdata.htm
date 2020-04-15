@@ -36,7 +36,7 @@
                   <td>{{cartitem.start_date|date("m-d-Y")}}</td>
                   <td>{{cartitem.end_date|date("m-d-Y")}}</td>
                   <td>
-                    <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="onedit({{cartitem.id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+                    <a href="#" data-toggle="modal" data-target="#editcartitemmodal" style="padding: 0 0.6rem; line-height:1.8" onclick="editcartitem({{cartitem.id}},{{cartitem.certificate_id}},'{{cartitem.email}}','{{cartitem.start_date}}','{{cartitem.end_date}}','{{cartitem.reg_number}}','{{cartitem.phone}}','{{cartitem.name}}')"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
                     <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="cartitemdelete({{cartitem.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
                   </td>
                     </tr>
@@ -56,6 +56,8 @@
 </div>
 <script>
 $(document).ready(function() {
+$('#checkoutmodal').modal('hide');
+$('#editcartitemmodal').modal('hide');
 $('#addfilemodal').modal('hide');
  $('#addpinmodal').modal('hide');
 });

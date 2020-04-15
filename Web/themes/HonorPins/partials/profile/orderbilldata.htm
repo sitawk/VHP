@@ -3,7 +3,7 @@ var checkBox = document.getElementById("myCheck");
 if (checkBox.checked == true){
 // If the checkbox is checked, display the output text
 document.getElementById('total').value = '{{cartitems|length * unitprice + tax}}'
-document.getElementById('bill').style.display = 'block'
+document.getElementById('billtable').style.display = 'block'
 document.getElementById('checkedtotal').style.display = 'block'
 document.getElementById('uncheckedtotal').style.display = 'none'
   document.getElementById('finishbutton').style.display = 'none'
@@ -11,7 +11,7 @@ document.getElementById('uncheckedtotal').style.display = 'none'
 } else {
 console.log('uncheck')
 document.getElementById('total').value = 0
-document.getElementById('bill').style.display = 'none'
+document.getElementById('billtable').style.display = 'none'
 document.getElementById('checkedtotal').style.display = 'none'
 document.getElementById('uncheckedtotal').style.display = 'none'
   document.getElementById('finishbutton').style.display = 'block'
@@ -34,7 +34,7 @@ $('#addfilemodal').modal('hide');
         </div>
     </div>
 </div>
-<div class="col-md-12 border-bottom" id="bill" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
+<div class="col-md-12 border-bottom" id="billtable" style="display:none;padding-top: 1rem!important;padding-bottom: 1rem!important;">
 
     <div class="row">
         <div class="col-md-4">
@@ -93,7 +93,7 @@ $('#addfilemodal').modal('hide');
 <div id="checkoutbutton">
 {%if cartitems|length > 0%}
 <div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
-    <button type="submit" class="btn btn btn-primary"> Checkout</button>
+    <button data-toggle="modal" data-target="#checkoutmodal"  class="btn btn btn-primary"> Checkout</button>
 </div>
 {%else%}
 <div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
@@ -104,7 +104,7 @@ $('#addfilemodal').modal('hide');
 <div id="finishbutton">
   {%if cartitems|length > 0%}
 <div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
-    <button type="submit" class="btn btn btn-primary"> Finish</button>
+    <button data-request="onCreateOrder" type="submit" class="btn btn btn-primary"> Finish</button>
 </div>
 {%else%}
 <div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">

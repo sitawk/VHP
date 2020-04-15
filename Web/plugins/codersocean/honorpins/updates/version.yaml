@@ -84,3 +84,12 @@
 1.0.29:
     - 'Created table codersocean_honorpins_paymentmethods'
     - builder_table_create_codersocean_honorpins_paymentmethods.php
+1.0.30:
+    - 'Updated table codersocean_honorpins_paymentmethods'
+    - builder_table_update_codersocean_honorpins_paymentmethods.php
+1.0.31:
+    - 'Updated table codersocean_honorpins_paymentmethods'
+    - builder_table_update_codersocean_honorpins_paymentmethods_2.php
+1.0.32:
+    - 'Updated table codersocean_honorpins_paymentmethods'
+    - builder_table_update_codersocean_honorpins_paymentmethods_3.php

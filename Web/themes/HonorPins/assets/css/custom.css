@@ -1,5 +1,10 @@
 .content-desktop {display: block;}
 .content-mobile {display: none;}
+.account-card:hover .account-card-overlay {
+    opacity: 1;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
 @media screen and (max-width: 992px) {
   .mobile-hide {
     display:none;
@@ -111,7 +116,7 @@ display: block;
 .font-12 {
   font-size: 12px;
 }
-input {
+/* input {
   height: 40px !important;
     padding-left: 10px !important;
 }
@@ -120,7 +125,7 @@ input {
 }
 .dropdown-toggle {
   line-height: 2.88 !important;
-}
+} */
 .dropify {
   height:100% !important;
 }

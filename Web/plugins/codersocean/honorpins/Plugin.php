@@ -39,7 +39,7 @@ class Plugin extends PluginBase
             $model->hasOne['myorganization'] = ['Codersocean\Honorpins\Models\Organization', 'key' => 'user_id'];
         });
   User::extend(function($model) {
-            $model->hasOne['cards'] = ['Codersocean\Honorpins\Models\PaymentMethod', 'key' => 'user_id'];
+            $model->hasMany['cards'] = ['Codersocean\Honorpins\Models\PaymentMethod', 'key' => 'user_id'];
         });
   User::extend(function($model) {
             $model->hasMany['personalcertificates'] = ['Codersocean\Honorpins\Models\HolderPins', 'key' => 'email', 'otherKey' => 'email'];

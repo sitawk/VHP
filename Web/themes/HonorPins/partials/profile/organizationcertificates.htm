@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-lg-2 col-md-2 col-xs-12 float-right align-self-center ">
-                <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="onedit({{certificate.id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+                <a href="#" data-toggle="modal" data-target="#editcertificatemodal" style="padding: 0 1.2rem; line-height:2.55" onclick="oncertificateedit({{certificate.id}},'{{certificate.title}}',{{certificate.category_id}},'{{certificate.desc}}','{{certificate.url}}',{{certificate.pin_id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
                 <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="ondelete({{certificate.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
             </div>
 
@@ -79,3 +79,10 @@
     </div>
 </div>
 {%endif%}
+<script>
+$(document).ready(function() {
+$('#editcertificatemodal').modal('hide');
+
+});
+
+</script>
