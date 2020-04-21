@@ -1,0 +1,346 @@
+title = "User Dashboard"
+url = "/dashboard/connected-emails"
+layout = "default"
+[account]
+redirect=0
+[session]
+[Dashboard]
+==
+<?php
+use Intervention\Image\ImageManagerStatic as Image;
+function onAddPin(){
+  $addpin = new Codersocean\Honorpins\Models\Pin;
+  $addpin->title = post('title');
+  $addpin->template = post('template');
+  $this['user'] = $user = Auth::getuser();
+  $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
+  $addpin->org_id = $this['myorganization']->id;
+  $png_url = "pin-".time().".png";
+    $path = public_path().'/storage/app/uploads/web/' . $png_url;
+    $datapath = '/storage/app/uploads/web/' . $png_url;
+
+    Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
+
+  $addpin->image = $datapath;
+  $addpin->certificate_id = 0;
+  $addpin->save();
+
+  $this['addpin'] = 1;
+
+
+    $this['organization'] = $addpin->organization;
+return [
+  '#completepin' => $this->renderPartial('profile/addpin')
+];
+}
+function onSendEmail(){
+  $this['user'] = $user = Auth::getuser();
+  $addorganization = Codersocean\Honorpins\Models\ConnectedEmails::where('id',post('id'))->first();
+  $datamail = [
+              'name' => $user->name.' '.$user->surname,
+              'code' => $addorganization->verification_code,
+
+          ];
+  Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+              $message->to($addorganization->email, $addorganization->email);
+               $message->from('noreply@honorpins.com','Verification Messege');
+          });
+  return post('id');
+}
+function onStart(){
+  $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
+  $this['user'] = $user = Auth::getuser();
+
+  if(!$user){
+    $redrect = '/login';
+    return Redirect::to($redrect);
+  }else{
+
+
+
+  }
+
+  $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
+}
+function onMakePrimary(){
+  $user = Auth::getuser();
+    $change  = Codersocean\Honorpins\Models\ConnectedEmails::where('is_primary',1)->where('user_id',$user->id)->first();
+    $change->is_primary = 0;
+    $change->save();
+    $organization  = Codersocean\Honorpins\Models\ConnectedEmails::where('id',post('id'))->first();
+    $organization->is_primary = 1;
+    $organization->save();
+    $user->email =$organization->email;
+    $user->save();
+    $user = Auth::getuser();
+      $this['user'] = $user;
+    $this['addpin'] = 0;
+      return [
+      '#completepin' => $this->renderPartial('profile/addemails'),
+          '#createaddpinbutton' => $this->renderPartial('userdashboard/createemailbutton'),
+          '#allpinsrender' => $this->renderPartial('profile/allemails'),
+      ];
+
+}
+function onRedirect(){
+  $user = Auth::getuser();
+    $this['user'] = $user;
+  $this['addpin'] = 0;
+    return [
+
+        '#createaddpinbutton' => $this->renderPartial('userdashboard/createaddpinbutton'),
+        '#allpinsrender' => $this->renderPartial('profile/allpins'),
+    ];
+}
+function onAcitvateOrganization(){
+  $organization  = Codersocean\Honorpins\Models\ConnectedEmails::where('id',post('id'))->first();
+  if($organization->verification_code == post('code')){
+    $organization->status = 1;
+    $organization->save();
+  //dd('hello');
+    $this['verifiedorganization'] = 1;
+    return [
+        "#activation".post('id')."completed" => $this->renderPartial('profile/verifyemail')
+    ];
+  }else{
+    $this['error'] = 'Your Verification Code is not Valid!';
+    return [
+        '#activateverifycheck'.$organization->id.'check' => $this->renderPartial('profile/error')
+    ];
+  }
+
+
+}
+function onVerifyOrganization(){
+  $organization  = Codersocean\Honorpins\Models\ConnectedEmails::where('id',post('id'))->first();
+  if($organization->verification_code == post('code')){
+    $organization->status = 1;
+    $organization->save();
+    $this['addorganization'] = 1;
+    $this['verifiedorganization'] = 1;
+    return [
+        '#completepin' => $this->renderPartial('profile/addemails')
+    ];
+  }else{
+    $this['error'] = 'Your Verification Code is not Valid!';
+    return [
+        '#verifycheck' => $this->renderPartial('profile/error')
+    ];
+  }
+
+
+}
+function onAddEmail(){
+  $user =Auth::getuser();
+  $addorganization = new Codersocean\Honorpins\Models\ConnectedEmails;
+  $addorganization->user_id= $user->id;
+  $addorganization->email= post('email');
+  $addorganization->status= 0;
+  $Caracteres = '0123456789';
+      $QuantidadeCaracteres = strlen($Caracteres);
+      $QuantidadeCaracteres--;
+      $Hash=NULL;
+          for($x=1;$x<=6;$x++){
+              $Posicao = rand(0,$QuantidadeCaracteres);
+              $Hash .= substr($Caracteres,$Posicao,1);
+          }
+  $addorganization->verification_code = $Hash;
+      $addorganization->save();
+  $datamail = [
+              'name' => $user->name.' '.$user->surname,
+              'code' => $Hash,
+
+          ];
+  Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+              $message->to($addorganization->email, $addorganization->email);
+               $message->from('noreply@honorpins.com','Verification Messege');
+          });
+  $this['addorganization'] = 1;
+
+
+      $this['org'] = $addorganization;
+      $user =Auth::getuser();
+        $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
+  return [
+    '#completepin' => $this->renderPartial('profile/addemails')
+  ];
+  }
+
+
+function onDeletePin(){
+  Codersocean\Honorpins\Models\ConnectedEmails::where('id',post('id'))->delete();
+  return 1;
+}
+function onCloseModal(){
+$user = Auth::getuser();
+  $this['user'] = $user;
+$this['addpin'] = 0;
+  return [
+  '#completepin' => $this->renderPartial('profile/addemails'),
+      '#createaddpinbutton' => $this->renderPartial('userdashboard/createemailbutton'),
+      '#allpinsrender' => $this->renderPartial('profile/allemails'),
+  ];
+}
+
+?>
+==
+<style>
+.collapse .nav-item {
+
+}
+.rotateas{
+-webkit-transform: rotate(90deg);  /* Chrome, Safari, Opera */
+-moz-transform: rotate(90deg);  /* Firefox */
+-ms-transform: rotate(90deg);  /* IE 9 */
+transform: rotate(90deg);  /* Standard syntax */
+}
+</style>
+<script>
+$(document).ready(function(){
+// Add minus icon for collapse element which is open by default
+
+
+// Toggle plus minus icon on show hide of collapse element
+$(".collapse").on('show.bs.collapse', function(){
+$(this).addClass("nav-tabs");
+$(this).parent().find(".pull-right").removeClass("fa-angle-right");
+
+    $(this).parent().find(".pull-right").addClass("fa-angle-down");
+}).on('hide.bs.collapse', function(){
+$(this).removeClass("nav-tabs");
+$(this).parent().find(".pull-right").removeClass("fa-angle-down");
+
+  $(this).parent().find(".pull-right").addClass("fa-angle-right");
+});
+});
+</script>
+<link rel="stylesheet" type="text/css" href="{{'assets/sweetalert.css'|theme}}">
+<link href="{{'assets/dashboard/quill.core.css'|theme}}" rel="stylesheet" type="text/css" />
+      <link href="{{'assets/dashboard/quill.bubble.css'|theme}}" rel="stylesheet" type="text/css" />
+      <link href="{{'assets/dashboard/quill.snow.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
+<section>
+    <div class="header-space"></div>
+    <div class="container mt-65 py-5">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Connected Emails</h2>
+            </div>
+            <div class="col-lg-12">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active " id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
+                        <div class="row" id="createaddpinbutton">
+
+
+                            {% partial 'userdashboard/createemailbutton' %}
+
+
+
+                        </div>
+                        <div class="modal fade " id="addemail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="completepin">
+                                    {% partial 'profile/addemails' %}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {%  if user.emails.count != 0 %}
+                        <div id="allpinsrender">
+
+                              {% partial 'profile/allemails' %}
+                        </div>
+                        {%else%}
+                        <div class="row " style="height: 250px;">
+                            <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
+                                <i class="fas fa-certificate text-primary" style="font-size:100px;"></i>
+                                <h4 class="text-primary mt-15">Activate your organization to add Pins!</h4>
+
+                            </div>
+                        </div>
+                        {%endif%}
+
+                    </div>
+                    </div>
+                </div></div></div>
+
+                    <div class="header-space"></div>
+</section>
+<script src="{{'assets/js/sweet-alert.min.js'|theme}}"></script>
+<script type="text/javascript">
+function deletepin(id) {
+
+swal({
+title: "Delete Confirmation?",
+text: "Are you sure you want to delete this Pin?",
+type: "error",
+showCancelButton: true,
+confirmButtonColor: '#DD6B55',
+confirmButtonText: 'Yes, delete it!',
+cancelButtonText: "No, cancel plx!",
+closeOnConfirm: false,
+closeOnCancel: false
+},
+function(isConfirm){
+if (isConfirm){
+  var AddTrainer = $.request('onDeletePin',{data:{id:id}}).done(function(data) {
+      swal("Deleted!", "Pin has been deleted!", "success");
+      swal({
+        title: "Deleted!",
+        text: "Pin has been deleted!",
+        type: "success",
+        showCancelButton: false,
+        confirmButtonColor: '#DD6B55',
+        confirmButtonText: 'OK',
+        closeOnConfirm: true,
+        closeOnCancel: false
+      },
+      function(isConfirm){
+        console.log('hello')
+        var AddTrainer = $.request('onRedirect').done(function(data) {
+        });
+
+      });
+ })
+
+} else {
+  swal("Cancelled", "Your Pin is safe :)", "error");
+}
+});
+
+}
+    function sendemail(id) {
+        console.log(id)
+        var loader = 'spinner' + id;
+        var messege = 'successfullysent' + id;
+        document.getElementById(loader).style.display = 'block'
+        document.getElementById(messege).style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById(loader).style.display = 'none'
+            document.getElementById(messege).style.display = 'block'
+            return data;
+        });
+
+    }
+
+    function sendemailadd(id) {
+        console.log(id)
+        document.getElementById('spinneradd').style.display = 'block'
+        document.getElementById('successfullysentadd').style.display = 'none'
+        $.request('onSendEmail', {
+            data: {
+                id: id
+            }
+        }).done(function(data) {
+            document.getElementById('spinneradd').style.display = 'none'
+            document.getElementById('successfullysentadd').style.display = 'block'
+            return data;
+        });
+
+    }
+</script>

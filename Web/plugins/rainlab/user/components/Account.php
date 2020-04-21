@@ -13,6 +13,7 @@ use ValidationException;
 use ApplicationException;
 use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
+use Codersocean\HonorPins\Models\ConnectedEmails;
 use RainLab\User\Models\Settings as UserSettings;
 use Exception;
 
@@ -363,6 +364,21 @@ class Account extends ComponentBase
             $user = Auth::register($data, $automaticActivation);
 
             Event::fire('rainlab.user.register', [$user, $data]);
+            $useradd = new ConnectedEmails;
+            $useradd->user_id = $user->id;
+            $useradd->status = 1;
+            $useradd->is_primary = 1;
+            $useradd->email = $user->email;
+            $Caracteres = '0123456789';
+                $QuantidadeCaracteres = strlen($Caracteres);
+                $QuantidadeCaracteres--;
+                $Hash=NULL;
+                    for($x=1;$x<=6;$x++){
+                        $Posicao = rand(0,$QuantidadeCaracteres);
+                        $Hash .= substr($Caracteres,$Posicao,1);
+                    }
+            $useradd->verification_code = $Hash;
+            $useradd->save();
 
             /*
              * Activation is by the user, send the email

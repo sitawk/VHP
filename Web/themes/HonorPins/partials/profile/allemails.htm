@@ -1,0 +1,150 @@
+
+{%  if user.emails|length > 0 %}
+  <div class="row">
+<div class="col-lg-12">
+    <div class="job-listings" style="margin-bottom:0px,padding-top:0px;padding-bottom:0px">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+              <p class="font-weight-500">Email</p>
+          </div>
+          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+            <p class="font-weight-500">Status</p>
+          </div>
+          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+            <p class="font-weight-500">Priority</p>
+          </div>
+
+
+
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center ">
+                <p class="font-weight-500">Action</p>
+            </div>
+
+            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                <a class="btn-apply-disable disabled ">See Certificates</a>
+            </div> -->
+
+        </div>
+    </div>
+</div>
+{% for pin in user.emails%}
+<div class="col-lg-12">
+    <div class="job-listings" style="padding-top:5px;padding-bottom:5px">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+              <div class="location">
+              <p class="font-weight-bold">{{pin.email}}</p>
+              </div>
+          </div>
+          {%if pin.status == 0 %}
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+                <span class="badge badge-warning text-center mt-15">Verification Pending</span>
+            </div>
+            {%else%}
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+                <span class="badge badge-success text-center mt-15">Verified</span>
+            </div>
+            {%endif%}
+    {%if pin.status == 0 %}
+    <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+      <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{pin.id}}">Verify</a>
+    </div>
+        {%else%}
+          {%if pin.is_primary == 1 %}
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+
+                <span class="badge badge-info text-center mt-15">Primary</span>
+            </div>
+            {%else%}
+            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+              <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" onclick="makeprimary({{pin.id}})">Make Primary</a>
+            </div>
+            {%endif%}
+            {%endif%}
+
+              {%if pin.is_primary == 1 %}
+                <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+                </div>
+                {%else%}
+                <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
+              <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="deletepin({{pin.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
+                </div>
+                {%endif%}
+
+
+
+            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
+                <a class="btn-apply-disable disabled ">See Certificates</a>
+            </div> -->
+            <div class="modal fade " id="organization{{pin.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content" id="activation{{pin.id}}completed">
+                        {% partial 'profile/verifyemail' email=pin%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endfor%}
+</div>
+{%else%}
+<div class="row " style="height: 250px;">
+    <div class="col-lg-4 text-center ml-auto mr-auto my-auto">
+        <i class="fas fa-certificate text-primary" style="font-size:100px;"></i>
+        <h4 class="text-primary mt-15">No email conncted yet!</h4>
+            <button type="submit" class="btn btn btn-primary" data-toggle="modal" data-target="#addemail"><i class="fas fa-plus text-white"></i> Connect</button>
+    </div>
+</div>
+{%endif%}
+<link rel="stylesheet" type="text/css" href="{{'assets/sweetalert.css'|theme}}">
+<script src="{{'assets/js/sweet-alert.min.js'|theme}}"></script>
+<script>
+function makeprimary(id){
+  swal({
+          title: " Primary Email Confirmation?",
+          text: "Are you sure you want to make this email primary?",
+          type: "success",
+          showCancelButton: true,
+          confirmButtonColor: '#1cb9c8',
+          confirmButtonText: 'Yes, Make it Primary!',
+          cancelButtonText: "No!",
+          closeOnConfirm: false,
+          closeOnCancel: false
+      },
+      function(isConfirm) {
+          if (isConfirm) {
+              var AddTrainer = $.request('onMakePrimary', {
+                  data: {
+                      id: id
+                  }
+              }).done(function(data) {
+
+                  swal({
+                          title: "Done!",
+                          text: "Email is successfully set as Primary!",
+                          type: "success",
+                          showCancelButton: false,
+                          confirmButtonColor: '#1cb9c8',
+                          confirmButtonText: 'OK',
+                          closeOnConfirm: true,
+                          closeOnCancel: false
+                      },
+                      function(isConfirm) {
+
+
+                      });
+              })
+
+          } else {
+              swal("Cancelled", "Operation not successfull", "error");
+          }
+      });
+}
+  $(document).ready(function() {
+
+  $('#addpinmodal').modal('hide');
+
+  });
+</script>

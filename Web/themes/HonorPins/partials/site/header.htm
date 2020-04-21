@@ -44,15 +44,21 @@ function onStart(){
                                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" style="object-fit:contain" width="40" height="40" class="rounded-circle border">
                                     </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                      {% if user.groups.count == 0%}
-                                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                                      {%else%}
-                                        {% if user.groups[0].code == 'admin'%}
-                                          <a class="dropdown-item" href="/adminpanel">Admin Panel</a>
-                                          {%endif%}
-                                          {%endif%}
-                                        <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
+                                    <div class="dropdown-menu py-0" style="margin-left: -108px;margin-top: -3px;" aria-labelledby="navbarDropdownMenuLink">
+
+    <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">My Profile</a>
+                                          <a class="dropdown-item font-weight-500" href="/dashboard">See Profile</a>
+                                          <a class="dropdown-item font-weight-500" href="/dashboard/change-password">Change Password</a>
+
+                                      <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">Account</a>
+                                      <div>
+                                          <a class="dropdown-item font-weight-500" href="/dashboard/paymentmethods">Credit Cards</a>
+                                          <a class="dropdown-item font-weight-500" href="/dashboard/connected-emails">Connected emails</a>
+
+                                      </div>
+
+
+                                        <a class="border-dark border-top dropdown-item pl-3 font-weight-bold" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -60,7 +66,7 @@ function onStart(){
                     </nav>
                 </div>
                 {%else%}
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-6 mobile-hide ">
                     <div class=" ml-4 float-sm-right">
                         <p style="font-size: 1.1rem;"><a href="/login">Login</a></p>
                     </div>
@@ -74,24 +80,48 @@ function onStart(){
     </div>
     <nav id="active-sticky" class="navbar navbar-dark navbar-expand-lg">
         <div class="container bg-dark">
+            {%if user %}
             <ul class="navbar-nav content-mobile">
                 <li class="nav-item dropdown " style="position:absolute;top:0;margin-top:25px">
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" width="40" height="40" class="rounded-circle border">
                     </a>
 
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      {% if user.groups.count == 0%}
-                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                      {%else%}
-                        {% if user.groups[0].code == 'admin'%}
-                          <a class="dropdown-item" href="/adminpanel">Admin Panel</a>
-                          {%endif%}
-                          {%endif%}
-                        <a class="dropdown-item" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
+                    <div class="dropdown-menu py-0" style="position:absolute" aria-labelledby="navbarDropdownMenuLink">
+
+
+                          <a class="dropdown-item font-weight-500" href="/dashboard">Profile</a>
+                          <a class="dropdown-item font-weight-500" href="/dashboard/change-password">Change Password</a>
+
+                      <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">Account</a>
+                      <div>
+                          <a class="dropdown-item font-weight-500" href="/dashboard/paymentmethods">Credit Cards</a>
+                          <a class="dropdown-item font-weight-500" href="/dashboard/connected-emails">Connected emails</a>
+
+                      </div>
+
+
+                        <a class="border-dark border-top dropdown-item pl-3 font-weight-bold" href="#" data-request="onLogout" data-request-data="redirect: '/'">Log Out</a>
                     </div>
                 </li>
             </ul>
+            {%else%}
+            <ul class="navbar-nav content-mobile">
+                <li class="nav-item dropdown " style="position:absolute;top:0;margin-top:25px">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{%if user.avatar != null%}{{user.avatar.path}}{%else%}{{'assets/img/user.png'|theme}}{%endif%}" width="40" height="40" class="rounded-circle border">
+                    </a>
+
+                    <div class="dropdown-menu py-0" style="position:absolute" aria-labelledby="navbarDropdownMenuLink">
+
+
+
+                        <a class="border-dark dropdown-item " href="/login" >Login</a>
+                        <a class="border-dark dropdown-item" href="/login" >Register</a>
+                    </div>
+                </li>
+            </ul>
+            {%endif%}
             <a class="navbar-brand content-desktop" href="index.html">
                 <h1 class="text-white">HonorPins</h1>
             </a>
@@ -116,11 +146,13 @@ function onStart(){
                         <a href="/pricing" class="nav-link">Pricing</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a href="/services" class="nav-link dropdown-toggle" style="line-height:2rem !important;" data-toggle="dropdown">Services</a>
+                        <a href="#" class="nav-link dropdown-toggle" style="line-height:2rem !important;" data-toggle="dropdown">Services</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Service One</a></li>
-                            <li><a class="dropdown-item" href="#">Service two</a></li>
-                            <li><a class="dropdown-item" href="#">Service three</a></li>
+                            <li><a class="dropdown-item" href="/dashboard/organizations">My Organization</a></li>
+                            <li><a class="dropdown-item" href="/manage-certificates">Manage Certificates</a></li>
+                            {% if user.groups[0].code == 'admin'%}
+                            <li>  <a class="dropdown-item" href="/adminpanel">Admin Panel</a></li>
+                              {%endif%}
 
                         </ul>
                     </li>

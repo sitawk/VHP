@@ -1,0 +1,124 @@
+
+{% if addorganization == 1%}
+{% if verifiedorganization == 1%}
+<div class="modal-header">
+<h3>Activation Completed</h3>
+<button type="button" class="close" data-request="onCloseModal" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row px-5">
+    <div class="col-md-6 ml-auto mr-auto">
+        <div class="row">
+            <div class="col-md-6 text-center ml-auto mr-auto my-4">
+                <i class="fas fa-check-circle text-primary" style="font-size:150px;"></i>
+            </div>
+            <div class="col-md-12">
+                <h2 class="text-primary text-center">Your email is Successfully Activated!</h2>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="modal-footer">
+<a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary"> Close</a>
+</div>
+{%else%}
+<div class="modal-header">
+<h3>Email Added</h3>
+<button type="button" class="close" data-request="onCloseModal" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row px-5">
+    <div class="col-md-9 ml-auto mr-auto">
+        <div class="col-md-12">
+            <h2 class="text-primary text-center">6 Digits Verification code has been sent to your email!</h2>
+        </div>
+        <form data-request="onVerifyOrganization">
+            <div class="col-md-12 my-4">
+                <div class="form-group">
+                    <label>Enter Code</label>
+                    <input type="number" required name="code" class="form-control">
+                    <input type="hidden" name="id" value="{{org.id}}" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-12 my-4">
+                <p class="my-3" id="verifycheck"></p>
+                <button type="submit" class="btn btn-primary">Activate Now</button>
+                <span class="text-dark" style="font-size:12px;display:block;margin-top:10px">or, Didnt receive an email?</span>
+                <a href="#" class="text-primary" onclick="sendemailadd({{org.id}})">Resend</a>
+
+                <span id="spinneradd" class="" style="display:none"><i class="fa-spin fa fa-spinner text-primary"></i></span>
+                <span id="successfullysentadd" style="font-size:12px;display:none" class="text-success"> Email successfully sent!</span>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+<div class="modal-footer">
+<a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary"> Close</a>
+</div>
+{%endif%}
+{%else%}
+<div class="modal-header">
+<h3 id="exampleModalLongTitle">Register an Organization</h3>
+<button type="button" class="close" data-dismiss="modal" data-request="onCloseModal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>
+<form>
+<div class="modal-body px-5">
+      <div class="row" >
+        <div class="col-md-12">
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" required name="officialemail" id="orgofficialemail" class="form-control">
+                  <span style="color:red;display:none; font-size:11px;" id="orgofficialemailerror">This field is required!</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+
+            <span style="font-size:11px;"  class="text-primary">You need to verify this email!</span>
+        </div>
+            </div>
+</div>
+<input type="hidden" id="orgbase64" />
+<div class="modal-footer">
+    <button type="button" id="addorgspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
+    <button type="button" id="addorg"  onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Email</button>
+</div>
+</form>
+{%endif%}
+
+<script type="text/javascript">
+
+function addorganization(){
+document.getElementById('orgofficialemailerror').style.display = 'none';
+
+var button =   document.getElementById('addorgspin').style.display = 'block';
+var button =   document.getElementById('addorg').style.display = 'none';
+// var button =   document.getElementById('addorgspin).value;
+
+var orgofficialemail =   document.getElementById('orgofficialemail').value;
+if(orgofficialemail === ''){
+  document.getElementById('orgofficialemailerror').style.display = 'block';
+  var button =   document.getElementById('addorgspin').style.display = 'none';
+  var button =   document.getElementById('addorg').style.display = 'block';
+  return 'error'
+}
+
+var AddTrainer = $.request('onAddEmail',{flash: 1,data:{email:orgofficialemail}}).done(function(data) {
+    console.log('data')
+    var button =   document.getElementById('addorgspin').style.display = 'none';
+    var button =   document.getElementById('addorg').style.display = 'block';
+
+}).fail(function()  {
+ var button =   document.getElementById('addorgspin').style.display = 'none';
+ var button =   document.getElementById('addorg').style.display = 'block';
+});
+}
+</script>

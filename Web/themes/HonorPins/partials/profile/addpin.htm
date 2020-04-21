@@ -1,4 +1,4 @@
-    <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
 {% if addpin == 1%}
 <div class="modal-header">
     <h3>Pin Created</h3>
@@ -21,182 +21,219 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary "> Close</a>
+    <a href="#" data-request="onCloseModal" data-dismiss="modal" class="btn btn-primary "> Close</a>
 </div>
 {% set addpin = 0%}
 {%else%}
-<div class="modal-header">
-    <h3 id="exampleModalLongTitle">Add New Pin</h3>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-  <form>
     <div class="modal-body px-5">
-          <div class="row" >
-            <div class="col-lg-8 ">
-                <div class="form-group">
-                    <h4 class="header-title">Organization</h4>
-                    <input type="text" disabled  name="" id="" value="{{user.myorganization.org_name}}" class="form-control">
-
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-2 border-dark card-inverse" style="background-color: #fff; border-color: #fff; border-radius:10px">
+                    <div class="card-block">
+                        <div class="row">
+                            <div class="col-md-2 col-sm-2 text-center ">
+                                <img id="renderimage" class="btn-md mt-25" src="/themes/honorpins/assets/img/pinlogo.png" class="" alt="" style="border-radius:50%;" />
+                            </div>
+                            <div class="col-md-10 col-sm-10 ">
+                                <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                <h2 class="card-title text-gray-dark" id="rendertitle"><i style="color:#ccc;">Pin_Title</i></h2>
+                              </div>
+                                <div class="col-md-12 col-sm-12">
+                                <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>By PMI: </strong>  <i style="color:#ccc;">PMI_Website_Url</i></p>
+                              </div>
+                                <div class="col-md-5 col-sm-5">
+                                <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>Certificate No: </strong>  <i style="color:#ccc;">RegNo</i></p>
+                                 </div>
+                                   <div class="col-md-2 col-sm-2">
+                                 <strong>-</strong>
+                               </div>
+                                 <div class="col-md-5 col-sm-5">
+                                 <p style="line-height:1.5;font-size:14px"><strong>Granted Date:</strong> <i style="color:#ccc;">Start_date</i></p>
+                               </div>
+                                 <div class="col-md-12 col-sm-12" style="height:100px">
+                                <p style="line-height:1.5;font-size:13px" id="renderdesc">
+                                  <i style="color:#ccc;">Description</i></p>
+                            </div>
+                          </div>
+                          </div>
+                          <div class="col-md-12 col-sm-12 pb-15 pl-25">
+                              <p class="card-text text-gray-dark" style="line-height:1.5"><strong>Signed By: </strong> <i style="color:#ccc">Holder_Name</i> </p>
+                        </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div class="col-lg-12 text-center">
+                <span style="color:red;display:none; font-size:12px;" id="descerror">character limit exceded for pin descriptiom. Limit:480 characters</span>
+            </div>
+            <div class="col-lg-9 mt-15">
                 <div class="form-group">
                     <h4 class="header-title">Title</h4>
                     <input type="text" required name="title" id="title" class="form-control">
-                      <span style="color:red;display:none; font-size:12px;" id="titleerror">This field is required!</span>
+                    <span style="color:red;display:none; font-size:12px;" id="titleerror">This field is required!</span>
                 </div>
-
-
+                <div class="form-group">
+                    <h4 class="header-title">Description</h4>
+                    <textarea type="text" required name="title" id="desc" class="form-control" style="height:70px !important"></textarea>
+                    <span style="color:red;display:none; font-size:12px;" id="desceerror">This field is required!</span>
+<input type="hidden" value="" id="orgbase64">
+                </div>
             </div>
-
-            <div class="col-lg-4">
-
-                  <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="200"  />
-                    <span style="color:red;display:none; font-size:12px;" id="orglogoerror">This field is required!</span>
-                </div>
-            <div class="col-md-12 mt-3">
-
-              <div class="card">
-                  <div class="card-body">
-                      <h4 class="header-title">Pin Template</h4>
-                        <span style="color:red;display:none; font-size:12px;" id="temperror">Template is required!</span>
-                      <div id="snow-editor" style="height: 300px;">
-
-
-                      </div> <!-- end Snow-editor-->
-                  </div> <!-- end card-body-->
-              </div>
-                </div>
-                </div>
+            <div class="col-md-3 mt-35 align-self-center">
+                <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="140" />
+                <span style="color:red;display:none; font-size:12px;" id="orglogoerror">This field is required!</span>
+            </div>
+        </div>
     </div>
     <input type="hidden" id="orgbase64" />
     <div class="modal-footer">
         <button type="button" id="addorgspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
-        <button type="button" id="addorg"  onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Create</button>
+        <button type="button" id="addorg" onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Create</button>
     </div>
-</form>
 {%endif%}
 <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
-<script src="{{'assets/dashboard/katex.min.js'|theme}}"></script>
-   <script src="{{'assets/dashboard/quill.min.js'|theme}}"></script>
-  <script type="text/javascript">
-  var quill=new Quill("#snow-editor",{theme:"snow",modules:{toolbar:[[{font:[]},{size:[]}],["bold","italic","underline","strike"],[{color:[]},{background:[]}],[{script:"super"},{script:"sub"}],[{header:[!1,1,2,3,4,5,6]},"blockquote","code-block"],[{list:"ordered"},{list:"bullet"},{indent:"-1"},{indent:"+1"}],["direction",{align:[]}],["link","image","video","formula"],["clean"]]}});
 
+<script type="text/javascript">
+$('#title').keyup(function() {
+  var str = "";
 
-  function orgreadURL(input) {
+    str += $( this ).val();
+if(str.length != 0){
+ document.getElementById('rendertitle').innerHTML = '',
+    $( "#rendertitle" ).text( str );
+}else{
+   document.getElementById('rendertitle').innerHTML = '<i style="color:#ccc;">Pin_Title</i>';
+}
+
+});
+$('#desc').keyup(function() {
+  var str = "";
+
+    str += $( this ).val();
+if(str.length != 0){
+  if(str.length <=480){
+ document.getElementById('renderdesc').innerHTML = '',
+    $( "#renderdesc" ).text( str );
+      document.getElementById('descerror').style.display = 'none';
+  }else{
+      document.getElementById('descerror').style.display = 'block';
+  }
+}else{
+   document.getElementById('renderdesc').innerHTML = '<i style="color:#ccc;">Description</i>';
+}
+
+});
+
+    function orgreadURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 //$('#blah').attr('src', e.target.result);
-                document.getElementById('orgbase64').value=e.target.result;
+                document.getElementById('renderimage').src = e.target.result;
+                document.getElementById('orgbase64').value = e.target.result;
             }
 
             reader.readAsDataURL(input.files[0]);
         }
     }
-  $("#orglogo").change(function(){
+    $("#orglogo").click(function() {
+      console.log('asdasdasd')
+      if(document.getElementById('renderimage').src !== '/themes/honorpins/assets/img/pinlogo.png'){
+        document.getElementById('renderimage').src = '/themes/honorpins/assets/img/pinlogo.png';
+      }
+    })
+    $("#orglogo").change(function() {
+      console.log('asdaaaaaa')
         orgreadURL(this);
     });
-  function addorganization(){
 
-       console.log(quill.container.firstChild.innerHTML)
-    document.getElementById('titleerror').style.display = 'none';
+    function addorganization() {
 
-document.getElementById('orglogoerror').style.display = 'none';
-document.getElementById('temperror').style.display = 'none';
 
-    var button =   document.getElementById('addorgspin').style.display = 'block';
-    var button =   document.getElementById('addorg').style.display = 'none';
-    // var button =   document.getElementById('addorgspin).value;
-    var image =   document.getElementById('orgbase64').value;
-    if(image === ''){
-      document.getElementById('orglogoerror').style.display = 'block';
-      var button =   document.getElementById('addorgspin').style.display = 'none';
-      var button =   document.getElementById('addorg').style.display = 'block';
-      return 'error'
-    }
+        document.getElementById('titleerror').style.display = 'none';
 
-    var title =   document.getElementById('title').value;
-    if(title === ''){
-      document.getElementById('titleerror').style.display = 'block';
-      var button =   document.getElementById('addorgspin').style.display = 'none';
-      var button =   document.getElementById('addorg').style.display = 'block';
-      return 'error'
-    }
-    var template = quill.container.firstChild.innerHTML;
+        document.getElementById('orglogoerror').style.display = 'none';
+        document.getElementById('desceerror').style.display = 'none';
+        document.getElementById('descerror').style.display = 'none';
+        // document.getElementById('temperror').style.display = 'none';
 
-    if(template === ''){
-      document.getElementById('temperror').style.display = 'block';
-      var button =   document.getElementById('addorgspin').style.display = 'none';
-      var button =   document.getElementById('addorg').style.display = 'block';
-      return 'error'
-    }
+        var button = document.getElementById('addorgspin').style.display = 'block';
+        var button = document.getElementById('addorg').style.display = 'none';
+        // var button =   document.getElementById('addorgspin).value;
+        var image = document.getElementById('orgbase64').value;
+        if (image === '') {
+            document.getElementById('orglogoerror').style.display = 'block';
+            var button = document.getElementById('addorgspin').style.display = 'none';
+            var button = document.getElementById('addorg').style.display = 'block';
+            return 'error'
+        }
 
-    var AddTrainer = $.request('onAddPin',{flash: 1,data:{title:title,template:template,logo:image}}).done(function(data) {
-        console.log('data')
-        var button =   document.getElementById('addorgspin').style.display = 'none';
-        var button =   document.getElementById('addorg').style.display = 'block';
+        var title = document.getElementById('title').value;
+        var desc = document.getElementById('desc').value;
+        if (title === '') {
+            document.getElementById('titleerror').style.display = 'block';
+            var button = document.getElementById('addorgspin').style.display = 'none';
+            var button = document.getElementById('addorg').style.display = 'block';
+            return 'error'
+        }
+        if(desc === ''){
 
-   }).fail(function()  {
-     var button =   document.getElementById('addorgspin').style.display = 'none';
-     var button =   document.getElementById('addorg').style.display = 'block';
-   });
-  }
-      $('.dropify').dropify({
-          messages: {
-              'default': 'Drag and drop a Pin Logo',
-              'replace': 'Drag and drop or click to replace',
-              'remove': 'Remove',
-              'error': 'Ooops, something wrong appended.'
-          },
-          error: {
-              'fileSize': 'The file size is too big (1M max).'
-          }
-      });
-        // $('.dropify').dropify({
-        //     messages: {
-        //         'default': 'Drag and drop a photo',
-        //         'replace': 'Drag and drop or click to replace',
-        //         'remove': 'Remove',
-        //         'error': 'Ooops, something wrong appended.'
-        //     },
-        //     error: {
-        //         'fileSize': 'The file size is too big (1M max).'
-        //     }
-        // });
-        $(document).ready(function() {
-            $('#orgzip').mask('99999');
-        })
-        $("#orgphone").on("change paste keyup", function() {
-            // alert($(this).val());
+          document.getElementById('desceerror').style.display = 'block';
+          var button = document.getElementById('addorgspin').style.display = 'none';
+          var button = document.getElementById('addorg').style.display = 'block';
+          return 'error'
 
-            // const align = div1.getAttribute('placeholder');
-            // console.log($(this).context.placeholder)
-            var placeholder = $(this).context.placeholder;
-            var i;
-            var string = '';
-            for (i = 0; i < placeholder.length; i++) {
-                if (placeholder[i] === ')') {
-                    string = string + ')'
-                } else if (placeholder[i] === '(') {
-                    string = string + '('
-                } else if (placeholder[i] === '-') {
-                    string = string + '-'
-                } else if (placeholder[i] === ' ') {
-                    string = string + ' '
-                } else {
-                    string = string + '9'
-                }
+        }
 
+
+        var AddTrainer = $.request('onAddPin', {
+            flash: 1,
+            data: {
+                title: title,
+                desc: desc,
+                logo: image
             }
-            console.log(string)
-            $('#orgphone').mask(string);
+        }).done(function(data) {
+            console.log('data')
+            var button = document.getElementById('addorgspin').style.display = 'none';
+            var button = document.getElementById('addorg').style.display = 'block';
 
+        }).fail(function() {
+            var button = document.getElementById('addorgspin').style.display = 'none';
+            var button = document.getElementById('addorg').style.display = 'block';
+        });
+    }
+    var drEvent = $('.dropify').dropify();
 
-            // $(this).attr("data-inputmask","'mask': "+placeholder+"");
-        });
-        $("#orgphone").intlTelInput({
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
-        });
-    </script>
+    drEvent.on('dropify.afterClear', function(event, element){
+      if(document.getElementById('renderimage').src !== '/themes/honorpins/assets/img/pinlogo.png'){
+                document.getElementById('renderimage').src = '/themes/honorpins/assets/img/pinlogo.png';
+      }
+    });
+
+    $('.dropify').dropify({
+        messages: {
+            'default': 'Drag and drop a Pin Logo',
+            'replace': 'Drag and drop or click to replace',
+
+            'error': 'Ooops, something wrong appended.'
+        },
+        error: {
+            'fileSize': 'The file size is too big (1M max).'
+        }
+    });
+    // $('.dropify').dropify({
+    //     messages: {
+    //         'default': 'Drag and drop a photo',
+    //         'replace': 'Drag and drop or click to replace',
+    //         'remove': 'Remove',
+    //         'error': 'Ooops, something wrong appended.'
+    //     },
+    //     error: {
+    //         'fileSize': 'The file size is too big (1M max).'
+    //     }
+    // });
+
+</script>
