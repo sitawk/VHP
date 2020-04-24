@@ -30,7 +30,12 @@ width: 200px;
 -webkit-transform: translateZ(0); /* webkit flicker fix */
 -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
 }
+.form-control {
+  font-size: 1.4rem !important;
 
+    height: 47px !important;
+    color: #495057;
+}
 .wrapper .tooltip {
 background: #ec1b0d;
 bottom: 100%;

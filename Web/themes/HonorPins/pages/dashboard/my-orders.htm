@@ -8,28 +8,20 @@ redirect=0
 ==
 <?php
 use Intervention\Image\ImageManagerStatic as Image;
-function onAddPin(){
-  $addpin = new Codersocean\Honorpins\Models\Pin;
-  $addpin->title = post('title');
-  $addpin->template = post('template');
-  $addpin->org_id = $this->param('id');
-  $png_url = "pin-".time().".png";
-    $path = public_path().'/storage/app/uploads/web/' . $png_url;
-    $datapath = '/storage/app/uploads/web/' . $png_url;
 
-    Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
-
-  $addpin->image = $datapath;
-  $addpin->certificate_id = 0;
-  $addpin->save();
-
-  $this['addpin'] = 1;
+function onRenderPayment(){
+  $order = Codersocean\Honorpins\Models\Order::where('id',post('id'))->first();
+  $this['cartitems'] = Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('id'))->get();
+  $this['tax'] = 2;
+  $this['unitprice'] = 5;
+    $this['user'] = $user = Auth::getuser();
+  return [
+  $this['cartitems'] ,
+'#renderaddcardorder' => $this->renderPartial('order/renderaddcardorder'),
+  ];
 
 
-    $this['organization'] = $addpin->organization;
-return [
-  '#completepin' => $this->renderPartial('profile/addpin')
-];
+
 }
 function onSendEmail(){
   $this['user'] = $user = Auth::getuser();
@@ -56,13 +48,112 @@ function onStart(){
 
   $this['myorders'] = Codersocean\Honorpins\Models\Order::where('user_id',$user->id)->get();
 }
+function onSelectmySavedCard(){
+    $this['user'] = $user = Auth::getuser();
+    $card =$this['card']= Codersocean\Honorpins\Models\PaymentMethod::where('id',post('id'))->first();
+    $cartitems= Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('order_id'))->get();
+  $this['cartitems']  =   $cartitems;
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
+    return [
+    '#selectedcardnowed' => $this->renderPartial('addcredit/selectedcardsfororder')
+    ];
+}
+function onCheckoutOrderWithSavedcards(){
+  $this['user'] = $user = Auth::getuser();
+
+  $order = Codersocean\Honorpins\Models\Order::where('id',post('order_id'))->first();
+  $orderitems = Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('order_id'))->get();
+  $items = Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('order_id'))->count();
+  $card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+  $log = new Codersocean\Honorpins\Models\PaymentLogs;
+  $log->user_id = $user->id;
+  $log->amount = post('amountpaid');
+  $log->items = $items;
+  $log->payment_method = $card->type;
+  $log->transaction_id = post('transaction_id');
+  $log->receipt_url = post('receipt_url');
+  $log->charge_id = post('charge_id');
+  $log->refund_url = post('refund_url');
+  $log->save();
+  foreach($orderitems as $orderitem){
+    $datamail = [
+                'name' => $orderitem->name,
+                'certificate' => $order->certificate->title,
+                'organization' => $order->organization->org_name,
+
+            ];
+    Mail::send('certificate.pin.order', $datamail, function($message) use ($orderitem) {
+                $message->to($orderitem->email, $orderitem->email);
+                 $message->from('noreply@honorpins.com','Your Certification Pin is Created By Issuer!');
+            });
+    $items = Codersocean\Honorpins\Models\Holderpins::where('email',$orderitem->email)->where('certificate_id',$order->certificate_id)->first();
+    $items->pin_status = 1;
+    $items->save();
+  }
+  $order->pin_status = 1;
+  $order->save();
 
 
+  return [
+  '#allmyorders' => $this->renderPartial('order/allorders'),
+  ];
+}
+function onCheckoutOrder(){
+  if(post('is_saving') == 1){
+    $user = $this['user']= Auth::getuser();
+    $add = new Codersocean\Honorpins\Models\PaymentMethod;
+    $add->cus_id = post('cus_id');
+    $add->name = post('name');
+    $add->type = post('type');
+    $add->brand = post('brand');
+    $add->last_digit = post('last_digit');
+    $add->ex_date = post('exp');
+    $add->user_id = $user->id;
+    $add->save();
+  }
+  $this['user'] = $user = Auth::getuser();
+
+  $order = Codersocean\Honorpins\Models\Order::where('id',post('order_id'))->first();
+  $orderitems = Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('order_id'))->get();
+  $items = Codersocean\Honorpins\Models\OrderDetail::where('order_id',post('order_id'))->count();
+
+$log = new Codersocean\Honorpins\Models\PaymentLogs;
+$log->user_id = $user->id;
+$log->amount = post('amountpaid');
+$log->items = $items;
+$log->payment_method = post('type');
+$log->transaction_id = post('transaction_id');
+$log->receipt_url = post('receipt_url');
+$log->charge_id = post('charge_id');
+$log->refund_url = post('refund_url');
+$log->save();
+  foreach($orderitems as $orderitem){
+    $datamail = [
+                'name' => $orderitem->name,
+                'certificate' => $order->certificate->title,
+                'organization' => $order->organization->org_name,
+
+            ];
+    Mail::send('certificate.pin.order', $datamail, function($message) use ($orderitem) {
+                $message->to($orderitem->email, $orderitem->email);
+                 $message->from('noreply@honorpins.com','Your Certification Pin is Created By Issuer!');
+            });
+    $items = Codersocean\Honorpins\Models\Holderpins::where('email',$orderitem->email)->where('certificate_id',$order->certificate_id)->first();
+    $items->pin_status = 1;
+    $items->save();
+  }
+  $order->pin_status = 1;
+  $order->save();
+
+
+return [
+'#allmyorders' => $this->renderPartial('order/allorders'),
+];
+}
 ?>
 ==
-<link href="{{'assets/dashboard/quill.core.css'|theme}}" rel="stylesheet" type="text/css" />
-      <link href="{{'assets/dashboard/quill.bubble.css'|theme}}" rel="stylesheet" type="text/css" />
-      <link href="{{'assets/dashboard/quill.snow.css'|theme}}" rel="stylesheet" type="text/css" />
+<link href="{{ 'assets/css/switch.css'|theme }}" rel="stylesheet">
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <style>
 .collapse .nav-item {
@@ -104,25 +195,11 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
             <div class="col-lg-3">
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                      <a class="nav-item nav-link"  href="/dashboard"><i
-                            class="fas fa-user-alt"></i>Profile</a>
-                          <a class="nav-item nav-link active collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
-                          <!-- {%if myorganizations|length > 0%}
-                          <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
-                          <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
-                          {%endif%} -->
-                          <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
-                              <a class="nav-item nav-link"   href="/dashboard/organizations" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i>My Organization</a>
-                              <a class="nav-item nav-link"  href="/dashboard/organization-pins" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i> Organization Pins</a>
-                            <a class="nav-item nav-link"  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
-                            <a class="nav-item nav-link active"  href="/dashboard/my-orders" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Orders</a>
-
-                          </div>
-                        <a class="nav-item nav-link"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>My Certificates</a>
-                        <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>My Pins</a>
-                        <a class="nav-item nav-link"   href="/dashboard/paymentmethods" ><i class="fas fa-credit-card"></i>Payment Methods</a>
-                        <a class="nav-item nav-link"   href="/dashboard/change-password" ><i class="fas fa-key"></i>Change Password</a>
-                        </div>
+                      <a class="nav-item  nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
+                        <a class="nav-item  nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Organization Pins</a>
+                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" ><i class="fas fa-medal"></i>Organization Certificates</a>
+                          <a class="nav-item active nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>My Purchases</a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-9">
@@ -142,11 +219,9 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
 
 
 
-                        {%  if myorders|length > 0 %}
-                        <div class="row ">
-                            {% for order in myorders%}
-
-                            {%endfor%}
+                        {%  if user.myorders|length > 0 %}
+                        <div id="allmyorders">
+                          {% partial 'order/allorders'%}
                         </div>
                         {%else%}
                         <div class="row " style="height: 250px;">

@@ -5,6 +5,7 @@ use Codersocean\Honorpins\Models\Holder;
 use Codersocean\Honorpins\Models\Certificate;
 use Codersocean\Honorpins\Models\Order;
 use Codersocean\Honorpins\Models\OrderDetail;
+use Codersocean\Honorpins\Models\HolderPins;
 use Codersocean\Honorpins\Models\Organization;
 use Codersocean\Honorpins\Models\Pin;
 use RainLab\User\Models\User;
@@ -26,6 +27,9 @@ class Plugin extends PluginBase
   Certificate::extend(function($model) {
             $model->hasMany['holders'] = ['Codersocean\Honorpins\Models\Holder', 'key' => 'certificate_id'];
         });
+  HolderPins::extend(function($model) {
+            $model->hasMany['logs'] = ['Codersocean\Honorpins\Models\RequestLogs', 'key' => 'holderpin_id'];
+        });
   Organization::extend(function($model) {
             $model->hasMany['holders'] = ['Codersocean\Honorpins\Models\HolderPins', 'key' => 'org_id'];
         });
@@ -40,6 +44,9 @@ class Plugin extends PluginBase
         });
   User::extend(function($model) {
             $model->hasMany['cards'] = ['Codersocean\Honorpins\Models\PaymentMethod', 'key' => 'user_id'];
+        });
+  User::extend(function($model) {
+            $model->hasMany['myorders'] = ['Codersocean\Honorpins\Models\Order', 'key' => 'user_id'];
         });
   User::extend(function($model) {
             $model->hasMany['emails'] = ['Codersocean\Honorpins\Models\ConnectedEmails', 'key' => 'user_id'];

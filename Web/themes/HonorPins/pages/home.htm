@@ -2,6 +2,25 @@ title = "Home"
 url = "/"
 layout = "default"
 ==
+<?php
+function onVerifyCertification(){
+  $holder = $this['holder'] = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->first();
+  if($holder){
+
+    return [
+    '#verificationmodal' => $this->renderPartial('verificationmodal/verificationmodal'),
+    ];
+
+  }else{
+    $this['error'] = "No certification record found";
+    return [
+    '#verificationmodal' => $this->renderPartial('verificationmodal/verifymodalerror'),
+    ];
+  }
+
+}
+?>
+==
 {% partial 'pages/homeslider' %}
 {% partial 'pages/apichecker' %}
 {% partial 'pages/aboutus' %}

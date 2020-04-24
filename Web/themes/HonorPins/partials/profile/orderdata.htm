@@ -1,58 +1,62 @@
-<div class="col-md-12" >
-<div class="card">
-    <div class="card-body">
-        <table id="app-invoice-table" class="table" style="width: 100%;">
-            <thead class="border-bottom border-dark">
-                <tr>
-                    <th>
-                        Reg No#
-                    </th>
-                    <th>Certificate Name</th>
-                    <th>Pin Title</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Action</th>
 
-                </tr>
-            </thead>
-            <tbody>
+<div class="col-lg-12">
+  <table class="rwd-table">
+    <tbody>
+      <tr>
+        <th>
+            Reg No#
+        </th>
+        <th>Certificate Title</th>
+        <th>Pin Title</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Action</th>
 
-                  {% if cartitems|length > 0%}
-                  {%for cartitem in cartitems%}
-                  <tr>
-                  <td>
-                    {{cartitem.reg_number}}
-                  </td>
 
-                  <td><span class="invoice-customer">{{cartitem.certificate.title}}</span></td>
-                  <td>
+      </tr>
+        {% if cartitems|length > 0%}
+  {%for cartitem in cartitems%}
+      <tr>
+        <td data-th="Reg No#">
+        {{cartitem.reg_number}}
+        </td>
+        <td data-th="Certificate Title">
+      {{cartitem.certificate.title}}  </td>
+        <td data-th="Pin Title">
+          {{cartitem.pin.title}}
+        </td>
+        <td data-th="Name">
+      {{cartitem.name}}
+        </td>
+        <td data-th="Email">
+      {{cartitem.email}}
+        </td>
+        <td data-th="Start Date">
+      {{cartitem.start_date|date("m-d-Y")}}
+        </td>
+        <td data-th="End Date">
+      {{cartitem.end_date|date("m-d-Y")}}
+        </td>
+        <td data-th="Action">
+          <a href="#" data-toggle="modal" data-target="#editcartitemmodal" style="padding: 0 0.6rem; line-height:1.8" onclick="editcartitem({{cartitem.id}},{{cartitem.certificate_id}},'{{cartitem.email}}','{{cartitem.start_date}}','{{cartitem.end_date}}','{{cartitem.reg_number}}','{{cartitem.phone}}','{{cartitem.name}}')"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+          <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="cartitemdelete({{cartitem.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
 
-                    {{cartitem.pin.title}}
-                  </td>
-                  <td>    {{cartitem.name}}</td>
-                  <td>{{cartitem.email}}</td>
-                  <td>{{cartitem.start_date|date("m-d-Y")}}</td>
-                  <td>{{cartitem.end_date|date("m-d-Y")}}</td>
-                  <td>
-                    <a href="#" data-toggle="modal" data-target="#editcartitemmodal" style="padding: 0 0.6rem; line-height:1.8" onclick="editcartitem({{cartitem.id}},{{cartitem.certificate_id}},'{{cartitem.email}}','{{cartitem.start_date}}','{{cartitem.end_date}}','{{cartitem.reg_number}}','{{cartitem.phone}}','{{cartitem.name}}')"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
-                    <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="cartitemdelete({{cartitem.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
-                  </td>
-                    </tr>
-                  {%endfor%}
-                  {%else%}
-                  <tr>
-                  <td colspan="7" class="text-center">
-                  <p>No Item added yet!</p>
-                </td>
-                  </tr>
-                  {%endif%}
+        </td>
 
-            </tbody>
-        </table>
-    </div>
-</div>
+
+      </tr>
+      {%endfor%}
+      {%else%}
+      <tr>
+      <td colspan="7" class="text-center">
+      <p>No Item added yet!</p>
+    </td>
+      </tr>
+      {%endif%}
+    </tbody>
+  </table>
 </div>
 <script>
 $(document).ready(function() {

@@ -243,16 +243,16 @@
         <p id="success" style="color:green;font-size: 15px;display: none;font-weight:bold"></p>
     </div>
     <div class="col-md-5 ml-auto">
-        <button class="btn btn-primary text-white myshadow w-50 pull-right" id="addbutton" style="display: block;border-radius: 3.25rem;" onclick="checkoutwithsavedcard('{{card.cus_id}}')">${{cartitems|length * unitprice + tax}} Pay</button>
-        <button class="btn btn-primary myshadow w-50 pull-right" id="waitbutton" style="display:none;border-radius: 3.25rem;"><i class="fa-spin fa fa-spinner text-white"></i></button>
+        <button class="btn btn-primary text-white myshadow w-50 pull-right" id="addselectedcardbutton" style="display: block;border-radius: 3.25rem;" onclick="checkoutwithsavedcard('{{card.cus_id}}')">${{cartitems|length * unitprice + tax}} Pay</button>
+        <button class="btn btn-primary myshadow w-50 pull-right" id="waitselectedcardbutton" style="display:none;border-radius: 3.25rem;"><i class="fa-spin fa fa-spinner text-white"></i></button>
 
 
     </div>
 </div>
 <script>
     function checkoutwithsavedcard(cusid) {
-        document.getElementById('addbutton').style.display = 'none';
-        document.getElementById('waitbutton').style.display = 'block';
+        document.getElementById('addselectedcardbutton').style.display = 'none';
+        document.getElementById('waitselectedcardbutton').style.display = 'block';
         const charge = {
             'amount': '{{(cartitems|length * unitprice + tax)*100}}',
             'currency': 'usd',
@@ -273,8 +273,8 @@
             if (chargeresponse.error) {
                 document.getElementById('error').innerHTML = respon.error.message;
                 document.getElementById('error').style.display = 'block';
-                document.getElementById('addbutton').style.display = 'block';
-                document.getElementById('waitbutton').style.display = 'none';
+                document.getElementById('addselectedcardbutton').style.display = 'block';
+                document.getElementById('waitselectedcardbutton').style.display = 'none';
                 document.getElementById('success').style.display = 'none';
 
             } else {
@@ -289,10 +289,28 @@
                     flash: 1,
                     data: {
                         cus: cusid,
-                        amountpaid: amountpaid
+
+                        amountpaid: amountpaid,
+                        transaction_id: chargeresponse.balance_transaction,
+                        receipt_url: chargeresponse.receipt_url,
+                        charge_id: chargeresponse.id,
+                        refund_url: chargeresponse.refunds.url,
                     }
                 }).done(function(data) {
+                  swal({
+                          title: "Success!",
+                          text: "You Have Successfully Purchase the Pin!",
+                          type: "success",
+                          showCancelButton: false,
+                          confirmButtonColor: '#1cb9c8',
+                          confirmButtonText: 'OK',
+                          closeOnConfirm: true,
+                          closeOnCancel: false
+                      },
+                      function(isConfirm) {
+                        $('#checkoutmodal').modal('hide');
 
+                      });
                     return data;
                 });
             }

@@ -1,0 +1,47 @@
+<div class="row">
+
+
+<div class="col-lg-12">
+  <table class="rwd-table">
+    <tbody>
+      <tr>
+        <th>Reg#</th>
+
+        <th>Certificate</th>
+        <th>Pin</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+
+      </tr>
+      {% for detail in details%}
+      <tr>
+        <td data-th="Reg#">
+            {{detail.reg_number}}
+        </td>
+        <td data-th="Certificate">
+          {{detail.order.certificate.title}}
+        </td>
+        <td data-th="Pin">
+              {{detail.order.pin.title}}
+        </td>
+        <td data-th="Email">
+          {{detail.email}}
+        </td>
+        <td data-th="Name">
+          {{detail.name}}
+        </td>
+        <td data-th="Start Date">
+          {{detail.start_date}}
+        </td>
+        <td data-th="End Date">
+          {{detail.end_date}}
+        </td>
+
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+</div>
+<div>

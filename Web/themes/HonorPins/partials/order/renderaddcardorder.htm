@@ -1,0 +1,167 @@
+<script>
+function addcard() {
+    console.log(document.getElementById('address').value)
+    if (document.getElementById('fullname').value === '') {
+        document.getElementById('error').innerHTML = 'Full Name is required!';
+        document.getElementById('error').style.display = 'block';
+        return 0;
+        document.getElementById('orderaddbuttonaddcard').style.display = 'block';
+        document.getElementById('orderwaitbuttonaddcard').style.display = 'none';
+    }
+    if (document.getElementById('address').value === '') {
+        document.getElementById('error').innerHTML = 'Address is required!';
+        document.getElementById('error').style.display = 'block';
+        return 0;
+        document.getElementById('orderaddbuttonaddcard').style.display = 'block';
+        document.getElementById('orderwaitbuttonaddcard').style.display = 'none';
+    }
+
+
+    document.getElementById('success').style.display = 'none';
+
+    document.getElementById('error').innerHTML = '';
+    document.getElementById('error').style.display = 'none';
+    document.getElementById('orderaddbuttonaddcard').style.display = 'none';
+    document.getElementById('orderwaitbuttonaddcard').style.display = 'block';
+    var cardnumber = document.getElementById('cardnumber').value;
+    var expirationdate = document.getElementById('expirationdate').value;
+    var securitycode = document.getElementById('securitycode').value;
+    const pk_key = 'pk_test_YcVRZI6SH3aqqrVoGhg91e5M'
+    var data = expirationdate.split("/");
+    var expmon = data[0];
+    var expyear = data[1];
+    const card = {
+        'card[number]': cardnumber.replace(/ /g, ''),
+        'card[exp_month]': expmon,
+        'card[exp_year]': expyear,
+        'card[currency]': 'usd',
+        'card[cvc]': securitycode
+    };
+    fetch('https://api.stripe.com/v1/tokens', {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: "Bearer " + pk_key
+        },
+        method: 'post',
+        body: Object.keys(card)
+            .map(key => key + '=' + card[key])
+            .join('&')
+    }).then(respon => respon.json()).then(respon => {
+        console.log(respon)
+        if (respon.error) {
+            document.getElementById('error').innerHTML = respon.error.message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('orderaddbuttonaddcard').style.display = 'block';
+            document.getElementById('orderwaitbuttonaddcard').style.display = 'none';
+            document.getElementById('success').style.display = 'none';
+
+        } else {
+            //    console.log(respon.card)
+            document.getElementById('success').innerHTML = 'Your Card is Valid';
+            document.getElementById('success').style.display = 'block';
+            const customer = {
+                'source': respon.id,
+                'email': '{{user.email}}'
+            };
+            fetch('https://api.stripe.com/v1/customers', {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Authorization: "Bearer sk_test_9CqeWGV8eByydONXJXwIH9Or"
+                },
+                method: 'post',
+                body: Object.keys(customer)
+                    .map(key => key + '=' + customer[key])
+                    .join('&')
+            }).then(response => response.json()).then(response => {
+                console.log(response)
+                if (respon.error) {
+                    document.getElementById('error').innerHTML = respon.error.message;
+                    document.getElementById('error').style.display = 'block';
+                    document.getElementById('orderaddbuttonaddcard').style.display = 'block';
+                    document.getElementById('orderwaitbuttonaddcard').style.display = 'none';
+                    document.getElementById('success').style.display = 'none';
+
+                } else {
+                    const charge = {
+                        'amount': '{{(cartitems|length * unitprice + tax)*100}}',
+                        'currency': 'usd',
+                        'customer': response.id,
+                    };
+                    fetch('https://api.stripe.com/v1/charges', {
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            Authorization: "Bearer sk_test_9CqeWGV8eByydONXJXwIH9Or"
+                        },
+                        method: 'post',
+                        body: Object.keys(charge)
+                            .map(key => key + '=' + charge[key])
+                            .join('&')
+                    }).then(chargeresponse => chargeresponse.json()).then(chargeresponse => {
+                        console.log(chargeresponse)
+                        document.getElementById('success').innerHTML = '';
+                        document.getElementById('success').innerHTML = 'Your card is charged ${{cartitems|length * unitprice + tax}}!';
+                        document.getElementById('success').style.display = 'block';
+                        var expirationdate = document.getElementById('expirationdate').value;
+                        var name = document.getElementById('fullname').value;
+                        var checkBox = document.getElementById("savecardcheck");
+                        var orderpayingid = document.getElementById("orderpayingid").value;
+                        console.log(orderpayingid)
+                        var amountpaid = chargeresponse.amount / 100
+                        if (checkBox.checked == true) {
+                            var save = 1;
+                        } else {
+                            var save = 0;
+                        }
+                        $('#orderpayfororder').modal('hide');
+
+                        var AddTrainer = $.request('onCheckoutOrder', {
+                            flash: 1,
+                            data: {
+                              order_id:orderpayingid,
+                                amountpaid: amountpaid,
+                                cus_id: chargeresponse.customer,
+                                is_saving: save,
+                                brand: chargeresponse.source.brand,
+                                type: chargeresponse.source.funding,
+                                last_digit: chargeresponse.source.last4,
+                                name: name,
+                                exp: expirationdate,
+                                transaction_id: chargeresponse.balance_transaction,
+                                receipt_url: chargeresponse.receipt_url,
+                                charge_id: chargeresponse.id,
+                                refund_url: chargeresponse.refunds.url,
+                            }
+                        }).done(function(data) {
+                          swal({
+                                  title: "Success!",
+                                  text: "You Have Successfully Paid for this Order!",
+                                  type: "success",
+                                  showCancelButton: false,
+                                  confirmButtonColor: '#1cb9c8',
+                                  confirmButtonText: 'OK',
+                                  closeOnConfirm: true,
+                                  closeOnCancel: false
+                              },
+                              function(isConfirm) {
+                            
+
+
+                              });
+                            return data;
+                        });
+                    }).catch(error => console.log('Error:', error));
+
+
+
+                }
+
+            }).catch(error => console.log('Error:', error));
+
+        }
+    }).catch(error => console.log('Error:', error));
+}
+
+</script>

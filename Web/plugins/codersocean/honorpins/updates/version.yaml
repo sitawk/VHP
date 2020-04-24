@@ -99,3 +99,36 @@
 1.0.34:
     - 'Updated table codersocean_honorpins_emails_connected'
     - builder_table_update_codersocean_honorpins_emails_connected.php
+1.0.35:
+    - 'Updated table codersocean_honorpins_pins'
+    - builder_table_update_codersocean_honorpins_pins.php
+1.0.36:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins_4.php
+1.0.37:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins_5.php
+1.0.38:
+    - 'Created table codersocean_honorpins_payments_logs'
+    - builder_table_create_codersocean_honorpins_payments_logs.php
+1.0.39:
+    - 'Updated table codersocean_honorpins_payments_logs'
+    - builder_table_update_codersocean_honorpins_payments_logs.php
+1.0.40:
+    - 'Updated table codersocean_honorpins_payments_logs'
+    - builder_table_update_codersocean_honorpins_payments_logs_2.php
+1.0.41:
+    - 'Created table codersocean_honorpins_request_logs'
+    - builder_table_create_codersocean_honorpins_request_logs.php
+1.0.42:
+    - 'Updated table codersocean_honorpins_request_logs'
+    - builder_table_update_codersocean_honorpins_request_logs.php
+1.0.43:
+    - 'Updated table codersocean_honorpins_request_logs'
+    - builder_table_update_codersocean_honorpins_request_logs_2.php
+1.0.44:
+    - 'Updated table codersocean_honorpins_order_detail'
+    - builder_table_update_codersocean_honorpins_order_detail.php
+1.0.45:
+    - 'Updated table codersocean_honorpins_holder_pins'
+    - builder_table_update_codersocean_honorpins_holder_pins_6.php

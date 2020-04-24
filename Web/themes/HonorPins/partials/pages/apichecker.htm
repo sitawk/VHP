@@ -1,14 +1,52 @@
 <div class="promo-area mt-minus position-relative ">
     <div class="container" data-aos="zoom-out" data-aos-delay="500">
         <div class="promo-box bg-primary bg-2 d-flex flex-row align-items-center">
-            <div class="mx-auto text-center">
+            <div class="mx-auto text-center col-md-7">
                 <h1 class="text-white mb-40">Verify Certification</h1>
-                <form class="form-inline" action="#">
-                    <input class="form-control" type="text" placeholder="Lisence Number">
-                    <input class="form-control" type="text" placeholder="Your Email">
-                    <button class="btn btn-dark" type="submit">Check Up!</button>
-                </form>
+                <div class="form-inline row">
+
+                    <input class="form-control col-md-8" id="tester" type="text" placeholder="Your Email or Public Access Code">
+                    <button class="btn btn-dark col-md-3 pull-right" data-toggle="modal" data-target="#verifycertificate" onclick="onverify()">Check Up!</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade " id="verifycertificate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="border-radius: 11px;"  id="verificationmodal">
+          <div class="row" style="border-radius: 11px;height:300px" >
+           <div class="col-md-3 ml-auto mr-auto text-center" style="margin-top:120px" ><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div>
+           </div>
+        </div>
+    </div>
+</div>
+<script>
+
+function onverify(){
+  var tester = document.getElementById('tester').value
+ document.getElementById('verificationmodal').innerHTML = '<div class="row" style="border-radius: 11px;height:300px" ><div class="col-md-3 ml-auto mr-auto text-center" style="margin-top:120px" ><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div></div>'
+  if(tester == ''){
+
+    swal({
+      title: "Error!",
+      text: "Please write any thing!",
+      type: "error",
+      showCancelButton: false,
+      confirmButtonColor: '#DD6B55',
+      confirmButtonText: 'OK',
+      closeOnConfirm: true,
+      closeOnCancel: false
+    },
+    function(isConfirm){
+  $('#verifycertificate').modal('hide');
+
+    });
+  }else{
+    var AddTrainer = $.request('onVerifyCertification',{data:{tester:tester}}).done(function(data) {
+
+    })
+  }
+
+}
+</script>

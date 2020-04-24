@@ -601,7 +601,7 @@
     </div>
 
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/imask/3.4.0/imask.min.js"></script>
+<script src="{{'assets/js/imask.min.js'|theme}}"></script>
 <script>
     window.onload = function() {
 
@@ -1028,10 +1028,28 @@
                                     type: chargeresponse.source.funding,
                                     last_digit: chargeresponse.source.last4,
                                     name: name,
-                                    exp: expirationdate
+                                    exp: expirationdate,
+                                    transaction_id: chargeresponse.balance_transaction,
+                                    receipt_url: chargeresponse.receipt_url,
+                                    charge_id: chargeresponse.id,
+                                    refund_url: chargeresponse.refunds.url,
                                 }
                             }).done(function(data) {
+                              swal({
+                                      title: "Success!",
+                                      text: "You Have Successfully Purchase the Pin!",
+                                      type: "success",
+                                      showCancelButton: false,
+                                      confirmButtonColor: '#1cb9c8',
+                                      confirmButtonText: 'OK',
+                                      closeOnConfirm: true,
+                                      closeOnCancel: false
+                                  },
+                                  function(isConfirm) {
+                                    $('#checkoutmodal').modal('hide');
+                                    $('#onbuythispin').modal('hide');
 
+                                  });
                                 return data;
                             });
                         }).catch(error => console.log('Error:', error));

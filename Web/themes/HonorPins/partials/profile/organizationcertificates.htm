@@ -1,75 +1,44 @@
 {%  if user.myorganization.certificates|length > 0 %}
-<div class="row">
 
 
 <div class="col-lg-12">
-    <div class="job-listings" style="margin-bottom:0px,padding-top:0px;padding-bottom:0px">
-        <div class="row">
-          <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-              <p class="font-weight-500">Certificate No</p>
-          </div>
-          <div class="col-lg-4 col-md-4 col-xs-12 text-center">
-            <p class="font-weight-500">Certificate Title</p>
-          </div>
+  <table class="rwd-table">
+    <tbody>
+      <tr>
+        <th>CertificateNo#</th>
+        <th>Certificate Title</th>
+        <th>Pin No</th>
+        <th>Category</th>
+        <th>Action</th>
 
-            <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                <p class="font-weight-500">Pin No</p>
-            </div>
-            <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                  <p class="font-weight-500">Category</p>
-            </div>
+      </tr>
+  {% for certificate in user.myorganization.certificates%}
+      <tr>
+        <td data-th="CertificateNo#">
+          {{certificate.id}}
+        </td>
+        <td data-th="Certificate Title">
+          {{certificate.title}}
+        </td>
+        <td data-th="Pin No">
+          # {{certificate.pin_id}}
+        </td>
+        <td data-th="Category">
+{{certificate.category.name}}
+        </td>
 
-            <div class="col-lg-2 col-md-2 col-xs-12 float-right ">
-                <p class="font-weight-500">Action</p>
-            </div>
+        <td data-th="Action">
+          <a href="#" data-toggle="modal" data-target="#editcertificatemodal" style="padding: 0 1.2rem; line-height:2.55" onclick="oncertificateedit({{certificate.id}},'{{certificate.title}}',{{certificate.category_id}},'{{certificate.desc}}','{{certificate.url}}',{{certificate.pin_id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+          <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="ondelete({{certificate.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
 
-            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                <a class="btn-apply-disable disabled ">See Certificates</a>
-            </div> -->
 
-        </div>
-    </div>
+        </td>
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
 </div>
-{% for certificate in user.myorganization.certificates%}
-<div class="col-lg-12">
-    <div class="job-listings" style="padding-top:5px;padding-bottom:5px">
-        <div class="row">
-          <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-              <div class="location">
-                <p>#{{certificate.id}}</p>
-              </div>
-          </div>
-          <div class="col-lg-4 col-md-4 col-xs-12 text-center">
-              <div class="location">
-              <p class="font-weight-bold">{{certificate.title}}</p>
-              </div>
-          </div>
 
-            <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                <div class="location">
-                  <p># {{certificate.pin_id}}</p>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-2 col-xs-12 text-center">
-                <div class="location">
-                    <p>{{certificate.category.name}}</p>
-                </div>
-            </div>
-
-            <div class="col-lg-2 col-md-2 col-xs-12 float-right align-self-center ">
-                <a href="#" data-toggle="modal" data-target="#editcertificatemodal" style="padding: 0 1.2rem; line-height:2.55" onclick="oncertificateedit({{certificate.id}},'{{certificate.title}}',{{certificate.category_id}},'{{certificate.desc}}','{{certificate.url}}',{{certificate.pin_id}})"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
-                <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="ondelete({{certificate.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
-            </div>
-
-            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                <a class="btn-apply-disable disabled ">See Certificates</a>
-            </div> -->
-
-        </div>
-    </div>
-</div>
-{%endfor%}
-</div>
 {%else%}
 <div class="row " style="height: 250px;">
     <div class="col-lg-4 text-center ml-auto mr-auto my-auto">

@@ -1,0 +1,105 @@
+
+        <div class="modal-header">
+            <h3 id="checkoutmodalTitle" class="ml-5">Buy Pin</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row px-5">
+                <div class="col-md-7 ml-auto mr-auto mt-5">
+                    <h5 class="center h5">SELECT PAYMENT METHODS</h5>
+                </div>
+                <div class="col-md-6 ml-auto mr-auto mt-5">
+
+                    <div class="options vcenter">
+                        <a href="#" onclick="selectcreditcard()" id="creditcardselect" class="opt ml-2">
+                            <div class="icon center">
+                                <i class="fas fa-credit-card creditcardselect"></i>
+                            </div>
+                            <div class="optname center creditcardselect">Credit/Debit Card</div>
+                        </a>
+
+                        <a href="#" onclick="paypalselect()" class="opt ml-5" id="paypalselect">
+                            <div class="icon center">
+                                <i class="fab fa-paypal paypalselect"></i>
+                            </div>
+                            <div class="optname center paypalselect">PayPal</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-10 mt-15 row ml-auto mr-auto" style="display:none;" id="creditc">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <select name="certificate" id="onchangeselectcard" required class="selectpicker" data-style="btn-default" data-live-search="true">
+                                <option value="0">Select from Your Saved Cards</option>
+                                {%for card in user.cards %}
+                                <option value="{{card.id}}">XXX-XXXX-XXXX-{{card.last_digit}} - {{card.brand}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="#" onclick="addnewcard()" class="btn btn-outline-dark myshadow pull-right ml-5" style="border-radius: 3.25rem;"><i class="fas fa-plus text-dark"></i> New</a>
+
+                    </div>
+                </div>
+                <div class="col-md-10 mt-15 row ml-auto mr-auto" style="display:none;" id="paypal">
+                    <p>Paypal Inte3gration is not Completed yet</p>
+
+                </div>
+                <div class="col-md-12 mt-15 row" style="display:none" id="addnewcard">
+                    {%partial 'addcredit/addcardwithbuypin'%}
+
+
+                </div>
+
+                <div class="col-md-12 mt-15 row" style="display:none" id="selectedcardnowed">
+
+
+                </div>
+
+            </div>
+        </div>
+        <script>
+            function addnewcard() {
+                document.getElementById('addnewcard').style.display = 'flex'
+                document.getElementById('selectedcardnowed').style.display = 'none'
+            }
+
+            $('#onchangeselectcard').change(function() {
+                var selectedItem = $('.selectpicker').val();
+                document.getElementById('addnewcard').style.display = 'none'
+                document.getElementById('selectedcardnowed').style.display = 'flex'
+                document.getElementById('selectedcardnowed').innerHTML = '  <div class="col-md-3 ml-auto mr-auto"><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div>'
+
+                var AddTrainer = $.request('onSelectmySavedCard', {
+                    flash: 1,
+                    data: {
+                        id: selectedItem
+                    }
+                }).done(function(data) {
+
+                    return data;
+                });
+            });
+
+                function selectcreditcard() {
+
+
+                    document.getElementById('paypal').style.display = 'none'
+                    document.getElementById('creditc').style.display = 'flex'
+                    $('#creditcardselect').addClass('bg-primary');
+                    $('.creditcardselect').addClass('text-white');
+                    $('#paypalselect').removeClass('bg-primary');
+                    $('.paypalselect').removeClass('text-white');
+                }
+                function paypalselect() {
+                    document.getElementById('paypal').style.display = 'block'
+                    document.getElementById('creditc').style.display = 'none'
+                    $('#paypalselect').addClass('bg-primary');
+                    $('.paypalselect').addClass('text-white');
+                    $('#creditcardselect').removeClass('bg-primary');
+                    $('.creditcardselect').removeClass('text-white');
+                }
+        </script>

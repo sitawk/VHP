@@ -1,5 +1,5 @@
 title = "User Dashboard"
-url = "/dashboard/personal-certificates"
+url = "/dashboard/manage-certificates"
 layout = "default"
 [account]
 redirect=0
@@ -13,6 +13,24 @@ function onEditCertificate(){
   return $addorganization;
 }
 
+function onChangePublicCode(){
+  $addorganization = Codersocean\Honorpins\Models\HolderPins::where('id',post('id'))->first();
+  $addorganization->public_access_code = post('value');
+  $addorganization->save();
+    $this['user'] = $user = Auth::getuser();
+  return [
+  '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+  ];
+}
+function onChangePrivateCode(){
+    $this['user'] = $user = Auth::getuser();
+  $addorganization = Codersocean\Honorpins\Models\HolderPins::where('id',post('id'))->first();
+  $addorganization->private_access_code = post('value');
+  $addorganization->save();
+  return [
+  '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+  ];
+}
 function onSendEmail(){
   $this['user'] = $user = Auth::getuser();
   $addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
@@ -27,10 +45,67 @@ function onSendEmail(){
           });
   return post('id');
 }
+
+function onEnablePin(){
+  $check = Codersocean\HonorPins\Models\HolderPins::where('id',post('id'))->first();
+  $check->availbility = 1;
+  $check->save();
+  $user = $this['user']= Auth::getuser();
+  return [
+  '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+  ];
+}
+function onDisablePin(){
+  $check = Codersocean\HonorPins\Models\HolderPins::where('id',post('id'))->first();
+  $check->availbility = 0;
+  $check->save();
+  $user = $this['user']= Auth::getuser();
+  return [
+  '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+  ];
+}
+function onBuyPinWithSavingCard(){
+  if(post('is_saving') == 1){
+    $user = $this['user']= Auth::getuser();
+    $add = new Codersocean\Honorpins\Models\PaymentMethod;
+    $add->cus_id = post('cus_id');
+    $add->name = post('name');
+    $add->type = post('type');
+    $add->brand = post('brand');
+    $add->last_digit = post('last_digit');
+    $add->ex_date = post('exp');
+    $add->user_id = $user->id;
+    $add->save();
+  }
+  $this['user'] = $user = Auth::getuser();
+$this['user'] = $user = Auth::getuser();
+$certificates = Codersocean\Honorpins\Models\HolderPins::where('id',post('buy_id'))->where('email',$user->email)->first();
+  $card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+
+
+      $log = new Codersocean\Honorpins\Models\PaymentLogs;
+      $log->user_id = $user->id;
+      $log->amount = post('amountpaid');
+      $log->items = 1;
+      $log->payment_method = post('type');
+      $log->transaction_id = post('transaction_id');
+      $log->receipt_url = post('receipt_url');
+      $log->charge_id = post('charge_id');
+      $log->refund_url = post('refund_url');
+      $log->save();
+      $certificates->pin_status = 1;
+      $certificates->save();
+
+
+      return [
+      '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+      ];
+}
 function onStart(){
   $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
   $this['user'] = $user = Auth::getuser();
-
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
   if(!$user){
     $redrect = '/login';
     return Redirect::to($redrect);
@@ -136,8 +211,41 @@ $this['addpin'] = 0;
       '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
   ];
 }
+function onSelectmySavedCard(){
+    $this['user'] = $user = Auth::getuser();
+    $card =$this['card']= Codersocean\Honorpins\Models\PaymentMethod::where('id',post('id'))->first();
+  $this['unitprice'] = 5;
+  $this['tax'] = 2;
+    return [
+    '#selectedcardnowed' => $this->renderPartial('addcredit/singlepinselectedcard')
+    ];
+}
+function onCheckoutwithourSavedCards(){
+  $this['user'] = $user = Auth::getuser();
+  $certificates = Codersocean\Honorpins\Models\HolderPins::where('id',post('buy_id'))->where('email',$user->email)->first();
+    $card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+
+        $log = new Codersocean\Honorpins\Models\PaymentLogs;
+        $log->user_id = $user->id;
+        $log->amount = post('amountpaid');
+        $log->items = 1;
+        $log->payment_method = $card->type;
+        $log->transaction_id = post('transaction_id');
+        $log->receipt_url = post('receipt_url');
+        $log->charge_id = post('charge_id');
+        $log->refund_url = post('refund_url');
+        $log->save();
+        $certificates->pin_status = 1;
+        $certificates->save();
+
+
+        return [
+        '#organizationcertificate' => $this->renderPartial('profile/personalcertificates')
+        ];
+  }
 ?>
 ==
+<link href="{{ 'assets/css/payment.css'|theme }}" rel="stylesheet">
 
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{'assets/sweetalert.css'|theme}}">
@@ -176,40 +284,12 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
     <div class="container mt-65 py-5">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h2>Certificates</h2>
+                <h2>My Certificates</h2>
             </div>
-            <div class="col-lg-3">
-              <div class="acc-leftbar">
-                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link"  href="/dashboard"><i
-                          class="fas fa-user-alt"></i>Profile</a>
-                        <a class="nav-item nav-link  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
-                        <!-- {%if myorganizations|length > 0%}
-                        <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
-                        <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
-                        {%endif%} -->
-                        <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
-                            <a class="nav-item nav-link"   href="/dashboard/organizations" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i>My Organization</a>
-                            <a class="nav-item nav-link"  href="/dashboard/organization-pins" style="font-size:15px;" ><i style="font-size:14px"  class="fas "></i> Organization Pins</a>
-                          <a class="nav-item nav-link "  href="/dashboard/organization-certificates" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Certificates</a>
-  <a class="nav-item nav-link"  href="/dashboard/my-orders" style="font-size:15px;"  ><i style="font-size:14px"  class="fas "></i> Organization Orders</a>
-                        </div>
 
-                      <a class="nav-item nav-link active"  href="/dashboard/personal-certificates" ><i class="fas fa-medal"></i>My Certificates</a>
-                      <a class="nav-item nav-link"  href="/dashboard/personal-pins" ><i class="fas fa-certificate"></i>My Pins</a>
-                      <a class="nav-item nav-link"  href="/dashboard/paymentmethods" ><i class="fas fa-credit-card"></i>Payment Methods</a>
-                      <a class="nav-item nav-link"   href="/dashboard/change-password" ><i class="fas fa-key"></i>Change Password</a>
-                  </div>
-              </div>
-            </div>
-            <div class="col-lg-9">
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
-
-
-
-
-
+            <div class="col-lg-12">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-status-tab">
 
                           {%  if user.personalcertificates|length > 0 %}
                         <div id="organizationcertificate">
@@ -231,10 +311,47 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                         </div>
                         </div>
                     </div>
+                    <div class="modal fade " id="onviewmypinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content" style="border-radius: 11px;" >
+                                {% partial 'pin/viewmypin' %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade " id="onbuythispin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content" style="border-radius: 11px;" >
+                                {% partial 'pin/buypin' %}
+                            </div>
+                        </div>
+                    </div>
+                      <input type="hidden" value="" id="buyingpinid">
                     <div class="header-space"></div>
 </section>
+
 <script src="{{'assets/js/sweet-alert.min.js'|theme}}"></script>
 <script type="text/javascript">
+function onbuythispin(id){
+  document.getElementById('buyingpinid').value = id;
+}
+function onviewmypin(id,title,desc,image,start_date,reg,name,url){
+  document.getElementById('viewmyrendertitle').innerHTML = title;
+  document.getElementById('viewmyrenderurl').innerHTML = url;
+  document.getElementById('viewmyrenderregno').innerHTML = reg;
+  document.getElementById('viewmyrenderstartdate').innerHTML = start_date;
+  document.getElementById('viewmyrenderholdername').innerHTML = name;
+  // document.getElementById('editpinid').value = id;
+  // document.getElementById('edittitle').value = title;
+  document.getElementById('viewmyrenderimage').src = image;
+  // $('#editorglogo').attr("data-default-file", image);
+  // document.getElementByClassName('dropify-preview').style.display = 'block';
+  // $('.dropify-preview').css('display','block');
+  // $('.dropify-render').append('<img src="'+image+'" style="max-height:140px" />');
+  // document.getElementByClassName('dropify-render').innerHTML = '<img src="'+image+'" style="max-height:140px" />' ;
+  document.getElementById('viewmyrenderdesc').innerHTML = desc;
+  // document.getElementById('editdesc').value = desc;
+
+}
     function onedit(id) {
       var AddTrainer = $.request('onEditCertificate',{data:{id:id}}).done(function(data) {
 console.log(data)

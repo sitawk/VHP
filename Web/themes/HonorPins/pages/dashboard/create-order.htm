@@ -48,6 +48,18 @@ function onCheckoutwithourSavedCards(){
   $this['user'] = $user = Auth::getuser();
 
   $certificates = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->groupBy('certificate_id')->get();
+  $items = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->count();
+$card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+$log = new Codersocean\Honorpins\Models\PaymentLogs;
+$log->user_id = $user->id;
+$log->amount = post('amountpaid');
+$log->items = $items;
+$log->payment_method = $card->type;
+$log->transaction_id = post('transaction_id');
+$log->receipt_url = post('receipt_url');
+$log->charge_id = post('charge_id');
+$log->refund_url = post('refund_url');
+$log->save();
   foreach($certificates as $certificate){
         $order = new Codersocean\Honorpins\Models\Order;
         $order->certificate_id = $certificate->certificate_id;
@@ -60,7 +72,7 @@ function onCheckoutwithourSavedCards(){
         $order->amount_paid =post('amountpaid');
         $order->payment_method =$card->type;
         $order->user_id =$user->id;
-        $order->pin_status = 0;
+        $order->pin_status = 1;
         $order->save();
         $cartitems = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->where('certificate_id',$certificate->certificate_id)->get();
         foreach($cartitems as $item){
@@ -71,8 +83,52 @@ function onCheckoutwithourSavedCards(){
           $orderdetail->start_date = $item->start_date;
           $orderdetail->end_date = $item->end_date;
           $orderdetail->reg_number = $item->reg_number;
+          $orderdetail->name = $item->name;
           $orderdetail->phone = $item->phone;
           $orderdetail->save();
+          $createholder = new Codersocean\Honorpins\Models\HolderPins;
+          $createholder->org_id = $order->org_id;
+          $createholder->certificate_id = $order->certificate_id;
+          $createholder->pin_id = $order->pin_id;
+          $createholder->pin_Status = 1;
+          $createholder->email = $item->email;
+          $createholder->start_date = $item->start_date;
+          $createholder->end_date = $item->end_date;
+          $createholder->reg_number = $item->reg_number;
+          $createholder->full_name = $item->name;
+          $createholder->phone = $item->phone;
+          $createholder->availbility = 0;
+          $Caracteres = '0123456789';
+              $QuantidadeCaracteres = strlen($Caracteres);
+              $QuantidadeCaracteres--;
+              $Hash=NULL;
+                  for($x=1;$x<=7;$x++){
+                      $Posicao = rand(0,$QuantidadeCaracteres);
+                      $Hash .= substr($Caracteres,$Posicao,1);
+                  }
+
+          $createholder->public_access_code = $Hash;
+          $Caracteres = '0123456789';
+              $QuantidadeCaracteres = strlen($Caracteres);
+              $QuantidadeCaracteres--;
+              $Hash=NULL;
+                  for($x=1;$x<=7;$x++){
+                      $Posicao = rand(0,$QuantidadeCaracteres);
+                      $Hash .= substr($Caracteres,$Posicao,1);
+                  }
+
+          $createholder->private_access_code = $Hash;
+          $createholder->save();
+          $datamail = [
+                      'name' => $item->name,
+                      'certificate' => $order->certificate->title,
+                      'organization' => $order->organization->org_name,
+
+                  ];
+          Mail::send('certificate.pin.order', $datamail, function($message) use ($createholder) {
+                      $message->to($createholder->email, $createholder->email);
+                       $message->from('noreply@honorpins.com','Your Certification Pin is Created By Issuer!');
+                  });
         }
   }
   $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
@@ -114,7 +170,51 @@ function onCreateOrder(){
             $orderdetail->end_date = $item->end_date;
             $orderdetail->reg_number = $item->reg_number;
             $orderdetail->phone = $item->phone;
+            $orderdetail->name = $item->name;
             $orderdetail->save();
+            $createholder = new Codersocean\Honorpins\Models\HolderPins;
+            $createholder->org_id = $order->org_id;
+            $createholder->certificate_id = $order->certificate_id;
+            $createholder->pin_id = $order->pin_id;
+            $createholder->pin_Status = 0;
+            $createholder->email = $item->email;
+            $createholder->start_date = $item->start_date;
+            $createholder->end_date = $item->end_date;
+            $createholder->reg_number = $item->reg_number;
+            $createholder->full_name = $item->name;
+            $createholder->phone = $item->phone;
+            $createholder->availbility = 0;
+            $Caracteres = '0123456789';
+                $QuantidadeCaracteres = strlen($Caracteres);
+                $QuantidadeCaracteres--;
+                $Hash=NULL;
+                    for($x=1;$x<=7;$x++){
+                        $Posicao = rand(0,$QuantidadeCaracteres);
+                        $Hash .= substr($Caracteres,$Posicao,1);
+                    }
+
+            $createholder->public_access_code = $Hash;
+            $Caracteres = '0123456789';
+                $QuantidadeCaracteres = strlen($Caracteres);
+                $QuantidadeCaracteres--;
+                $Hash=NULL;
+                    for($x=1;$x<=7;$x++){
+                        $Posicao = rand(0,$QuantidadeCaracteres);
+                        $Hash .= substr($Caracteres,$Posicao,1);
+                    }
+
+            $createholder->private_access_code = $Hash;
+            $createholder->save();
+            $datamail = [
+                        'name' => $item->name,
+                        'certificate' => $order->certificate->title,
+                        'organization' => $order->organization->org_name,
+
+                    ];
+            Mail::send('certificate.pin.order', $datamail, function($message) use ($createholder) {
+                        $message->to($createholder->email, $createholder->email);
+                         $message->from('noreply@honorpins.com','Your Certification Pin is Created By Issuer!');
+                    });
           }
     }
     $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
@@ -146,6 +246,18 @@ function onCheckoutWithPins(){
   $this['user'] = $user = Auth::getuser();
 
   $certificates = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->groupBy('certificate_id')->get();
+  $items = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->count();
+$card = Codersocean\Honorpins\Models\PaymentMethod::where('cus_id',post('cus'))->first();
+$log = new Codersocean\Honorpins\Models\PaymentLogs;
+$log->user_id = $user->id;
+$log->amount = post('amountpaid');
+$log->items = $items;
+$log->payment_method = $card->type;
+$log->transaction_id = post('transaction_id');
+$log->receipt_url = post('receipt_url');
+$log->charge_id = post('charge_id');
+$log->refund_url = post('refund_url');
+$log->save();
   foreach($certificates as $certificate){
         $order = new Codersocean\Honorpins\Models\Order;
         $order->certificate_id = $certificate->certificate_id;
@@ -169,7 +281,51 @@ function onCheckoutWithPins(){
           $orderdetail->end_date = $item->end_date;
           $orderdetail->reg_number = $item->reg_number;
           $orderdetail->phone = $item->phone;
+          $orderdetail->name = $item->name;
           $orderdetail->save();
+          $createholder = new Codersocean\Honorpins\Models\HolderPins;
+          $createholder->org_id = $order->org_id;
+          $createholder->certificate_id = $order->certificate_id;
+          $createholder->pin_id = $order->pin_id;
+          $createholder->pin_Status = 1;
+          $createholder->email = $item->email;
+          $createholder->start_date = $item->start_date;
+          $createholder->end_date = $item->end_date;
+          $createholder->reg_number = $item->reg_number;
+          $createholder->full_name = $item->name;
+          $createholder->phone = $item->phone;
+          $createholder->availbility = 0;
+          $Caracteres = '0123456789';
+              $QuantidadeCaracteres = strlen($Caracteres);
+              $QuantidadeCaracteres--;
+              $Hash=NULL;
+                  for($x=1;$x<=7;$x++){
+                      $Posicao = rand(0,$QuantidadeCaracteres);
+                      $Hash .= substr($Caracteres,$Posicao,1);
+                  }
+
+          $createholder->public_access_code = $Hash;
+          $Caracteres = '0123456789';
+              $QuantidadeCaracteres = strlen($Caracteres);
+              $QuantidadeCaracteres--;
+              $Hash=NULL;
+                  for($x=1;$x<=7;$x++){
+                      $Posicao = rand(0,$QuantidadeCaracteres);
+                      $Hash .= substr($Caracteres,$Posicao,1);
+                  }
+
+          $createholder->private_access_code = $Hash;
+          $createholder->save();
+          $datamail = [
+                      'name' => $item->name,
+                      'certificate' => $order->certificate->title,
+                      'organization' => $order->organization->org_name,
+
+                  ];
+          Mail::send('certificate.pin.order', $datamail, function($message) use ($createholder) {
+                      $message->to($createholder->email, $createholder->email);
+                       $message->from('noreply@honorpins.com','Your Certification Pin is Created By Issuer!');
+                  });
         }
   }
   $delete = Codersocean\Honorpins\Models\Cart::where('user_id',$user->id)->delete();
@@ -318,9 +474,6 @@ function onStart(){
 
 ?>
 ==
-<link href="{{'assets/dashboard/quill.core.css'|theme}}" rel="stylesheet" type="text/css" />
-<link href="{{'assets/dashboard/quill.bubble.css'|theme}}" rel="stylesheet" type="text/css" />
-<link href="{{'assets/dashboard/quill.snow.css'|theme}}" rel="stylesheet" type="text/css" />
 <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
 <link href="{{ 'assets/css/switch.css'|theme }}" rel="stylesheet">
 <link rel="stylesheet" href="{{'assets/css/bootstrap-datetimepicker.min.css'|theme}}">
@@ -329,305 +482,11 @@ function onStart(){
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="{{'assets/css/bootstrapValidator.min.css'|theme}}">
 <style>
-    .account-card-master {
-        background: -webkit-linear-gradient(135deg, #f79e1b, #f79e1b);
-        background: -moz-linear-gradient(135deg, #f79e1b, #f79e1b);
-        background: -o-linear-gradient(135deg, #f79e1b, #f79e1b);
-        background: -ms-linear-gradient(135deg, #f79e1b, #f79e1b);
-        background: linear-gradient(-45deg, #f79e1b, #f79e1b);
 
-    }
-
-    .account-card-dinner {
-        background: -webkit-linear-gradient(135deg, #ef6c00, #ef6c00);
-        background: -moz-linear-gradient(135deg, #ef6c00, #ef6c00);
-        background: -o-linear-gradient(135deg, #ef6c00, #ef6c00);
-        background: -ms-linear-gradient(135deg, #ef6c00, #ef6c00);
-        background: linear-gradient(-45deg, #ef6c00, #ef6c00);
-
-    }
-
-    .account-card-jcb {
-        background: -webkit-linear-gradient(135deg, #d32f2f, #d32f2f);
-        background: -moz-linear-gradient(135deg, #d32f2f, #d32f2f);
-        background: -o-linear-gradient(135deg, #d32f2f, #d32f2f);
-        background: -ms-linear-gradient(135deg, #d32f2f, #d32f2f);
-        background: linear-gradient(-45deg, #d32f2f, #d32f2f);
-
-    }
-
-    .account-card-union {
-        background: -webkit-linear-gradient(135deg, #0097a7, #0097a7);
-        background: -moz-linear-gradient(135deg, #0097a7, #0097a7);
-        background: -o-linear-gradient(135deg, #0097a7, #0097a7);
-        background: -ms-linear-gradient(135deg, #0097a7, #0097a7);
-        background: linear-gradient(-45deg, #0097a7, #0097a7);
-
-    }
-
-    .account-card-american {
-        background: -webkit-linear-gradient(135deg, #388e3c, #388e3c);
-        background: -moz-linear-gradient(135deg, #388e3c, #388e3c);
-        background: -o-linear-gradient(135deg, #388e3c, #388e3c);
-        background: -ms-linear-gradient(135deg, #388e3c, #388e3c);
-        background: linear-gradient(-45deg, #388e3c, #388e3c);
-
-    }
-
-    .account-card-discover {
-        background: -webkit-linear-gradient(135deg, #7b1fa2, #7b1fa2);
-        background: -moz-linear-gradient(135deg, #7b1fa2, #7b1fa2);
-        background: -o-linear-gradient(135deg, #7b1fa2, #7b1fa2);
-        background: -ms-linear-gradient(135deg, #7b1fa2, #7b1fa2);
-        background: linear-gradient(-45deg, #7b1fa2, #7b1fa2);
-
-    }
 </style>
-
+  <link href="{{ 'assets/css/payment.css'|theme }}" rel="stylesheet">
 <section>
-    <style>
-        .mainContainer {
 
-            margin: 0 auto;
-            box-shadow: 0 0 10px #2323;
-            margin-top: 50px;
-            background: white;
-        }
-
-        .cardHolder {
-            height: 300px;
-            background: linear-gradient(to right,
-                    #6480ef,
-                    #7775e8,
-                    #806ce8);
-            /*   border-bottom-left-radius:50%;
-  border-bottom-right-radius:50%; */
-        }
-
-        .center {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .vcenter {
-            display: flex;
-            align-items: center;
-        }
-
-        .checkoutheading {
-            height: 40px;
-            font-size: 14px;
-            letter-spacing: 2px;
-            color: white;
-        }
-
-        .stepHeading {
-            height: 20px;
-            font-size: 16px;
-            font-weight: bolder;
-            letter-spacing: 2px;
-            color: white;
-        }
-
-        .checkoutcard {
-            height: 180px;
-            width: 280px;
-            background: white;
-            margin: 0 auto;
-            border-radius: 1.2em;
-            margin-top: 25px;
-            padding: 12px 20px;
-        }
-
-        .checkoutcard>.part {
-            height: 50px;
-            margin-bottom: 4px;
-        }
-
-        .checkoutcard>.top {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .checkoutcard>.top>img {
-            height: 48px;
-        }
-
-        .infoheader {
-            height: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #95a5a6
-        }
-
-        .checkoutcard>.middle>.infocontent {
-            justify-content: space-between;
-            height: 30px;
-        }
-
-        .number {
-            width: 150px;
-        }
-
-        .checkoutcard>.middle>.infocontent>.num {
-            height: 25px;
-            font-size: 14px;
-            letter-spacing: 2px;
-            font-weight: bolder;
-        }
-
-        .card>.bottom {
-            display: flex;
-            justify-content: space-between
-        }
-
-        .holderInfo {
-            width: 150px;
-        }
-
-        .holderInfo>.name,
-        .expDate>.date {
-            font-size: 12px;
-            font-weight: bolder;
-            letter-spacing: 2px;
-        }
-
-        .status {
-            height: 35px;
-            width: 300px;
-            margin: 0 auto;
-            box-shadow: 0 0 10px #2323;
-            margin-top: 16px;
-            padding: 0 16px;
-            font-size: 12px;
-            letter-spacing: 2px;
-            font-weight: bolder;
-        }
-
-        .status>i {
-            color: #16a085;
-            margin-right: 20px;
-            font-size: 16px;
-        }
-
-        .h5 {
-
-            margin: 0 auto;
-            padding: 8px;
-            margin-top: 14px;
-            border-bottom: 2px solid #bdc3c7;
-            letter-spacing: 2px;
-            font-size: 12px;
-            margin-bottom: 12px;
-        }
-
-        .options {
-            /*
-  height:75px;
-  margin:0 auto; */
-        }
-
-        .options>.opt {
-            height: 100px;
-            width: 150px;
-            box-shadow: 0 0 10px #2323;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .options>.opt>.icon {
-            height: 30px;
-            color: #95a5a6;
-            font-size: 20px;
-        }
-
-        .optname {
-            height: 30px;
-            font-size: 10px;
-            color: #232323;
-            letter-spacing: 2px;
-            font-weight: bolder
-        }
-
-        .payment {
-            height: 80px;
-            position: relative;
-            top: 24px;
-            box-shadow: 0 -5px 5px -5px #2323;
-            justify-content: space-around;
-        }
-
-        .val {
-            height: 40px;
-            font-size: 24px;
-            font-weight: bolder;
-            letter-spacing: 2px;
-            color: #6480ef;
-        }
-
-        .button {
-            width: 120px;
-            height: 35px;
-            border-radius: 1.2em;
-            background: linear-gradient(to right,
-                    #6480ef,
-                    #7775e8,
-                    #806ce8);
-            color: white;
-            font-weight: bolder;
-            letter-spacing: 2px;
-        }
-
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .btn-file {
-            border: 2px solid gray;
-            color: gray;
-            background-color: white;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .upload-btn-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            cursor: pointer;
-            top: 0;
-            opacity: 0;
-            line-height: 1;
-        }
-
-        .dropdown-header>.text {
-            font-size: 20px !important;
-            font-weight: bold !important;
-            color: #000 !important;
-        }
-    </style>
-    <style>
-        .collapse .nav-item {}
-
-        .rotateas {
-            -webkit-transform: rotate(90deg);
-            /* Chrome, Safari, Opera */
-            -moz-transform: rotate(90deg);
-            /* Firefox */
-            -ms-transform: rotate(90deg);
-            /* IE 9 */
-            transform: rotate(90deg);
-            /* Standard syntax */
-        }
-    </style>
     <script>
         $(document).ready(function() {
             // Add minus icon for collapse element which is open by default
@@ -654,32 +513,8 @@ function onStart(){
             <div class="col-lg-12 text-center">
                 <h2>Order Certificate Virtual Pin</h2>
             </div>
-            <div class="col-lg-3">
-                <div class="acc-leftbar">
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link" href="/dashboard"><i class="fas fa-user-alt"></i>Profile</a>
 
-                        <a class="nav-item nav-link active  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i
-                              class="fas fa-building"></i>Organizations <i class="fas fa-angle-right pull-right"></i></a>
-                        <!-- {%if myorganizations|length > 0%}
-                              <a class="nav-item nav-link" id="nav-password-tab" data-toggle="tab"  href="/dashboard/organization-certificates" role="tab" aria-controls="nav-password" aria-selected="false"><i class="fas fa-medal"></i>Organization Certificates</a>
-                              <a class="nav-item nav-link" id="nav-notification-tab" data-toggle="tab" href="/dashboard/organization-pins"  role="tab" aria-controls="nav-notification" aria-selected="false"><i class="fas fa-certificate"></i>Organization Pins</a>
-                              {%endif%} -->
-                        <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
-                            <a class="nav-item nav-link" href="/dashboard/organizations" style="font-size:15px;"><i style="font-size:14px" class="fas "></i>My Organization</a>
-                            <a class="nav-item nav-link" href="/dashboard/organization-pins" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Pins</a>
-                            <a class="nav-item nav-link" href="/dashboard/organization-certificates" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Certificates</a>
-                            <a class="nav-item nav-link active" href="/dashboard/my-orders" style="font-size:15px;"><i style="font-size:14px" class="fas "></i> Organization Orders</a>
-
-                        </div>
-                        <a class="nav-item nav-link" href="/dashboard/personal-certificates"><i class="fas fa-medal"></i>My Certificates</a>
-                        <a class="nav-item nav-link" href="/dashboard/personal-pins"><i class="fas fa-certificate"></i>My Pins</a>
-                        <a class="nav-item nav-link" href="/dashboard/paymentmethods"><i class="fas fa-credit-card"></i>Payment Methods</a>
-                        <a class="nav-item nav-link" href="/dashboard/change-password"><i class="fas fa-key"></i>Change Password</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-9">
+            <div class="col-lg-12">
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active " id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
                         <div class="row">

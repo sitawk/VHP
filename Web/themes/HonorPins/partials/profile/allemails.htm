@@ -1,82 +1,21 @@
 
 {%  if user.emails|length > 0 %}
   <div class="row">
-<div class="col-lg-12">
-    <div class="job-listings" style="margin-bottom:0px,padding-top:0px;padding-bottom:0px">
-        <div class="row">
-          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-              <p class="font-weight-500">Email</p>
-          </div>
-          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-            <p class="font-weight-500">Status</p>
-          </div>
-          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-            <p class="font-weight-500">Priority</p>
-          </div>
+    <div class="col-lg-12">
+      <table class="rwd-table">
+        <tbody>
+          <tr>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Action</th>
 
 
-
-            <div class="col-lg-3 col-md-3 col-xs-12 text-center ">
-                <p class="font-weight-500">Action</p>
-            </div>
-
-            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                <a class="btn-apply-disable disabled ">See Certificates</a>
-            </div> -->
-
-        </div>
-    </div>
-</div>
+          </tr>
 {% for pin in user.emails%}
-<div class="col-lg-12">
-    <div class="job-listings" style="padding-top:5px;padding-bottom:5px">
-        <div class="row">
-
-          <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-              <div class="location">
-              <p class="font-weight-bold">{{pin.email}}</p>
-              </div>
-          </div>
-          {%if pin.status == 0 %}
-            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-                <span class="badge badge-warning text-center mt-15">Verification Pending</span>
-            </div>
-            {%else%}
-            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-                <span class="badge badge-success text-center mt-15">Verified</span>
-            </div>
-            {%endif%}
-    {%if pin.status == 0 %}
-    <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-      <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{pin.id}}">Verify</a>
-    </div>
-        {%else%}
-          {%if pin.is_primary == 1 %}
-            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-
-                <span class="badge badge-info text-center mt-15">Primary</span>
-            </div>
-            {%else%}
-            <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-              <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" onclick="makeprimary({{pin.id}})">Make Primary</a>
-            </div>
-            {%endif%}
-            {%endif%}
-
-              {%if pin.is_primary == 1 %}
-                <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-                </div>
-                {%else%}
-                <div class="col-lg-3 col-md-3 col-xs-12 text-center align-self-center ">
-              <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="deletepin({{pin.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
-                </div>
-                {%endif%}
-
-
-
-            <!-- <div class="col-lg-3 col-md-3 col-xs-12 text-center">
-                <a class="btn-apply-disable disabled ">See Certificates</a>
-            </div> -->
+          <tr>
+            <td data-th="Email">
+            {{pin.email}}
             <div class="modal fade " id="organization{{pin.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content" id="activation{{pin.id}}completed">
@@ -84,10 +23,38 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </td>
+            <td data-th="Status">
+              {%if pin.status == 0 %}
+      <span class="badge badge-warning text-center mt-15">Verification Pending</span>
+      {%else%}
+        <span class="badge badge-success text-center mt-15">Verified</span>
+      {%endif%}
+            </td>
+            <td data-th="Priority">
+              {%if pin.status == 0 %}
+            <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{pin.id}}">Verify</a>
+            {%else%}
+                    {%if pin.is_primary == 1 %}
+            <span class="badge badge-info text-center mt-15">Primary</span>
+            {%else%}
+            <a href="#" class="btn btn-outline-dark myshadow" style="border-radius:3.25rem" onclick="makeprimary({{pin.id}})">Make Primary</a>
+            {%endif%}
+                      {%endif%}
+            </td>
+            <td data-th="Action">
+              {%if pin.is_primary == 1 %}
+  {%else%}
+  <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="deletepin({{pin.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
+  {%endif%}
+            </td>
+
+
+          </tr>
+          {%endfor%}
+        </tbody>
+      </table>
     </div>
-</div>
-{%endfor%}
 </div>
 {%else%}
 <div class="row " style="height: 250px;">
