@@ -47,7 +47,7 @@ function onStart(){
                                     <div class="dropdown-menu py-0" style="margin-left: -108px;margin-top: -3px;" aria-labelledby="navbarDropdownMenuLink">
 
     <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">My Profile</a>
-                                          <a class="dropdown-item font-weight-500" href="/dashboard">See Profile</a>
+                                          <a class="dropdown-item font-weight-500" href="/dashboard">Profile Setting</a>
                                           <a class="dropdown-item font-weight-500" href="/dashboard/change-password">Change Password</a>
 
                                       <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">Account</a>
@@ -90,7 +90,7 @@ function onStart(){
                     <div class="dropdown-menu py-0" style="position:absolute" aria-labelledby="navbarDropdownMenuLink">
 
 
-                          <a class="dropdown-item font-weight-500" href="/dashboard">Profile</a>
+                          <a class="dropdown-item font-weight-500" href="/dashboard">Profile Setting</a>
                           <a class="dropdown-item font-weight-500" href="/dashboard/change-password">Change Password</a>
 
                       <a class="border-bottom border-dark border-top dropdown-item pl-3 font-weight-bold" href="#">Account</a>
@@ -145,6 +145,7 @@ function onStart(){
                     <li class="nav-item">
                         <a href="/pricing" class="nav-link">Pricing</a>
                     </li>
+                    {%if user%}
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" style="line-height:2rem !important;" data-toggle="dropdown">Services</a>
                         <ul class="dropdown-menu">
@@ -156,6 +157,7 @@ function onStart(){
 
                         </ul>
                     </li>
+                    {%endif%}
                     <li class="nav-item">
                         <a href="/contact-us" class="nav-link">Contact Us</a>
                     </li>

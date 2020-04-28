@@ -11,6 +11,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 function onAddPin(){
   $addpin = new Codersocean\Honorpins\Models\Pin;
   $addpin->title = post('title');
+  $addpin->desc = post('desc');
   $addpin->template = post('template');
   $this['user'] = $user = Auth::getuser();
   $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
@@ -36,6 +37,7 @@ return [
 function onEditPin(){
   $addpin =  Codersocean\Honorpins\Models\Pin::where('id',post('id'))->first();
   $addpin->title = post('title');
+  $addpin->desc = post('desc');
   $addpin->template = post('template');
   $this['user'] = $user = Auth::getuser();
   $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
@@ -158,9 +160,9 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                 <div class="acc-leftbar">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                       <a class="nav-item  nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
-                        <a class="nav-item active  nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Organization Pins</a>
-                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" ><i class="fas fa-medal"></i>Organization Certificates</a>
-                          <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>My Purchases</a>
+                        <a class="nav-item active  nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Pins</a>
+                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" ><i class="fas fa-medal"></i>Certificates</a>
+                          <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>Purchases</a>
                         </div>
                 </div>
             </div>

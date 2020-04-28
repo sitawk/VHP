@@ -43,14 +43,15 @@ function onStart(){
     <div class="row ">
     <div class="col-md-4 col-xs-12 col-sm-6 mt-60 ml-auto mr-auto">
       <div class="login-main template-form ">
-        <h2 class="mb-5 mb-60">Please Register, or<a class="text-primary" href="/login"> Login</a></h2>
+        <h2 class="mb-50">Please Register, or<a class="text-primary" href="/login"> Login</a></h2>
 
         <div class="template-space"></div>
         <!-- <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-6"> <a href="#" class="btn btn-facebook btn-block">Facebook</a> </div>
           <div class="col-xs-6 col-sm-6 col-md-6"> <a href="#" class="btn btn-google btn-block">Google</a> </div>
         </div> -->
-        <div class="login-or">
+
+        <div class="login-or mb-40">
           <!-- <hr class="hr-or"> -->
           <!-- <span class="span-or">or</span> </div> -->
           <form data-request="onRegister">
@@ -65,7 +66,7 @@ function onStart(){
            </div>
            <div class="form-group">
              <label for="inputEmail">email</label>
-             <input id="inputEmail" type="text" name="email" class="form-control">
+             <input id="inputEmail" type="email" name="email" class="form-control">
            </div>
            <div class="form-group">
              <label for="inputPassword">Password</label>
@@ -75,12 +76,12 @@ function onStart(){
              <label for="inputRePassword">Re Enter Password</label>
              <input id="inputRePassword" type="password" name="password_confirmation" class="form-control">
            </div>
-           <div class="checkbox pull-right">
-             <label>
-               <input type="checkbox">
-               accept Terms</label>
+           <div>
+             <span>By signing up, you agree to our Terms , Data Policy and Cookies Policy.</span>
            </div>
-           <button type="submit" class="btn btn btn-primary"> Sign Up </button>
+           <div id="error" class="mt-15">
+           </div>
+           <button type="submit" class="mt-20 btn btn btn-primary"> Sign Up </button>
          </form>
       </div>
     </div>

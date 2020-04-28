@@ -1048,7 +1048,9 @@ a.btn,
 button.btn {
   text-transform: uppercase;
   font-weight: 800;
-  letter-spacing: 1px; }
+  letter-spacing: 1px;
+border-radius: 5px;
+}
 
 .btn-light {
   background-color: #ffffff;

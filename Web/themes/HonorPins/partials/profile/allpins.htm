@@ -27,8 +27,9 @@
             </td>
             <td data-th="Action">
               <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#oneditpinmodal" onclick='oneditpin({{pin.id}},"{{pin.title}}","{{pin.desc}}","{{pin.image}}")'  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
+              {%if user.myorganization.pins|length >1%}
               <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="deletepin({{pin.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
-
+              {%endif%}
             </td>
 
 

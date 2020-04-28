@@ -315,8 +315,10 @@ class Account extends ComponentBase
 
         }
         catch (Exception $ex) {
-            if (Request::ajax()) throw $ex;
-            else Flash::error($ex->getMessage());
+          $this->page['error'] = $ex->getMessage();
+          return [
+            '#error' => $this->renderPartial('profile/error')
+          ];
         }
     }
 
@@ -404,8 +406,10 @@ class Account extends ComponentBase
             }
         }
         catch (Exception $ex) {
-            if (Request::ajax()) throw $ex;
-            else Flash::error($ex->getMessage());
+          $this->page['error'] = $ex->getMessage();
+          return [
+            '#error' => $this->renderPartial('profile/error')
+          ];
         }
     }
 
@@ -461,6 +465,7 @@ class Account extends ComponentBase
      */
     public function onUpdate()
     {
+      try {
         if (!$user = $this->user()) {
             return;
         }
@@ -493,6 +498,13 @@ class Account extends ComponentBase
         }
 
         $this->prepareVars();
+      }
+      catch (Exception $ex) {
+        $this->page['error'] = $ex->getMessage();
+        return [
+          '#success' => $this->renderPartial('profile/error')
+        ];
+      }
     }
 
     /**

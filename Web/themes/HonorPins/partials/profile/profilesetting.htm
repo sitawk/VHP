@@ -1,11 +1,11 @@
 <style>
 .input-file-container {
 position: relative;
-width: 225px;
+width: 155px;
 }
 .js .input-file-trigger {
 display: block;
-padding: 14px 45px;
+padding: 14px 5px;
 background: #1cb9c8;
 color: #fff;
 font-size: 1em;
@@ -64,15 +64,15 @@ font-weight: normal;
     </div>
 
     <div class="col-lg-6">
-        <div class="col-lg-5 ml-auto mr-auto mmt-40">
-            <div class="about-single-image text-right" >
+        <div class="col-lg-6 ml-auto mr-auto mmt-40">
+            <div class="about-single-image text-center" >
                 <img id="about-single-image" src="{% if user.avatar %}{{ user.avatar.path }}{%else%}{{'assets/img/user.png'|theme}}{% endif%}" alt="">
             </div>
         </div>
-        <div style="margin-top: 40px;" class="col-md-7 ml-auto mr-auto  text-center">
+        <div style="margin-top: 40px;" class="col-md-5 ml-auto mr-auto  text-center">
             <div class="input-file-container js text-center" >
                 <input name="avatar" onchange="preview_image(event)" class="input-file" id="my-file" type="file">
-                <label tabindex="0" for="my-file" class="input-file-trigger" style="font-size: 15px;">Select an Avatar...</label>
+                <label tabindex="0" for="my-file" class="input-file-trigger ml-auto mr-auto" style="font-size: 15px;">Update Profile Image</label>
             </div>
 
 
@@ -99,14 +99,14 @@ function readURL(input) {
 </script>
 <div class="row">
 
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <div class="form-group">
             <label>Phone No.</label>
-            <input id="phone" type="tel" value="{{user.phone}}" name="phone" class="form-control">
+            <input id="ephone" type="tel" value="{{user.phone}}" name="phone" class="form-control">
 
         </div>
     </div>
-    <div class="col-lg-8">
+    <div class="col-lg-9">
         <div class="form-group">
             <label>Street Address</label>
             <input type="text" name="street_addr" value="{{user.street_addr}}" class="form-control">
@@ -156,7 +156,7 @@ function readURL(input) {
     $(document).ready(function() {
         $('#zip').mask('99999');
     })
-    $("#phone").on("change paste keyup", function() {
+    $("#ephone").on("change paste keyup", function() {
         // alert($(this).val());
 
         // const align = div1.getAttribute('placeholder');
@@ -179,12 +179,12 @@ function readURL(input) {
 
         }
         console.log(string)
-        $('#phone').mask(string);
+        $('#ephone').mask(string);
 
 
         // $(this).attr("data-inputmask","'mask': "+placeholder+"");
     });
-    $("#phone").intlTelInput({
+    $("#ephone").intlTelInput({
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
     });
 </script>

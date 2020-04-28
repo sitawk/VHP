@@ -81,9 +81,9 @@
                                               </div>
                                           </div>
                                           {%else%}
-                                            <a href="/dashboard/organization-pins/{{user.myorganization.id}}" class="btn btn-outline-dark myshadow pull-right ml-5" style="border-radius:3.25rem">Pins</a>
+                                            <a href="/dashboard/organization-pins" class="btn btn-outline-dark myshadow pull-right ml-5" style="border-radius:3.25rem">Pins</a>
                                               {%if user.myorganization.pins|length > 0%}
-                                              <a href="/dashboard/organization-certificates/{{user.myorganization.id}}" class="btn btn btn-outline-primary myshadow pull-right" style="border-radius:3.25rem">Certificates</a>
+                                              <a href="/dashboard/organization-certificates" class="btn btn btn-outline-primary myshadow pull-right" style="border-radius:3.25rem">Certificates</a>
                                               {%else%}
                                               <a href="#" class="btn btn btn-outline-primary myshadow" onclick="zeropins()" style="border-radius:3.25rem">Certificates</a>
                                               {%endif%}

@@ -47,7 +47,7 @@
             </div>
             <div class="col-md-12 my-4">
                 <p class="my-3" id="verifycheck"></p>
-                <button type="submit" class="btn btn-primary">Activate Now</button>
+                <button type="submit" class="btn btn-primary">Activate Now</button><a href="#" data-request="onCloseModal" data-dismiss="modal"  class="ml-5 btn btn-primary"> Close</a>
                 <span class="text-dark" style="font-size:12px;display:block;margin-top:10px">or, Didnt receive an email?</span>
                 <a href="#" class="text-primary" onclick="sendemailadd({{org.id}})">Resend</a>
 
@@ -58,9 +58,7 @@
     </div>
 </div>
 </div>
-<div class="modal-footer">
-<a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary"> Close</a>
-</div>
+
 {%endif%}
 {%else%}
 <div class="modal-header">
