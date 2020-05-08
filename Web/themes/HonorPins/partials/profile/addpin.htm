@@ -1,4 +1,45 @@
 <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="{{'assets/editor/fontawsome.min.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/froala_editor.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/froala_style.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/code_view.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/colors.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/draggable.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/emoticons.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/image_manager.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/image.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/line_breaker.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/table.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/char_counter.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/video.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/fullscreen.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/file.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/css/plugins/quick_insert.css'|theme}}">
+<link rel="stylesheet" href="{{'assets/editor/codemirror.min.css'|theme}}">
+<style>
+
+.fr-desktop .fr-command:not(.fr-table-cell) {
+  border:2px solid #1cb9c8 !important;
+color:#1cb9c8 !important;
+}
+.fr-desktop .fr-command:hover:not(.fr-table-cell) {
+  background: #1cb9c8 !important;
+  color: #ffffff !important;
+}
+.fr-btn:hover .fr-svg path {
+  fill: #ffffff !important;
+}
+.fr-btn{
+  padding: 0px 10px !important;
+}
+.fr-element p {
+  font-weight: 300;
+}
+.second-toolbar a#logo{
+  display: none;
+}
+</style>
+
 {% if addpin == 1%}
 <div class="modal-header">
     <h3>Pin Created</h3>
@@ -27,103 +68,133 @@
 {%else%}
     <div class="modal-body px-5">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card p-2 border-dark card-inverse" style="background-color: #fff; border-color: #fff; border-radius:10px">
-                    <div class="card-block">
-                        <div class="row">
-                            <div class="col-md-2 col-sm-2 text-center ">
-                                <img id="renderimage" class="btn-md mt-25" src="/themes/honorpins/assets/img/pinlogo.png" class="" alt="" style="border-radius:50%;" />
-                            </div>
-                            <div class="col-md-10 col-sm-10 ">
-                                <div class="row">
-                                <div class="col-md-12 col-sm-12">
-                                <h2 class="card-title text-gray-dark" id="rendertitle"><i style="color:#ccc;">Pin_Title</i></h2>
-                              </div>
-                                <div class="col-md-12 col-sm-12">
-                                <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>By PMI: </strong>  <i style="color:#ccc;">PMI_Website_Url</i></p>
-                              </div>
-                                <div class="col-md-5 col-sm-5">
-                                <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>Certificate No: </strong>  <i style="color:#ccc;">RegNo</i></p>
-                                 </div>
-                                   <div class="col-md-2 col-sm-2">
-                                 <strong>-</strong>
-                               </div>
-                                 <div class="col-md-5 col-sm-5">
-                                 <p style="line-height:1.5;font-size:14px"><strong>Granted Date:</strong> <i style="color:#ccc;">Start_date</i></p>
-                               </div>
-                                 <div class="col-md-12 col-sm-12" style="height:100px">
-                                <p style="line-height:1.5;font-size:13px" id="renderdesc">
-                                  <i style="color:#ccc;">Description</i></p>
-                            </div>
-                          </div>
-                          </div>
-                          <div class="col-md-12 col-sm-12 pb-15 pl-25">
-                              <p class="card-text text-gray-dark" style="line-height:1.5"><strong>Signed By: </strong> <i style="color:#ccc">Holder_Name</i> </p>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-12 text-center">
-                <span style="color:red;display:none; font-size:12px;" id="descerror">character limit exceded for pin descriptiom. Limit:480 characters</span>
-            </div>
-            <div class="col-lg-9 mt-15">
+            <div class="col-lg-9">
+                <h2 class="header-title">Create Pin Template</h2>
                 <div class="form-group">
-                    <h4 class="header-title">Title</h4>
+                    <h4 class="header-title">Pin Title</h4>
                     <input type="text" required name="title" id="title" class="form-control">
                     <span style="color:red;display:none; font-size:12px;" id="titleerror">This field is required!</span>
+
                 </div>
-                <div class="form-group">
-                    <h4 class="header-title">Description</h4>
-                    <textarea type="text" required name="title" id="desc" class="form-control" style="height:70px !important"></textarea>
-                    <span style="color:red;display:none; font-size:12px;" id="desceerror">This field is required!</span>
+
 <input type="hidden" value="" id="orgbase64">
-                </div>
+<input type="hidden" value="" id="template">
             </div>
-            <div class="col-md-3 mt-35 align-self-center">
-                <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="140" />
+            <div class="col-md-3 align-self-center">
+                <input type="file" id="orglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="120" />
                 <span style="color:red;display:none; font-size:12px;" id="orglogoerror">This field is required!</span>
+            </div>
+            <div class="col-md-12 align-self-center">
+              <div id='edit1' style="margin-top: 30px;">
+
+              </div>
+                <span style="color:red;display:none; font-size:12px;" id="desceerror">Template is required!</span>
             </div>
         </div>
     </div>
-    <input type="hidden" id="orgbase64" />
+
     <div class="modal-footer">
         <button type="button" id="addorgspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
         <button type="button" id="addorg" onclick="addorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Create</button>
     </div>
 {%endif%}
 <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+<script type="text/javascript"
+  src="{{'assets/editor/codemirror.min.js'|theme}}"></script>
+<script type="text/javascript"
+  src="{{'assets/editor/xml.min.js'|theme}}"></script>
 
+<script type="text/javascript" src="{{'assets/editor/js/froala_editor.min.js'|theme}}"></script>
+
+<script type="text/javascript" src="{{'assets/editor/js/plugins/align.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/code_beautifier.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/code_view.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/colors.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/draggable.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/emoticons.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/font_size.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/font_family.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/image.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/file.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/image_manager.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/line_breaker.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/link.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/lists.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/paragraph_format.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/paragraph_style.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/video.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/table.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/url.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/entities.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/char_counter.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/inline_style.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/save.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/fullscreen.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/quote.min.js'|theme}}"></script>
+<script type="text/javascript" src="{{'assets/editor/js/plugins/quick_insert.min.js'|theme}}"></script>
+<script>
+
+  (function () {
+    var callback = function () {
+    var editor = this
+
+    editor.codeBeautifier.run(
+
+      document.getElementById('template').value = editor.html.get()
+    )
+
+    }
+      FroalaEditor.DefineIcon('Date Issued')
+      FroalaEditor.RegisterCommand('Date Issued', {
+        title: 'Date Issued',
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: function () {
+            this.html.insert('{issued_date}')
+        }
+      })
+      FroalaEditor.DefineIcon('Certificate Url')
+      FroalaEditor.RegisterCommand('Certificate Url', {
+        title: 'Certificate Url',
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: function () {
+        this.html.insert('{certificate_url}')
+        }
+      })
+      FroalaEditor.DefineIcon('Certificate Title')
+      FroalaEditor.RegisterCommand('Certificate Title', {
+        title: 'Certificate Title',
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: function () {
+          this.html.insert('{certificate_title}')
+        }
+      })
+      FroalaEditor.DefineIcon('Certificate Description')
+      FroalaEditor.RegisterCommand('Certificate Description', {
+        title: 'Certificate Description',
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: function () {
+          this.html.insert('{certificate_description}')
+        }
+      })
+    new FroalaEditor('#edit1', {
+      events: {
+   initialized: callback,
+   contentChanged: callback
+ },
+    toolbarButtons: [ ['undo', 'redo','underline', 'alignLeft', 'alignCenter', 'alignRight','insertImage','html','bold'], ['Certificate Title', 'Date Issued', 'Certificate Url', 'Certificate Description'] ]
+    })
+  })()
+</script>
 <script type="text/javascript">
-$('#title').keyup(function() {
-  var str = "";
 
-    str += $( this ).val();
-if(str.length != 0){
- document.getElementById('rendertitle').innerHTML = '',
-    $( "#rendertitle" ).text( str );
-}else{
-   document.getElementById('rendertitle').innerHTML = '<i style="color:#ccc;">Pin_Title</i>';
-}
-
-});
-$('#desc').keyup(function() {
-  var str = "";
-
-    str += $( this ).val();
-if(str.length != 0){
-  if(str.length <=480){
- document.getElementById('renderdesc').innerHTML = '',
-    $( "#renderdesc" ).text( str );
-      document.getElementById('descerror').style.display = 'none';
-  }else{
-      document.getElementById('descerror').style.display = 'block';
-  }
-}else{
-   document.getElementById('renderdesc').innerHTML = '<i style="color:#ccc;">Description</i>';
-}
-
-});
 
     function orgreadURL(input) {
         if (input.files && input.files[0]) {
@@ -131,32 +202,31 @@ if(str.length != 0){
 
             reader.onload = function(e) {
                 //$('#blah').attr('src', e.target.result);
-                document.getElementById('renderimage').src = e.target.result;
+                // document.getElementById('renderimage').src = e.target.result;
                 document.getElementById('orgbase64').value = e.target.result;
             }
 
             reader.readAsDataURL(input.files[0]);
         }
     }
-    $("#orglogo").click(function() {
-      console.log('asdasdasd')
-      if(document.getElementById('renderimage').src !== '/themes/honorpins/assets/img/pinlogo.png'){
-        document.getElementById('renderimage').src = '/themes/honorpins/assets/img/pinlogo.png';
-      }
-    })
+    // $("#orglogo").click(function() {
+    //   console.log('asdasdasd')
+    //   if(document.getElementById('renderimage').src !== '/themes/honorpins/assets/img/pinlogo.png'){
+    //     document.getElementById('renderimage').src = '/themes/honorpins/assets/img/pinlogo.png';
+    //   }
+    // })
     $("#orglogo").change(function() {
-      console.log('asdaaaaaa')
+      // console.log('asdaaaaaa')
         orgreadURL(this);
     });
 
     function addorganization() {
 
-
         document.getElementById('titleerror').style.display = 'none';
 
-        document.getElementById('orglogoerror').style.display = 'none';
         document.getElementById('desceerror').style.display = 'none';
-        document.getElementById('descerror').style.display = 'none';
+        document.getElementById('orglogoerror').style.display = 'none';
+
         // document.getElementById('temperror').style.display = 'none';
 
         var button = document.getElementById('addorgspin').style.display = 'block';
@@ -171,7 +241,7 @@ if(str.length != 0){
         }
 
         var title = document.getElementById('title').value;
-        var desc = document.getElementById('desc').value;
+        var desc = document.getElementById('template').value;
         if (title === '') {
             document.getElementById('titleerror').style.display = 'block';
             var button = document.getElementById('addorgspin').style.display = 'none';
@@ -193,7 +263,7 @@ if(str.length != 0){
             data: {
                 title: title,
                 desc: desc,
-                template:'',
+                template:desc,
                 logo: image
             }
         }).done(function(data) {
@@ -206,15 +276,8 @@ if(str.length != 0){
             var button = document.getElementById('addorg').style.display = 'block';
         });
     }
-    var drEvent = $('.dropify').dropify();
 
-    drEvent.on('dropify.afterClear', function(event, element){
-      if(document.getElementById('renderimage').src !== '/themes/honorpins/assets/img/pinlogo.png'){
-                document.getElementById('renderimage').src = '/themes/honorpins/assets/img/pinlogo.png';
-      }
-    });
-
-    $('.dropify').dropify({
+    $('#orglogo').dropify({
         messages: {
             'default': 'Drag and drop a Pin Logo',
             'replace': 'Drag and drop or click to replace',

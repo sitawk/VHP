@@ -290,8 +290,14 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
             <div class="col-lg-12">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="nav-status-tab">
-
-                          {%  if user.personalcertificates|length > 0 %}
+                      {%set count = 0%}
+                      {% for certificate in user.emails%}
+                      {% for certificates in certificate.personalcertificates%}
+                    
+                      {%set count = count+1%}
+                      {%endfor%}
+                      {%endfor%}
+                          {%  if count > 0 %}
                         <div id="organizationcertificate">
                             {% partial 'profile/personalcertificates'%}
                         </div>

@@ -1,0 +1,141 @@
+
+
+.rwd-table-data {
+width:100%;
+  min-width: 300px;
+  max-width: 100%;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+
+
+.rwd-table-data thead tr:first-child {
+  border-top: none;
+  background: #1cb9c8;
+  color: #fff;
+}
+
+.rwd-table-data tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background-color: #f5f9fc;
+}
+
+.rwd-table-data tr:nth-child(odd) {
+  background-color: #ebf3f9;
+}
+
+.rwd-table-data th {
+  display: none;
+}
+
+.rwd-table-data td {
+  display: block;
+}
+
+.rwd-table-data td:first-child {
+  margin-top: .5em;
+}
+
+.rwd-table-data td:last-child {
+  margin-bottom: .5em;
+}
+
+.rwd-table-data td:before {
+  content: attr(data-th) ": ";
+  font-weight: bold;
+  display: inline-block;
+  color: #000;
+}
+
+.rwd-table-data th,
+.rwd-table-data td {
+  text-align: left;
+}
+
+.rwd-table-data {
+  color: #333;
+  border-radius: .4em;
+  overflow: hidden;
+}
+
+.rwd-table-data tr {
+  border-color: #bfbfbf;
+}
+
+.rwd-table-data th,
+.rwd-table-data td {
+  padding: .5em 1em;
+}
+@media screen and (max-width: 601px) {
+  .rwd-table-data tr:nth-child(2) {
+    border-top: none;
+  }
+}
+@media screen and (min-width: 600px) {
+  .rwd-table-data tr:hover:not(:first-child) {
+    background-color: #d8e7f3;
+  }
+  .rwd-table-data td:before {
+    display: none;
+  }
+  .rwd-table-data th,
+  .rwd-table-data td {
+    display: table-cell;
+    padding: .25em .5em;
+  }
+  .rwd-table-data th:first-child,
+  .rwd-table-data td:first-child {
+    padding-left: 0;
+  }
+  .rwd-table-data th:last-child,
+  .rwd-table-data td:last-child {
+    padding-right: 0;
+  }
+  .rwd-table-data th,
+  .rwd-table-data td {
+    padding: 1em !important;
+  }
+}
+
+
+/* THE END OF THE IMPORTANT STUFF */
+
+/* Basic Styling */
+
+
+
+@-webkit-keyframes leftRight {
+  0%    { -webkit-transform: translateX(0)}
+  25%   { -webkit-transform: translateX(-10px)}
+  75%   { -webkit-transform: translateX(10px)}
+  100%  { -webkit-transform: translateX(0)}
+}
+@keyframes leftRight {
+  0%    { transform: translateX(0)}
+  25%   { transform: translateX(-10px)}
+  75%   { transform: translateX(10px)}
+  100%  { transform: translateX(0)}
+}
+
+/*
+    Don't look at this last part. It's unnecessary. I was just playing with pixel gradients... Don't judge.
+*/
+/*
+@media screen and (max-width: 601px) {
+  .rwd-table-data tr {
+    background-image: -webkit-linear-gradient(left, #428bca 137px, #f5f9fc 1px, #f5f9fc 100%);
+    background-image: -moz-linear-gradient(left, #428bca 137px, #f5f9fc 1px, #f5f9fc 100%);
+    background-image: -o-linear-gradient(left, #428bca 137px, #f5f9fc 1px, #f5f9fc 100%);
+    background-image: -ms-linear-gradient(left, #428bca 137px, #f5f9fc 1px, #f5f9fc 100%);
+    background-image: linear-gradient(left, #428bca 137px, #f5f9fc 1px, #f5f9fc 100%);
+  }
+  .rwd-table-data tr:nth-child(odd) {
+    background-image: -webkit-linear-gradient(left, #428bca 137px, #ebf3f9 1px, #ebf3f9 100%);
+    background-image: -moz-linear-gradient(left, #428bca 137px, #ebf3f9 1px, #ebf3f9 100%);
+    background-image: -o-linear-gradient(left, #428bca 137px, #ebf3f9 1px, #ebf3f9 100%);
+    background-image: -ms-linear-gradient(left, #428bca 137px, #ebf3f9 1px, #ebf3f9 100%);
+    background-image: linear-gradient(left, #428bca 137px, #ebf3f9 1px, #ebf3f9 100%);
+  }
+}*/

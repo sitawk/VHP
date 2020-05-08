@@ -6,6 +6,7 @@ use Codersocean\Honorpins\Models\Certificate;
 use Codersocean\Honorpins\Models\Order;
 use Codersocean\Honorpins\Models\OrderDetail;
 use Codersocean\Honorpins\Models\HolderPins;
+use Codersocean\Honorpins\Models\ConnectedEmails;
 use Codersocean\Honorpins\Models\Organization;
 use Codersocean\Honorpins\Models\Pin;
 use RainLab\User\Models\User;
@@ -51,7 +52,10 @@ class Plugin extends PluginBase
   User::extend(function($model) {
             $model->hasMany['emails'] = ['Codersocean\Honorpins\Models\ConnectedEmails', 'key' => 'user_id'];
         });
-  User::extend(function($model) {
+  // User::extend(function($model) {
+  //           $model->hasMany['personalcertificates'] = ['Codersocean\Honorpins\Models\HolderPins', 'key' => 'email', 'otherKey' => 'email'];
+  //       });
+  ConnectedEmails::extend(function($model) {
             $model->hasMany['personalcertificates'] = ['Codersocean\Honorpins\Models\HolderPins', 'key' => 'email', 'otherKey' => 'email'];
         });
   User::extend(function($model) {

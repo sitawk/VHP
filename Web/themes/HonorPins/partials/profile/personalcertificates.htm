@@ -7,12 +7,14 @@
           <th>Certificate Title</th>
           <th>Your Pin</th>
           <th>Category</th>
-          <th>Access Codes</th>
+          <th class="text-center">Access Codes</th>
           <th>Request Logs</th>
 
 
         </tr>
-{% for certificate in user.personalcertificates%}
+        {% for emails in user.emails%}
+        {% for certificate in emails.personalcertificates%}
+
         <tr>
           <td data-th="Certificate Title">
         {{certificate.certificate.title}}
@@ -85,6 +87,7 @@
 
 
         </tr>
+        {%endfor%}
         {%endfor%}
       </tbody>
     </table>

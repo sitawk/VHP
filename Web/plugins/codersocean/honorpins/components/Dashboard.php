@@ -177,10 +177,15 @@ return [
       $this->page['addcertificate'] = 1;
       $this->page['thisorganization'] = Organization::where('id',post('org_id'))->first();
       $this->page['user'] = Auth::getuser();
-      return [
-          '#completecertificate' => $this->renderPartial('profile/addcertificate'),
-          '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
 
+    $this->page['addpin'] = 0;
+        $this->page['categories'] = Categories::get();
+            $this->page['user'] = $user = Auth::getuser();
+      return [
+      '#createcertificatebutton' => $this->renderPartial('userdashboard/createcertificatebutton'),
+      '#completecertificate' => $this->renderPartial('profile/addcertificate'),
+          '#createcertificatebutton' => $this->renderPartial('userdashboard/createcertificatebutton'),
+          '#organizationcertificate' => $this->renderPartial('profile/organizationcertificates'),
       ];
 
     }

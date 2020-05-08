@@ -1,0 +1,89 @@
+<style>
+.bootstrap-select .dropdown-toggle .filter-option {
+
+    padding-right: 0px !important;
+    /* padding-bottom: inherit; */
+    padding-left: 10px !important;
+
+  }
+</style>
+<script>
+$(document).ready(function() {
+  var rangesearch = '{{rangesearch}}';
+  var certificatesearch = '{{certificatesearch}}';
+  var pinsearch = '{{pinsearch}}';
+  var ordersearcha = '{{ordersearcha}}';
+
+  if(rangesearch !== 'none' || certificatesearch !== 'none' || pinsearch !== '100' || ordersearcha !== 'none'){
+    // alert('hello')
+    console.log(rangesearch)
+    console.log(certificatesearch)
+    console.log(pinsearch)
+    console.log(ordersearcha)
+      $('.hidden-menu').slideToggle();
+  }
+});
+</script>
+
+<div class="col-md-12 col-lg-12 my-3 row hidden-menu" style="display:none">
+
+   <div class="col-md-3  col-lg-3  ">
+   <p>By Certificate</p>
+   <select class="selectpicker" name="certificatesearch" data-request-data="keyword: '{{keyword}}',pinsearch: '{{pinsearch}}',ordersearcha: '{{ordersearcha}}',rangesearch: '{{rangesearch}}'" data-request="onSearch" data-request-flash data-track-input  data-style="btn-default" data-live-search="true">
+     <option {%if certificatesearch == 'none'%} selected {%endif%} value="none">Select Option</option>
+     {%for certificate in certificates_uploded%}
+                     <option  {%if certificatesearch == certificate.certificate.id%} selected {%endif%} value="{{certificate.certificate.id}}">{{certificate.certificate.title}}</option>
+                     {%endfor%}
+                 </select>
+</div>
+   <div class="col-md-3  col-lg-3  ">
+     <p>By Pin</p>
+     <select name="pinsearch" class="selectpicker" data-request-data="keyword: '{{keyword}}',certificatesearch: '{{certificatesearch}}',ordersearcha: '{{ordersearcha}}',rangesearch: '{{rangesearch}}'"  data-request="onSearch" data-request-flash data-track-input data-style="btn-default" data-live-search="true">
+
+
+                       <option {%if pinsearch == '100' %} selected {%endif%} value="100">Select Option</option>
+                       <option {%if pinsearch == '1' %} selected {%endif%} value="1">Included</option>
+                       <option {%if pinsearch == '0' %} selected {%endif%} value="0">Not Included</option>
+
+
+                   </select>
+</div>
+   <div class="col-md-3  col-lg-3  ">
+     <p>By Order (Upload date)</p>
+     <select class="selectpicker" name="ordersearcha" data-request-data="keyword: '{{keyword}}',certificatesearch: '{{certificatesearch}}',pinsearch: '{{pinsearch}}',rangesearch: '{{rangesearch}}'"  data-request="onSearch" data-request-flash data-track-input data-style="btn-default" data-live-search="true">
+
+
+                       <option {%if ordersearcha == 'none'%} selected {%endif%} value="none">Select Option</option>
+                       <option {%if ordersearcha == 'ASC' %} selected {%endif%} value="ASC">Ascending</option>
+                       <option {%if ordersearcha == 'DESC' %} selected {%endif%} value="DESC">Descending</option>
+
+                   </select>
+</div>
+   <div class="col-md-3  col-lg-3  ">
+     <p>Range (Issued date)</p>
+     <select  class="selectpicker" name="rangesearch" data-request-data="keyword: '{{keyword}}',certificatesearch: '{{certificatesearch}}',pinsearch: '{{pinsearch}}',ordersearcha: '{{ordersearcha}}'"  data-request="onSearch" data-request-flash data-track-input data-style="btn-default" data-live-search="true">
+
+                       <option {%if rangesearch == 'none' %} selected {%endif%} value="none">Select Range</option>
+                       <option {%if rangesearch == '7' %} selected {%endif%} value="7">Last 7 days</option>
+                       <option {%if rangesearch == '30' %} selected {%endif%} value="30">Last 30 days</option>
+
+                       <option {%if rangesearch == '90' %} selected {%endif%} value="90">Last 3 Months</option>
+                       <option {%if rangesearch == '180' %} selected {%endif%} value="180">Last 6 Months</option>
+
+                       <option {%if rangesearch == '365' %} selected {%endif%} value="365">Last Year</option>
+
+
+                   </select>
+</div>
+</div>
+<script src="{{'adminassets/libs/popper/popper.js'|theme}}"></script>
+<script src="{{'assets/js/bootstrap.min.js'|theme}}"></script>
+    <script src="{{'adminassets/libs/bootstrap-select/bootstrap-select.js'|theme}}"></script>
+   <script src="{{ 'adminassets/libs/select2/select2.js'|theme }}"></script>
+<script type="text/javascript">
+  $('.selectpicker').selectpicker()
+  </script>
+<script>
+
+
+</script>

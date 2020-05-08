@@ -37,16 +37,100 @@ function onSendEmail(){
           });
   return post('id');
 }
+function onSearch(){
+    $this['user'] = $user = Auth::getuser();
+    $this['certificates_uploded'] =Codersocean\Honorpins\Models\Order::where('user_id',$user->id)->groupBy('certificate_id')->get();
+    //Flash::success(post('keyword').' '.post('certificatesearch').' '.post('pinsearch').' '.post('ordersearcha').' '.post('rangesearch'));
+    $this['keyword'] = post('keyword');
+    $this['certificatesearch'] = post('certificatesearch');
+    $this['pinsearch'] = post('pinsearch');
+    $this['ordersearcha'] = post('ordersearcha');
+    $this['rangesearch'] = post('rangesearch');
+$value = $this['keyword'];
+$dataa = array();
+if($this['pinsearch']  != 100){
+    if($this['certificatesearch']  != 'none'){
+        if($this['ordersearcha'] !== 'none'){
+          $orders = Codersocean\Honorpins\Models\HolderPins::where('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->orderBy('id',$this['ordersearcha'])->where('full_name', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->orderBy('id',$this['ordersearcha'])->where('email', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->orderBy('id',$this['ordersearcha'])->where('reg_number', 'LIKE', '%' . $value . '%')->get();
+        }else{
+          $orders = Codersocean\Honorpins\Models\HolderPins::where('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('reg_number', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('full_name', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('email', 'LIKE', '%' . $value . '%')->get();
+        }
+    }else{
+      if($this['ordersearcha'] !== 'none'){
+        $orders = Codersocean\Honorpins\Models\HolderPins::where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('email', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('full_name', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('reg_number', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->get();
+        }else{
+          $orders = Codersocean\Honorpins\Models\HolderPins::where('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('email', 'LIKE', '%' . $value . '%')->orWhere('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('full_name', 'LIKE', '%' . $value . '%')->orWhere('org_id',$user->myorganization->id)->where('pin_status',$this['pinsearch'])->where('reg_number', 'LIKE', '%' . $value . '%')->get();
+        }
+    }
+}else{
+  if($this['certificatesearch']  != 'none'){
+    if($this['ordersearcha'] !== 'none'){
+      $orders = Codersocean\Honorpins\Models\HolderPins::where('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('email', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('full_name', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('reg_number', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->get();
+}else{
+  $orders = Codersocean\Honorpins\Models\HolderPins::where('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('email', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('full_name', 'LIKE', '%' . $value . '%')->orWhere('certificate_id',$this['certificatesearch'])->where('org_id',$user->myorganization->id)->where('reg_number', 'LIKE', '%' . $value . '%')->get();
+}
+  }else{
+    if($this['ordersearcha'] !== 'none'){
+      $orders = Codersocean\Honorpins\Models\HolderPins::where('org_id',$user->myorganization->id)->where('certificate_id',$this['certificatesearch'])->where('email', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('org_id',$user->myorganization->id)->where('certificate_id',$this['certificatesearch'])->where('full_name', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->orWhere('org_id',$user->myorganization->id)->where('certificate_id',$this['certificatesearch'])->where('reg_number', 'LIKE', '%' . $value . '%')->orderBy('id',$this['ordersearcha'])->get();
+}else{
+  $orders = Codersocean\Honorpins\Models\HolderPins::where('org_id',$user->myorganization->id)->where('reg_number', 'LIKE', '%' . $value . '%')->orWhere('org_id',$user->myorganization->id)->where('email', 'LIKE', '%' . $value . '%')->orWhere('org_id',$user->myorganization->id)->where('full_name', 'LIKE', '%' . $value . '%')->get();
+}
+  }
+}
+//dd($orders);
+$Date=date('Y-m-d');
+if($this['rangesearch'] !== 'none'){
+  if($this['rangesearch'] == 7){
+  $to =  date('Y-m-d', strtotime($Date.' +1 days'));
+$from = date('Y-m-d', strtotime($Date. ' -7 days'));
+
+  $data = $orders->where('start_date', '>=', $from)->where('start_date', '<', $to);
+
+  }elseif($this['rangesearch'] == 30){
+    $to =  date('Y-m-d', strtotime($Date.' +1 days'));
+  $from = date('Y-m-d', strtotime($Date. ' -30 days'));
+
+    $data = $orders->where('start_date', '>=', $from)->where('start_date', '<', $to);
+}elseif($this['rangesearch'] == 90){
+  $to =  date('Y-m-d', strtotime($Date.' +1 days'));
+$from = date('Y-m-d', strtotime($Date. ' -90 days'));
+
+  $data = $orders->where('start_date', '>=', $from)->where('start_date', '<', $to);
+}elseif($this['rangesearch'] == 365){
+  $to =  date('Y-m-d', strtotime($Date.' +1 days'));
+$from = date('Y-m-d', strtotime($Date. ' -365 days'));
+
+  $data = $orders->where('start_date', '>=', $from)->where('start_date', '<', $to);
+}elseif($this['rangesearch'] == 180){
+  $to =  date('Y-m-d', strtotime($Date.' +1 days'));
+$from = date('Y-m-d', strtotime($Date. ' -180 days'));
+
+  $data = $orders->where('start_date', '>=', $from)->where('start_date', '<', $to);
+}
+}else{
+  $data = $orders;
+}
+$this['myorders'] = $data;
+return [
+'#allmyorders' => $this->renderPartial('order/allorders'),
+'#historyfilter' => $this->renderPartial('order/historyfilter'),
+];
+}
 function onStart(){
   $this['categories'] = Codersocean\Honorpins\Models\Categories::get();
   $this['user'] = $user = Auth::getuser();
-
   if(!$user){
     $redrect = '/login';
     return Redirect::to($redrect);
   }
-
-  $this['myorders'] = Codersocean\Honorpins\Models\Order::where('user_id',$user->id)->get();
+  $user = Auth::getuser();
+  $this['certificates_uploded'] =Codersocean\Honorpins\Models\Order::where('org_id',$user->myorganization->id)->groupBy('certificate_id')->get();
+  $this['keyword'] = '';
+  $this['certificatesearch'] = 'none';
+  $this['pinsearch'] = 100;
+  $this['ordersearcha'] = 'none';
+  $this['rangesearch'] = 'none';
+  $this['myorders'] = Codersocean\Honorpins\Models\HolderPins::where('org_id',$user->myorganization->id)->get();
 }
 function onSelectmySavedCard(){
     $this['user'] = $user = Auth::getuser();
@@ -194,31 +278,27 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
             </div>
             <div class="col-lg-3">
                 <div class="acc-leftbar">
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                      <a class="nav-item  nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
-                        <a class="nav-item  nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Pins</a>
-                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" ><i class="fas fa-medal"></i>Certificates</a>
-                          <a class="nav-item active nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>Purchases</a>
+                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <a class="nav-item nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
+                        <a class="nav-item nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Pins</a>
+
+
+                          <a class="nav-item nav-link active  collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="true" aria-label="Toggle navigation"><i class="fas fa-medal"></i> Certificates <i class="fas fa-angle-right pull-right"></i></a>
+                     <div class="nav-tabs collapse show" style="width:100%" id="navbarToggleExternalContent">
+                           <a class="nav-item  nav-link"  href="/dashboard/organization-certificates" style="font-size:15px;" >Manage Certificates</a>
+                           <a class="nav-item nav-link"  href="/dashboard/create-order" style="font-size:15px;" >Upload Certificates</a>
+                         <a class="nav-item active nav-link"  href="/dashboard/my-orders" style="font-size:15px;"  > History</a>
+                     </div>
+
                     </div>
                 </div>
             </div>
             <div class="col-lg-9">
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active " id="nav-status" role="tabpanel" aria-labelledby="nav-status-tab">
-                        <div class="row">
-
-
-
-                            {%  if myorders|length > 0 %}
-                            <div class="col-md-3 col-lg-3 ml-auto my-3 text-right">
-                                <a href="/dashboard/create-order" class="btn btn btn-primary" >Order Now</a>
-                            </div>
-                            {%endif%}
-
+                        <div class="row" id="historyfilter">
+                          {% partial 'order/historyfilter'%}
                         </div>
-
-
-
                         {%  if user.myorders|length > 0 %}
                         <div id="allmyorders">
                           {% partial 'order/allorders'%}
@@ -232,11 +312,11 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                             </div>
                         </div>
                         {%endif%}
-
                     </div>
                     </div>
-                </div></div></div>
-
+                </div>
+              </div>
+            </div>
                     <div class="header-space"></div>
 </section>
 

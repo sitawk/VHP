@@ -19,16 +19,11 @@ function onAddPin(){
   $png_url = "pin-".time().".png";
     $path = public_path().'/storage/app/uploads/web/' . $png_url;
     $datapath = '/storage/app/uploads/web/' . $png_url;
-
     Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
-
   $addpin->image = $datapath;
   $addpin->certificate_id = 0;
   $addpin->save();
-
   $this['addpin'] = 1;
-
-
     $this['organization'] = $addpin->organization;
 return [
   '#completepin' => $this->renderPartial('profile/addpin')
@@ -38,7 +33,7 @@ function onEditPin(){
   $addpin =  Codersocean\Honorpins\Models\Pin::where('id',post('id'))->first();
   $addpin->title = post('title');
   $addpin->desc = post('desc');
-  $addpin->template = post('template');
+  $addpin->template = post('desc');
   $this['user'] = $user = Auth::getuser();
   $this['myorganization'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->first();
   $addpin->org_id = $this['myorganization']->id;
@@ -55,10 +50,10 @@ if(Input::post('logo') != ''){
 
   $this['addpin'] = 1;
 
-
+  $this['pin'] = Codersocean\Honorpins\Models\Pin::where('id',post('id'))->first();
     $this['organization'] = $addpin->organization;
 return [
-  '#editcompletepin' => $this->renderPartial('pin/editpin')
+  '#editcompletepin'.post("id").'' => $this->renderPartial('pin/editpin')
 ];
 }
 function onSendEmail(){
@@ -99,6 +94,18 @@ function onRedirect(){
 function onDeletePin(){
   Codersocean\Honorpins\Models\Pin::where('id',post('id'))->delete();
   return 1;
+}
+function onCloseModalEdit(){
+  $user = Auth::getuser();
+    $this['user'] = $user;
+  $this['addpin'] = 0;
+    $this['pin'] = Codersocean\Honorpins\Models\Pin::where('id',post('id'))->first();
+  return [
+  '#completepin' => $this->renderPartial('profile/addpin'),
+  '#editcompletepin'.post('id').'' => $this->renderPartial('pin/editpin'),
+      '#createaddpinbutton' => $this->renderPartial('userdashboard/createaddpinbutton'),
+      '#allpinsrender' => $this->renderPartial('profile/allpins'),
+  ];
 }
 function onCloseModal(){
 $user = Auth::getuser();
@@ -157,14 +164,21 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                 <h2>Pins</h2>
             </div>
             <div class="col-lg-3">
-                <div class="acc-leftbar">
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                      <a class="nav-item  nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
-                        <a class="nav-item active  nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Pins</a>
-                          <a class="nav-item nav-link"  href="/dashboard/organization-certificates" ><i class="fas fa-medal"></i>Certificates</a>
-                          <a class="nav-item nav-link"  href="/dashboard/my-orders" ><i class="fas fa-shopping-cart"></i>Purchases</a>
-                        </div>
-                </div>
+              <div class="acc-leftbar">
+                  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                      <a class="nav-item nav-link" href="/dashboard/organizations" ><i class="fas fa-building"></i>Organization</a>
+                        <a class="nav-item active nav-link"  href="/dashboard/organization-pins" ><i class="fas fa-certificate"></i>Pins</a>
+
+
+                          <a class="nav-item nav-link   collshow " data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fas fa-medal"></i> Certificates <i class="fas fa-angle-right pull-right"></i></a>
+                     <div class="collapse" style="width:100%" id="navbarToggleExternalContent">
+                           <a class="nav-item nav-link"  href="/dashboard/organization-certificates" style="font-size:15px;" >Manage Certificates</a>
+                           <a class="nav-item nav-link"  href="/dashboard/create-order" style="font-size:15px;" >Upload Certificates</a>
+                         <a class="nav-item nav-link"  href="/dashboard/my-orders" style="font-size:15px;"  > History</a>
+                     </div>
+
+                    </div>
+              </div>
             </div>
             <div class="col-lg-9">
                 <div class="tab-content" id="nav-tabContent">
@@ -184,13 +198,7 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade " id="oneditpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content" id="editcompletepin">
-                                    {% partial 'pin/editpin' %}
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="modal fade " id="onviewpinmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content" style="border-radius: 11px;" id="viewcompletepin">
@@ -224,18 +232,78 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
 <script src="{{'assets/js/dropify.min.js'|theme}}"></script>
 <script src="{{'assets/js/sweet-alert.min.js'|theme}}"></script>
 <script type="text/javascript">
-function oneditpin(id,title,desc,image){
-  document.getElementById('editrendertitle').innerHTML = title;
+
+function editaddorganization(id) {
+
+    document.getElementById(`edittitleerror${id}`).style.display = 'none';
+    document.getElementById(`editorglogoerror${id}`).style.display = 'none';
+    // document.getElementById('editdescerror${id}').style.display = 'none';
+    // document.getElementById('temperror').style.display = 'none';
+
+    var button = document.getElementById(`editaddorgspin${id}`).style.display = 'block';
+    var button = document.getElementById(`editaddorg${id}`).style.display = 'none';
+    // var button =   document.getElementById('addorgspin).value;
+    var image = document.getElementById(`editorgbase64${id}`).value;
+    // if (image === '') {
+    //     document.getElementById('editorglogoerror').style.display = 'block';
+    //     var button = document.getElementById('editaddorgspin').style.display = 'none';
+    //     var button = document.getElementById('editaddorg').style.display = 'block';
+    //     return 'error'
+    // }
+
+    var title = document.getElementById(`edittitle${id}`).value;
+    var id = document.getElementById(`editpinid${id}`).value;
+    var desc = document.getElementById(`edittemplate${id}`).value;
+    if (title === '') {
+        document.getElementById(`edittitleerror${id}`).style.display = 'block';
+        var button = document.getElementById(`editaddorgspin${id}`).style.display = 'none';
+        var button = document.getElementById(`editaddorg${id}`).style.display = 'block';
+        return 'error'
+    }
+    if(desc === ''){
+      var button = document.getElementById(`editaddorgspin${id}`).style.display = 'none';
+      var button = document.getElementById(`editaddorg${id}`).style.display = 'block';
+      return 'error'
+
+    }
+
+// alert('asd')
+console.log(title)
+console.log(desc)
+console.log(image)
+console.log(id)
+// var button = document.getElementById('editaddorgspin${id}').style.display = 'none';
+// var button = document.getElementById('editaddorg${id}').style.display = 'block';
+// return
+    var AddTrainer = $.request('onEditPin', {
+        flash: 1,
+        data: {
+            title: title,
+            desc: desc,
+            logo: image,
+            id: id,
+        }
+    }).done(function(data) {
+        console.log('data')
+
+
+    }).fail(function() {
+  
+    });
+}
+function oneditpin(id,title,desc,template,image){
+  // $('#edpin').append(template);
+  // document.getElementById('editrendertitle').innerHTML = title;
   document.getElementById('editpinid').value = id;
   document.getElementById('edittitle').value = title;
-  document.getElementById('editrenderimage').src = image;
+  // document.getElementById('editrenderimage').src = image;
   $('#editorglogo').attr("data-default-file", image);
   // document.getElementByClassName('dropify-preview').style.display = 'block';
   $('.dropify-preview').css('display','block');
   $('.dropify-render').append('<img src="'+image+'" style="max-height:140px" />');
   // document.getElementByClassName('dropify-render').innerHTML = '<img src="'+image+'" style="max-height:140px" />' ;
-  document.getElementById('editrenderdesc').innerHTML = desc;
-  document.getElementById('editdesc').value = desc;
+  // document.getElementById('editrenderdesc').innerHTML = desc;
+  // document.getElementById('editdesc').value = desc;
 
 }
 function onviewpin(id,title,desc,image){

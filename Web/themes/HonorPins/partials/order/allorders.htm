@@ -2,43 +2,117 @@
 
 <div class="row">
   <link href="{{ 'assets/css/payment.css'|theme }}" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
   <link href="{{ 'adminassets/libs/select2/select2.css'|theme }}" rel="stylesheet">
 
 
+  <link href="{{ 'assets/css/datatable.css'|theme }}" rel="stylesheet">
   <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
   <style>
       .bootstrap-select .dropdown-menu {
           top: 27px !important;
       }
-
+.paginate_button a {
+  padding-left: 15px;
+  padding-right: 15px;
+}
       .bootstrap-select .dropdown-menu li a {
           padding-top: 12px;
           padding-bottom: 12px;
           font-size: 18px;
       }
-  </style>
 
-<div class="col-lg-12">
+  </style>
+  <div class="col-12">
+        <table id="example" class="table table-hover responsive nowrap rwd-table-data"  style="width:100%">
+          <thead>
+            <tr>
+              <th>Holder Name</th>
+              <th>Certificate</th>
+              <th>Email</th>
+              <th>Reg No#</th>
+              <th>Pin</th>
+              <th>Issued Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in myorders%}
+            <tr>
+              <td data-th="Order#">
+                  <p class="font-weight-bold mb-0">
+                  {{order.full_name}}
+                </p>
+              </td>
+              <td data-th="Certificate">
+                  {{order.certificate.title}}
+              </td>
+              <td data-th="Pins Ordered">
+              {{order.email}}
+              </td>
+              <!-- <td data-th="Detail">
+                <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewmyorderdetail{{order.id}}"   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i></a>
+                <div class="modal fade " id="onviewmyorderdetail{{order.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content" style="border-radius: 11px;" >
+                            {% partial 'order/vieworderdetail' details=order.detail %}
+                        </div>
+                    </div>
+                </div>
+              </td> -->
+              <td data-th="Detail">
+              {{order.reg_number}}
+              </td>
+
+              <!-- <td data-th="Payment">
+
+                {%if order.pin_status == 0%}
+                            <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#orderpayfororder" onclick='orderpayfororder({{order.id}})'   class="btn  btn-outline-info myshadow">Pay Now</a>
+                          {%else%}
+                              <p class="font-weight-500">Purchased</p>
+                              {%endif%}
+
+              </td> -->
+              <td data-th="Payment">
+
+                {%if order.pin_status == 0%}
+                No
+                            {%else%}
+                            Yes
+                              {%endif%}
+
+              </td>
+              <td data-th="Issued Date">
+      {{order.start_date}}
+              </td>
+            </tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+<!-- <div class="col-lg-12">
   <table class="rwd-table">
     <tbody>
       <tr>
-        <th>Order#</th>
+        <th>Holder Name</th>
         <th>Certificate</th>
-        <th>Pins Ordered</th>
-        <th>Detail</th>
-        <th>Payment</th>
+        <th>Email</th>
+        <th>Reg No#</th>
+        <th>Pin</th>
+        <th>Issued Date</th>
+
 
       </tr>
-      {% for order in user.myorders%}
+      {% for order in myorders%}
       <tr>
         <td data-th="Order#">
-            {{order.id}}
+            {{order.full_name}}
         </td>
         <td data-th="Certificate">
             {{order.certificate.title}}
         </td>
         <td data-th="Pins Ordered">
-            {{order.detail |length}}
+        {{order.email}}
         </td>
         <td data-th="Detail">
           <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewmyorderdetail{{order.id}}"   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i></a>
@@ -49,9 +123,12 @@
                   </div>
               </div>
           </div>
-        </td>
+        </td> -->
+        <!-- <td data-th="Detail">
+        {{order.reg_number}}
+        </td> -->
 
-        <td data-th="Payment">
+        <!-- <td data-th="Payment">
 
           {%if order.pin_status == 0%}
                       <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#orderpayfororder" onclick='orderpayfororder({{order.id}})'   class="btn  btn-outline-info myshadow">Pay Now</a>
@@ -59,12 +136,24 @@
                         <p class="font-weight-500">Purchased</p>
                         {%endif%}
 
+        </td> -->
+        <!-- <td data-th="Payment">
+
+          {%if order.pin_status == 0%}
+          No
+                      {%else%}
+                      Yes
+                        {%endif%}
+
+        </td>
+        <td data-th="Issued Date">
+{{order.start_date}}
         </td>
       </tr>
       {%endfor%}
     </tbody>
   </table>
-</div>
+</div> -->
 </div>
 <div class="modal fade " id="orderpayfororder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -143,17 +232,51 @@
 <div id="renderaddcardorder">
 {%partial 'order/renderaddcardorder'%}
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 <script>
 $(document).ready(function() {
-  $('#orderpayfororder').modal('hide');
-
+  $("#example").DataTable({
+      dom: 'Bfrtip',
+    responsive: true,
+    buttons: [
+                {
+                    text: 'Filter',
+                    action: function ( e, dt, node, config ) {
+                        alert( 'Button activated' );
+                    }
+                }
+            ],
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+  $(".dataTables_filter").append('<a class="btn btn btn-primary ml-3" style="cursor:pointer;height: 48px !important;" id="show-hidden-menu" ><i class="text-white fa fa-filter"></i></a>')
+  $(".dataTables_filter input")
+    .attr("placeholder", "Search here...")
+    .css({
+      width: "300px",
+      display: "inline-block"
+    });
+  $('[data-toggle="tooltip"]').tooltip();
 });
-
-
-
+$(document).ready(function() {
+  $('#show-hidden-menu').click(function() {
+    $('.hidden-menu').slideToggle("slow");
+  });
+});
+$(document).ready(function() {
+  $('#orderpayfororder').modal('hide');
+});
     function selectcreditcard() {
-
-
         document.getElementById('paypal').style.display = 'none'
         document.getElementById('creditc').style.display = 'flex'
         $('#creditcardselect').addClass('bg-primary');
@@ -161,7 +284,6 @@ $(document).ready(function() {
         $('#paypalselect').removeClass('bg-primary');
         $('.paypalselect').removeClass('text-white');
     }
-
     function paypalselect() {
         document.getElementById('paypal').style.display = 'block'
         document.getElementById('creditc').style.display = 'none'
