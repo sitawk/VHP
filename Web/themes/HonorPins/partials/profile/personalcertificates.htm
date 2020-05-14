@@ -21,7 +21,7 @@
           </td>
           <td data-th="Your Pin">
             {%if certificate.pin_status != 0%}
-            <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewmypinmodal" onclick='onviewmypin({{certificate.pin.id}},"{{certificate.pin.title}}","{{certificate.pin.desc}}","{{certificate.pin.image}}","{{certificate.start_date}}","{{certificate.reg_number}}","{{certificate.full_name}}","{{certificate.certificate.url}}")'   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i> Pin</a>
+            <!-- <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewmypinmodal" onclick='onviewmypin({{certificate.pin.id}},"{{certificate.pin.title}}","{{certificate.pin.desc}}","{{certificate.pin.image}}","{{certificate.start_date}}","{{certificate.reg_number}}","{{certificate.full_name}}","{{certificate.certificate.url}}")'   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i> Pin</a> -->
             {%if certificate.availbility == 0%}
             <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="enablepin({{certificate.id}})"   class="btn  btn-outline-info myshadow">Enable</a>
             {%elseif certificate.availbility == 1%}

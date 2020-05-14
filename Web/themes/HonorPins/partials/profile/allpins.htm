@@ -8,7 +8,7 @@
             <th>Pin Logo</th>
             <th>Pin Title</th>
             <th>Template</th>
-            <th>Action</th>
+            <th>Delete</th>
 
 
           </tr>
@@ -22,11 +22,11 @@
             {{pin.title}}
             </td>
             <td data-th="Template">
-              <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewpinmodal" onclick='onviewpin({{pin.id}},"{{pin.title}}","{{pin.desc}}","{{pin.image}}")'   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i></a>
+              <!-- <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#onviewpinmodal" onclick='onviewpin({{pin.id}},"{{pin.title}}","{{pin.desc}}","{{pin.image}}")'   class="btn  btn-outline-info myshadow"><i class="fas fa-eye"></i></a> -->
+              <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#oneditpinmodal{{pin.id}}"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
 
             </td>
             <td data-th="Action">
-              <a href="#" style="padding: 0 1.2rem; line-height:2.55" data-toggle="modal" data-target="#oneditpinmodal{{pin.id}}"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
               {%if user.myorganization.pins|length >1%}
               <a href="#" style="padding: 0 1.2rem; line-height:2.55" onclick="deletepin({{pin.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
               {%endif%}
