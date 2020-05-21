@@ -4,9 +4,25 @@ layout = "default"
 ==
 <?php
 function onVerifyCertification(){
-  $holder = $this['holder'] = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->first();
-  if($holder){
+  $count = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->count();
 
+  if($count >= 1){
+$holder = $this['holders'] = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->get();
+foreach($holder as $log){
+  $new = new Codersocean\HonorPins\Models\RequestLogs;
+  $email = Codersocean\HonorPins\Models\ConnectedEmails::where('email',$log->email)->first();
+  if($email){
+    $new->user_id = $email->user->id;
+  }else{
+    $email = Rainlab\User\Models\User::where('email',$log->email)->first();
+    $new->user_id = $email->id;
+  }
+  $new->messege = 'Someone just checked the status of your certifications!';
+  $new->certificate_id = $log->certificate_id;
+  $new->holderpin_id = $log->id;
+  $new->save();
+
+}
     return [
     '#verificationmodal' => $this->renderPartial('verificationmodal/verificationmodal'),
     ];

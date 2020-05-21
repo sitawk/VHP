@@ -70,11 +70,11 @@ class PinController extends Controller
 					 'pin_title' => $pin->pin->title,
 					 'pin_logo' => 'http://www.honorpins.com'.$pin->pin->image,
 					 'pin_html_template' =>$pin->pin->template,
-					 'organizaation_name' => $pin->organization->org_name,
-					 'organizaation_email' => $pin->organization->org_email,
-					 'organizaation_website' => $pin->organization->website,
-					 'organizaation_phone' => $pin->organization->phone,
-					 'organizaation_logo' => 'http://www.honorpins.com'.$pin->organization->logo,
+					 'organization_name' => $pin->organization->org_name,
+					 'organization_email' => $pin->organization->org_email,
+					 'organization_website' => $pin->organization->website,
+					 'organization_phone' => $pin->organization->phone,
+					 'organization_logo' => 'http://www.honorpins.com'.$pin->organization->logo,
 				 ];
 
 				 if($pin){

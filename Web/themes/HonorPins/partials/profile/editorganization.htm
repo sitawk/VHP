@@ -1,0 +1,335 @@
+    <link href="{{'assets/css/dropify.min.css'|theme}}" rel="stylesheet" type="text/css" />
+{% if addorganization == 1%}
+{% if verifiedorganization == 1%}
+<div class="modal-header">
+    <h3>Activation Completed</h3>
+    <button type="button" class="close" data-request="onCloseModal" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row px-5">
+        <div class="col-md-6 ml-auto mr-auto">
+            <div class="row">
+                <div class="col-md-6 text-center ml-auto mr-auto my-4">
+                    <i class="fas fa-check-circle text-primary" style="font-size:150px;"></i>
+                </div>
+                <div class="col-md-12">
+                    <h2 class="text-primary text-center">Your Organization is Successfully{%if already !=1 %} Activated and {%endif%} Edited!</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <a href="#" data-request="onCloseModal" data-dismiss="modal"  class="btn btn-primary"> Close</a>
+</div>
+{%else%}
+<div class="modal-header">
+    <h3>Registration Completed</h3>
+    <button type="button" class="close" data-request="onCloseModal" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row px-5">
+        <div class="col-md-7 ml-auto mr-auto">
+            <div class="col-md-12">
+                <h2 class="text-primary text-center">6 Digits Verification code has been sent to your official email!</h2>
+            </div>
+            <form data-request="onVerifyOrganization">
+                <div class="col-md-12 my-4">
+                    <div class="form-group">
+                        <label>Enter Code</label>
+                        <input type="number" required name="code" class="form-control">
+                        <input type="hidden" name="id" value="{{org.id}}" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-12 my-4">
+                    <p class="my-3" id="editverifycheck"></p>
+                    <button type="submit" class="btn btn-primary">Activate Now</button><a href="#" data-request="onCloseModal" data-dismiss="modal"  class="ml-5 btn btn-primary"> Close</a>
+                    <span class="text-dark" style="font-size:12px;display:block;margin-top:10px">or, Didnt receive an email?</span>
+                    <a href="#" class="text-primary" onclick="editsendemailadd({{org.id}})">Resend</a>
+
+                    <span id="editspinneradd" class="" style="display:none"><i class="fa-spin fa fa-spinner text-primary"></i></span>
+                    <span id="editsuccessfullysentadd" style="font-size:12px;display:none" class="text-success"> Email successfully sent!</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{%endif%}
+{%else%}
+<div class="modal-header">
+    <h3 id="editexampleModalLongTitle">Register an Organization</h3>
+    <button type="button" class="close" data-dismiss="modal" data-request="onCloseModal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+  <form>
+    <div class="modal-body px-5">
+          <div class="row" >
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label>Organization Name</label>
+                    <input type="text" required value="{{user.myorganization.org_name}}" name="organization_name" id="editorganization_name" class="form-control">
+                      <span style="color:red;display:none; font-size:11px;" id="editorganization_nameerror">This field is required!</span>
+                </div>
+                <div class="form-group">
+                    <label>Organization Website <span class="example-span">eg. https://www.org-name.com</span></label>
+                    <input type="text" required value="{{user.myorganization.website}}" name="website" id="editorgwebsite" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="editorgwebsiteerror">This field is required!</span>
+                </div>
+                <div class="form-group">
+                    <label>Official Email <span class="wrapper"><i class="fas fa-exclamation-circle text-primary"></i><span class="tooltip bg-primary">This email needs to be verified to activate this organization!</span></span> <span
+                          class="example-span">eg. yourname@org-name.com</span></label>
+                    <input type="email" required value="{{user.myorganization.org_email}}" name="officialemail" id="editorgofficialemail" class="form-control">
+                    <span id="editemailerror"></span>
+                      <span style="color:red;display:none; font-size:11px;" id="editorgofficialemailerror">This field is required!</span>
+                </div>
+            </div>
+
+            <div class="col-lg-4 ml-auto align-self-center">
+
+                  <input type="file" id="editorglogo" name="logo" class="dropify" data-max-file-size="3M" data-height="200"   data-default-file="{{user.myorganization.logo}}"  />
+                    <span style="color:red;display:none; font-size:11px;" id="editorglogoerror">This field is required!</span>
+                </div>
+                </div>
+<div class="row" >
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Phone No.</label>
+                        <input type="tel" id="editorgphone" value="{{user.myorganization.phone}}" required name="phone" class="form-control">
+    <span style="color:red;display:none; font-size:11px;" id="editorgphoneerror">This field is required!</span>
+                    </div>
+                </div>
+
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label>Street Address</label>
+                    <input type="text" required name="street_address" value="{{user.myorganization.address}}" id="editorgstreet_address" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="editorgstreet_addresserror">This field is required!</span>
+                </div>
+            </div>
+            </div>
+            <div class="row" id="editpartialCountryState">
+                {% partial 'edit-country-state-org' countryId=user.myorganization.country_id stateId=user.myorganization.state_id %}
+
+
+            </div>
+            <div class="row" >
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" required name="city" value="{{user.myorganization.city}}" id="editorgcity" class="form-control">
+                    <span style="color:red;display:none; font-size:11px;" id="editorgcityerror">This field is required!</span>
+                </div>
+
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                  <label>Zip Code</label>
+                  <input type="text" id="editorgzip" required name="zip" value="{{user.myorganization.zip}}"  class="form-control">
+                  <span style="color:red;display:none; font-size:11px;" id="editorgziperror">This field is required!</span>
+              </div>
+
+            </div>
+            </div>
+
+    </div>
+    <input type="hidden" value="{{user.myorganization.logo}}" id="editorgbase64" />
+    <div class="modal-footer">
+        <button type="button" id="editaddorgspin" style="width:21%;display:none" class="btn btn-primary"><i class="fa-spin fa fa-spinner text-white"></i></button>
+        <button type="button" id="editaddorg"  onclick="editaddorganization()" class="btn btn-primary"><i class="fas fa-plus"></i> Register</button>
+    </div>
+</form>
+{%endif%}
+<script src="{{'assets/js/dropify.min.js'|theme}}"></script>
+
+  <script type="text/javascript">
+  function orgreadURLedit(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                //$('#blah').attr('src', e.target.result);
+                document.getElementById('editorgbase64').value=e.target.result;
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+  $("#editorglogo").change(function(){
+        orgreadURLedit(this);
+    });
+  function editaddorganization(){
+    // var input =document.getElementById('editorglogo').files[0];
+
+
+    document.getElementById('editorglogoerror').style.display = 'none';
+document.getElementById('editorganization_nameerror').style.display = 'none';
+document.getElementById('editorgwebsiteerror').style.display = 'none';
+document.getElementById('editorgaccountCountryerror').style.display = 'none';
+document.getElementById('editorgaccountStateerror').style.display = 'none';
+document.getElementById('editorgphoneerror').style.display = 'none';
+document.getElementById('editorgstreet_addresserror').style.display = 'none';
+document.getElementById('editorgcityerror').style.display = 'none';
+document.getElementById('editorgziperror').style.display = 'none';
+    var button =   document.getElementById('editaddorgspin').style.display = 'block';
+    var button =   document.getElementById('editaddorg').style.display = 'none';
+    // var button =   document.getElementById('editaddorgspin).value;
+    var image =   document.getElementById('editorgbase64').value;
+    if(image === ''){
+      document.getElementById('editorglogoerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var organization_name =   document.getElementById('editorganization_name').value;
+    if(organization_name === ''){
+      document.getElementById('editorganization_nameerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+
+    var orgwebsite =   document.getElementById('editorgwebsite').value;
+    if(orgwebsite === ''){
+      document.getElementById('editorgwebsiteerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var orgofficialemail =   document.getElementById('editorgofficialemail').value;
+    if(orgofficialemail === ''){
+      document.getElementById('editorgofficialemailerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var orgtel =   document.getElementById('editorgphone').value;
+    if(orgtel === ''){
+      document.getElementById('editorgphoneerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var orgstreet_address =   document.getElementById('editorgstreet_address').value;
+    if(orgstreet_address === ''){
+      document.getElementById('editorgstreet_addresserror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var accountCountry =   document.getElementById('editorgaccountCountry').value;
+    if(accountCountry === ''){
+      document.getElementById('editorgaccountCountryerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var accountState =   document.getElementById('editorgaccountState').value;
+    if(accountState === ''){
+      document.getElementById('editorgaccountStateerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+
+    var orgcity =   document.getElementById('editorgcity').value;
+    if(orgcity === ''){
+      document.getElementById('editorgcityerror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var orgzip =   document.getElementById('editorgzip').value;
+    if(orgzip === ''){
+      document.getElementById('editorgziperror').style.display = 'block';
+      var button =   document.getElementById('editaddorgspin').style.display = 'none';
+      var button =   document.getElementById('editaddorg').style.display = 'block';
+      return 'error'
+    }
+    var AddTrainer = $.request('onEditOrganization',{flash: 1,data:{id:'{{user.myorganization.id}}',organization_name:organization_name,country_id:accountCountry,state_id:accountState,website:orgwebsite,officialemail:orgofficialemail,logo:image,phone:orgtel,street_address:orgstreet_address,city:orgcity,zip:orgzip}}).done(function(data) {
+        console.log('data')
+        var button =   document.getElementById('editaddorgspin').style.display = 'none';
+        var button =   document.getElementById('editaddorg').style.display = 'block';
+
+   }).fail(function()  {
+     var button =   document.getElementById('editaddorgspin').style.display = 'none';
+     var button =   document.getElementById('editaddorg').style.display = 'block';
+   });
+  }
+      $('.dropify').dropify({
+          messages: {
+              'default': 'Drag and drop a Organization Logo',
+              'replace': 'Drag and drop or click to replace',
+              'remove': 'Remove',
+              'error': 'Ooops, something wrong appended.'
+          },
+          error: {
+              'fileSize': 'The file size is too big (1M max).'
+          }
+      });
+        // $('.dropify').dropify({
+        //     messages: {
+        //         'default': 'Drag and drop a photo',
+        //         'replace': 'Drag and drop or click to replace',
+        //         'remove': 'Remove',
+        //         'error': 'Ooops, something wrong appended.'
+        //     },
+        //     error: {
+        //         'fileSize': 'The file size is too big (1M max).'
+        //     }
+        // });
+        $(document).ready(function() {
+            $('#orgzip').mask('99999');
+            var input =document.getElementById('editorglogo').value;
+            // console
+            console.log(input)
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    //$('#blah').attr('src', e.target.result);
+
+                    document.getElementById('editorgbase64').value=e.target.result;
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+
+
+        })
+        $("#editorgphone").on("change paste keyup", function() {
+            // alert($(this).val());
+
+            // const align = div1.getAttribute('placeholder');
+            // console.log($(this).context.placeholder)
+            var placeholder = $(this).context.placeholder;
+            var i;
+            var string = '';
+            for (i = 0; i < placeholder.length; i++) {
+                if (placeholder[i] === ')') {
+                    string = string + ')'
+                } else if (placeholder[i] === '(') {
+                    string = string + '('
+                } else if (placeholder[i] === '-') {
+                    string = string + '-'
+                } else if (placeholder[i] === ' ') {
+                    string = string + ' '
+                } else {
+                    string = string + '9'
+                }
+
+            }
+            console.log(string)
+            $('#orgphone').mask(string);
+
+
+            // $(this).attr("data-inputmask","'mask': "+placeholder+"");
+        });
+        $("#editorgphone").intlTelInput({
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/8.4.6/js/utils.js"
+        });
+    </script>

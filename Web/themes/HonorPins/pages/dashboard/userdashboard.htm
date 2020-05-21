@@ -76,7 +76,8 @@ $user = Auth::getuser();
   $this['user'] = $user;
 
   return [
-      '#renderorganizations' => $this->renderPartial('userdashboard/renderorganizations')
+      '#renderorganizations' => $this->renderPartial('userdashboard/renderorganizations'),
+      '#editcompleteorganization' => $this->renderPartial('profile/editorganization')
   ];
 }
 function onAvatar(){
@@ -89,6 +90,155 @@ return [
         '#updateprofile' => $this->renderPartial('profile/profilesetting')
     ];
 
+}
+function onEditOrganization(){
+
+  $emailposition = strpos(post('officialemail'),"@");
+  $emailposition = $emailposition+1;
+  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
+  if($emailweb === 'gmail.com'){
+    $this['error'] = 'Gmail is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'zohomail.com'){
+    $this['error'] = 'Zoho is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'protonmail.com'){
+    $this['error'] = 'Proton Mail is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'outlook.com'){
+    $this['error'] = 'Outlook is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'tutanota.com'){
+    $this['error'] = 'Tutanota is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'yahoo.com'){
+    $this['error'] = 'Yahoo is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'icloud.com'){
+    $this['error'] = 'iCloud is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'yandex.com'){
+    $this['error'] = 'Yandex is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else if($emailweb === 'aol.com'){
+    $this['error'] = 'Aol is free service. Kindly provide an organization email.';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }else{
+
+
+if (strpos(post('website'), 'www.') !== false) {
+  $position = strpos(post('website'),"www.");
+  $position = $position + 4;
+  $web = substr(post('website'),$position ,strlen(post('website')));
+  $emailposition = strpos(post('officialemail'),"@");
+  $emailposition = $emailposition+1;
+  $emailweb = substr(post('officialemail'),$emailposition,strlen(post('officialemail')));
+  if($web !== $emailweb){
+    $this['web'] = $web;
+    $this['emailweb'] = $emailweb;
+    $this['error'] = 'Your email should contain organization domain! eg. name@domainname.com';
+    return [
+    '#emailerror' => $this->renderPartial('profile/error')
+    ];
+  }
+}
+$user =Auth::getuser();
+$addorganization = Codersocean\Honorpins\Models\Organization::where('id',post('id'))->first();
+$addorganization->user_id= $user->id;
+$addorganization->org_name= post('organization_name');
+
+$addorganization->phone= post('phone');
+$addorganization->city= post('city');
+$country = RainLab\Location\Models\Country::where('id',post('country_id'))->first();
+$addorganization->country= $country->name;
+if( post('officialemail') != $addorganization->org_email){
+  $addorganization->status= 0;
+}else{
+  $addorganization->status= 1;
+}
+$addorganization->country_id= post('country_id');
+$addorganization->zip= post('zip');
+$addorganization->address= post('street_address');
+if(!empty(post('mobile'))){
+  $addorganization->mobile= post('mobile');
+}else{
+  $addorganization->mobile= 'null';
+}
+
+
+$state = RainLab\Location\Models\State::where('id',post('state_id'))->first();
+$addorganization->state= $state->name;
+$addorganization->state_id= post('state_id');
+$Caracteres = '0123456789';
+    $QuantidadeCaracteres = strlen($Caracteres);
+    $QuantidadeCaracteres--;
+    $Hash=NULL;
+        for($x=1;$x<=6;$x++){
+            $Posicao = rand(0,$QuantidadeCaracteres);
+            $Hash .= substr($Caracteres,$Posicao,1);
+        }
+          if( post('officialemail') != $addorganization->org_email){
+            $addorganization->website= post('website');
+            $addorganization->org_email= post('officialemail');
+$addorganization->verification_code = $Hash;
+$datamail = [
+            'name' => $user->name.' '.$user->surname,
+            'code' => $Hash,
+
+        ];
+Mail::send('organization.verification.code', $datamail, function($message) use ($addorganization) {
+            $message->to($addorganization->org_email, $addorganization->org_email);
+             $message->from('noreply@honorpins.com','Verification Messege');
+        });
+      }
+if (Input::post('logo') != '' )
+{
+  if( post('logo') != $addorganization->logo){
+  $png_url = "logo-".time().".png";
+    $path = public_path().'/storage/app/uploads/web/' . $png_url;
+    $datapath = '/storage/app/uploads/web/' . $png_url;
+
+    Image::make(file_get_contents(Input::post('logo')))->resize(300, 200)->save($path);
+
+$addorganization->logo =$datapath;
+}
+}else{
+  $this['error'] = 'Logo is required for register an organization!';
+  return [
+  '#logoerror' => $this->renderPartial('profile/error')
+  ];
+}
+if( post('officialemail') == $addorganization->org_email){
+    $this['verifiedorganization'] = 1;
+    $this['already'] = 1;
+}
+  $this['addorganization'] = 1;
+  $addorganization->save();
+    $this['org'] = $addorganization;
+    $user = $this['user']=Auth::getuser();
+      $this['myorganizations'] = Codersocean\Honorpins\Models\Organization::where('user_id',$user->id)->orderBy('created_at')->get();
+return [
+  '#editcompleteorganization' => $this->renderPartial('profile/editorganization')
+];
+}
 }
 function onAddOrganization(){
   $emailposition = strpos(post('officialemail'),"@");
@@ -325,6 +475,13 @@ $(this).addClass("nav-tabs");
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content" id="completeorganization">
                                     {% partial 'profile/addorganization' %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade " id="editorganizationmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="editcompleteorganization">
+                                    {% partial 'profile/editorganization' %}
                                 </div>
                             </div>
                         </div>

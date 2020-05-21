@@ -1,0 +1,30 @@
+{% set countryId = countryId|default(form_value('country_id')) %}
+{% set stateId = stateId|default(form_value('state_id')) %}
+<div class="col-lg-6">
+
+<div class="form-group">
+    <label for="accountCountry">Country</label>
+    {{ form_select_country('country_id', countryId, {
+        id: 'editorgaccountCountry',
+        class: 'form-control',
+        emptyOption: 'Select Country',
+        'data-request': 'onInit',
+        'data-request-update': {
+            'country-state-org': '#editpartialCountryState'
+        }
+    }) }}
+</div>
+  <span style="color:red;display:none; font-size:11px;" id="editorgaccountCountryerror">This field is required!</span>
+</div>
+<div class="col-lg-6">
+
+<div class="form-group">
+    <label for="accountState">State</label>
+    {{ form_select_state('state_id', countryId, stateId, {
+        id: 'editorgaccountState',
+        class: 'form-control',
+        emptyOption: 'Select State'
+    }) }}
+</div>
+  <span style="color:red;display:none; font-size:11px;" id="editorgaccountStateerror">This field is required!</span>
+</div>

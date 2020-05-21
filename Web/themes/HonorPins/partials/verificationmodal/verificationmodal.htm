@@ -1,45 +1,45 @@
-<div class="modal-body p-0">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card p-2 border-dark card-inverse" style="background-color: #fff; border-color: #fff; border-radius:10px">
-                <div class="card-block">
-                    <div class="row">
-                        <div class="col-md-2 col-sm-2 text-center ">
-                            <img id="viewmyrenderimage" class="btn-md mt-25" src="{{holder.pin.image}}" class="" alt="" style="width:100px;height:100px;border-radius:50%;" />
-                        </div>
-                        <div class="col-md-10 col-sm-10 ">
-                            <div class="row">
-                            <div class="col-md-12 col-sm-12">
-                            <h2 class="card-title text-gray-dark" id="viewmyrendertitle">{{holder.pin.title}}</h2>
-                          </div>
-                            <div class="col-md-12 col-sm-12">
-                            <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>By PMI: </strong> <span id="viewmyrenderurl"> {{holder.certificate.url}}</span> </p>
-                          </div>
-                            <div class="col-md-5 col-sm-5">
-                            <p class="card-text text-gray-dark" style="line-height:1.5;font-size:14px"><strong>Certificate No: </strong>  <span id="viewmyrenderregno">{{holder.reg_number}}</span></p>
-                             </div>
-                               <div class="col-md-2 col-sm-2">
-                             <strong></strong>
-                           </div>
-                             <div class="col-md-5 col-sm-5">
-                             <p style="line-height:1.5;font-size:14px"><strong>Granted Date:</strong> <span id="viewmyrenderstartdate">{{holder.start_date}}</p>
-                           </div>
-                             <div class="col-md-12 col-sm-12" style="height:100px">
-                            <p style="line-height:1.5;font-size:13px" id="viewmyrenderdesc">
-                              {{holder.pin.desc}}
-                        </div>
-                      </div>
-                      </div>
-                      <div class="col-md-12 col-sm-12 pb-15 pl-25">
-                          <p class="card-text text-gray-dark" style="line-height:1.5"><strong>Signed By: </strong> <span id="viewmyrenderholdername"><i style="color:#ccc">{{holder.full_name}}</i></span> </p>
-                    </div>
-                      <div class="col-md-12 col-sm-12 mt-50 pb-15 pl-25 text-center">
-                          <h2 class="text-primary">Valid Certification</h2>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-lg-12">
+    <table class="rwd-table">
+      <tbody>
+        <tr>
+          <th>Pin</th>
+          <th>Holder Name</th>
+          <th>Certificate</th>
+          <th>Organization</th>
+          <th>Status</th>
 
-    </div>
+
+        </tr>
+  {% for holder in holders%}
+        <tr>
+          <td data-th="Pin Logo">
+            <img class="avatar" style="height:40px;object-fit: contain;" src="{{holder.pin.image}}" alt="Bologna">
+
+          </td>
+
+          <td data-th="Action">
+          {{holder.full_name}}
+          </td>
+          <td data-th="Template">
+          {{holder.certificate.title}}
+          </td>
+          <td data-th="Action">
+          {{holder.organization.org_name}}
+          </td>
+          <td data-th="Status">
+            {% if date(holder.start_date) < date() and date(holder.end_date) > date() %}
+Valid Certification
+{%else%}
+Expire Certification
+{% endif %}
+
+          </td>
+
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+
 </div>

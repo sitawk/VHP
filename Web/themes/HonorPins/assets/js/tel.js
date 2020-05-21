@@ -743,7 +743,7 @@
                     placeholder = this.options.customPlaceholder(placeholder, this.selectedCountryData);
                 }
                 this.telInput.attr("placeholder", placeholder);
-                
+
             }
         },
         // called when the user selects a list item from the dropdown

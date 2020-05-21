@@ -1,7 +1,7 @@
 <?php namespace Codersocean\Honorpins\Models;
 
 use Model;
-use RainLab\User\Models\User;
+  use RainLab\User\Models\User;
 /**
  * Model
  */
