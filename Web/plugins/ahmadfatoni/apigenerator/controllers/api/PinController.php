@@ -56,28 +56,54 @@ class PinController extends Controller
 
 				if (filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
 					$pin = HolderPins::where('private_access_code',$request['private_code'])->where('public_access_code',$request['public_code'])->where('email',$request['email'])->first();
-					$object = (object) [
-					 'holder_name' => $pin->full_name,
-					 'holder_email' => $pin->email,
-					 'holder_phone' => $pin->phone,
-					 'certificate_title' => $pin->certificate->title,
-					 'certificate_registration_number' => $pin->reg_number,
-					 'certificate_url' => $pin->certificate->url,
-					 'certificate_type' => $pin->certificate->category->name,
-					 'certificate_description' => $pin->certificate->desc,
-					 'issue_date' => $pin->start_date,
-					 'expire_date' => $pin->end_date,
-					 'pin_title' => $pin->pin->title,
-					 'pin_logo' => 'http://www.honorpins.com'.$pin->pin->image,
-					 'pin_html_template' =>$pin->pin->template,
-					 'organization_name' => $pin->organization->org_name,
-					 'organization_email' => $pin->organization->org_email,
-					 'organization_website' => $pin->organization->website,
-					 'organization_phone' => $pin->organization->phone,
-					 'organization_logo' => 'http://www.honorpins.com'.$pin->organization->logo,
-				 ];
+
 
 				 if($pin){
+					$thistemplate =$pin->pin->template;
+					 if (strpos($thistemplate, '{certificate_title}') !== false) {
+
+							$thistemplate = str_replace("{certificate_title}",$pin->certificate->title, $thistemplate);
+						}
+					 if (strpos($thistemplate, '{certificate_url}') !== false) {
+
+							$thistemplate =  str_replace("{certificate_url}",$pin->certificate->url, $thistemplate);
+						}
+					 if (strpos($thistemplate, '{issued_date}') !== false) {
+
+							$thistemplate =  str_replace("{issued_date}",$pin->start_date, $thistemplate);
+						}
+					 if (strpos($thistemplate, '{certificate_description}') !== false) {
+
+							$thistemplate =  str_replace("{certificate_description}",$pin->certificate->desc, $thistemplate);
+						}
+					 if (strpos($thistemplate, '{holder_name}') !== false) {
+
+							$thistemplate =  str_replace("{holder_name}",$pin->full_name, $thistemplate);
+						}
+
+
+
+
+					 $object = (object) [
+						'holder_name' => $pin->full_name,
+						'holder_email' => $pin->email,
+						'holder_phone' => $pin->phone,
+						'certificate_title' => $pin->certificate->title,
+						'certificate_registration_number' => $pin->reg_number,
+						'certificate_url' => $pin->certificate->url,
+						'certificate_type' => $pin->certificate->category->name,
+						'certificate_description' => $pin->certificate->desc,
+						'issue_date' => $pin->start_date,
+						'expire_date' => $pin->end_date,
+						'pin_title' => $pin->pin->title,
+						'pin_logo' => 'http://www.honorpins.com'.$pin->pin->image,
+						'pin_html_template' =>$thistemplate,
+						'organization_name' => $pin->organization->org_name,
+						'organization_email' => $pin->organization->org_email,
+						'organization_website' => $pin->organization->website,
+						'organization_phone' => $pin->organization->phone,
+						'organization_logo' => 'http://www.honorpins.com'.$pin->organization->logo,
+					];
 					 if($pin->pin_status != 0){
 							 if($pin->availbility != 0){
 	  						 return $this->helpers->apiArrayResponseBuilder(200, 'Success: Pin is valid', $object);

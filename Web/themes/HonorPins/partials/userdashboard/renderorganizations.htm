@@ -65,11 +65,13 @@
                                         </div>
                                     </div>
         <div class="row bt-1 mb-3 pt-3 border-bottom mt-15 pb-3">
-            {%if user.myorganization.status != 0%}
+
+
                                         <div class="col-sm-5 mr-auto">
-                                            <a href="/dashboard/my-orders" class="btn btn-outline-dark myshadow pull-left" style="border-radius:3.25rem">Upload Certificates</a>
+                                          <a href="#" class="btn btn btn-outline-success myshadow pull-left" style="border-radius:3.25rem" href="/pricing">Buy Subscription</a>
+
                                         </div>
-                                        {%endif%}
+
                                         <div class="col-sm-5 ml-auto">
                                           {%if user.myorganization.status == 0%}
                                           <a href="#" class="btn btn btn-outline-success myshadow pull-right" style="border-radius:3.25rem" data-toggle="modal" data-target="#organization{{user.myorganization.id}}">Activate Now</a>

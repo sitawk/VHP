@@ -4,11 +4,38 @@ layout = "default"
 ==
 <?php
 function onVerifyCertification(){
+
   $count = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->count();
 
   if($count >= 1){
-$holder = $this['holders'] = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->get();
+$holder  = Codersocean\HonorPins\Models\HolderPins::where('email',post('tester'))->orWhere('public_access_code',post('tester'))->get();
+$data = array();
 foreach($holder as $log){
+  $thistemplate =$log->pin->template;
+   if (strpos($thistemplate, '{certificate_title}') !== false) {
+
+      $thistemplate = str_replace("{certificate_title}",$log->certificate->title, $thistemplate);
+    }
+   if (strpos($thistemplate, '{certificate_url}') !== false) {
+
+      $thistemplate =  str_replace("{certificate_url}",$log->certificate->url, $thistemplate);
+    }
+   if (strpos($thistemplate, '{issued_date}') !== false) {
+
+      $thistemplate =  str_replace("{issued_date}",$log->start_date, $thistemplate);
+    }
+   if (strpos($thistemplate, '{certificate_description}') !== false) {
+
+      $thistemplate =  str_replace("{certificate_description}",$log->certificate->desc, $thistemplate);
+    }
+   if (strpos($thistemplate, '{holder_name}') !== false) {
+
+      $thistemplate =  str_replace("{holder_name}",$log->full_name, $thistemplate);
+    }
+
+    $log->filled_template = $thistemplate;
+
+array_push($data,$log);
   $new = new Codersocean\HonorPins\Models\RequestLogs;
   $email = Codersocean\HonorPins\Models\ConnectedEmails::where('email',$log->email)->first();
   if($email){
@@ -23,6 +50,7 @@ foreach($holder as $log){
   $new->save();
 
 }
+$this['holders'] = $data;
     return [
     '#verificationmodal' => $this->renderPartial('verificationmodal/verificationmodal'),
     ];

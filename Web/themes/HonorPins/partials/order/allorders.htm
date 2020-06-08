@@ -2,14 +2,24 @@
 
 <div class="row">
   <link href="{{ 'assets/css/payment.css'|theme }}" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
+  <link href="{{'assets/plugins/datatables/dataTables.bootstrap4.min.css'|theme}}" rel="stylesheet" type="text/css" />
+  <link href="{{'assets/plugins/datatables/buttons.bootstrap4.min.css'|theme}}" rel="stylesheet" type="text/css" />
+    <link href="{{'assets/plugins/datatables/responsive.bootstrap4.min.css'|theme}}" rel="stylesheet" type="text/css" />
   <link href="{{ 'adminassets/libs/select2/select2.css'|theme }}" rel="stylesheet">
 
 
   <link href="{{ 'assets/css/datatable.css'|theme }}" rel="stylesheet">
   <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
   <style>
+  #example_wrapper {
+    padding-left:0px !important;
+  }
+  .dt-buttons {
+    float: right !important;
+  }
+  div.dataTables_wrapper div.dataTables_filter {
+    text-align: left !important;
+  }
       .bootstrap-select .dropdown-menu {
           top: 27px !important;
       }
@@ -24,7 +34,7 @@
       }
 
   </style>
-  <div class="col-12">
+  <div class="col-md-12 pl-0">
         <table id="example" class="table table-hover responsive nowrap rwd-table-data"  style="width:100%">
           <thead>
             <tr>
@@ -34,6 +44,7 @@
               <th>Reg No#</th>
               <th>Pin</th>
               <th>Issued Date</th>
+              <th>Upload Date</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +94,10 @@
 
               </td>
               <td data-th="Issued Date">
-      {{order.start_date}}
+      {{order.start_date| date("j M, Y")}}
+              </td>
+              <td data-th="Upload Date">
+      {{order.created_at | date("j M, Y")}}
               </td>
             </tr>
             {%endfor%}
@@ -232,22 +246,26 @@
 <div id="renderaddcardorder">
 {%partial 'order/renderaddcardorder'%}
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="{{'assets/plugins/datatables/jquery.dataTables.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/dataTables.bootstrap4.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/dataTables.buttons.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/buttons.bootstrap4.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/jszip.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/pdfmake.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/vfs_fonts.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/buttons.html5.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/buttons.print.min.js'|theme}}"></script>
+<!-- Responsive examples -->
+<script src="{{'assets/plugins/datatables/dataTables.responsive.min.js'|theme}}"></script>
 <script>
 $(document).ready(function() {
-  $("#example").DataTable({
+  var table =$("#example").DataTable({
       dom: 'Bfrtip',
     responsive: true,
     buttons: [
-                {
-                    text: 'Filter',
-                    action: function ( e, dt, node, config ) {
-                        alert( 'Button activated' );
-                    }
-                }
-            ],
+       'excel', 'pdf'
+    ],
     columnDefs: [
       {
         responsivePriority: 1,
@@ -259,7 +277,8 @@ $(document).ready(function() {
       }
     ]
   });
-  $(".dataTables_filter").append('<a class="btn btn btn-primary ml-3" style="cursor:pointer;height: 48px !important;" id="show-hidden-menu" ><i class="text-white fa fa-filter"></i></a>')
+
+  $(".dataTables_filter label").append('<a class="btn btn btn-primary ml-3" style="cursor:pointer;height: 48px !important;" id="show-hidden-menu" ><i class="text-white fa fa-filter"></i></a>')
   $(".dataTables_filter input")
     .attr("placeholder", "Search here...")
     .css({

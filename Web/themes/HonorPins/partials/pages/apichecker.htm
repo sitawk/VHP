@@ -6,25 +6,40 @@
                 <div class="form-inline row">
 
                     <input class="form-control col-md-8" id="tester" type="text" placeholder="Your Email or Public Access Code">
-                    <button class="btn btn-dark col-md-3 pull-right" data-toggle="modal" data-target="#verifycertificate" onclick="onverify()">Check Up!</button>
+                    <button class="btn btn-dark col-md-3 pull-right" onclick="onverify()">Check Up!</button>
                 </div>
+
+
             </div>
+
         </div>
     </div>
 </div>
-<div class="modal fade " id="verifycertificate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content" style="border-radius: 11px;"  id="verificationmodal">
-          <div class="row" style="border-radius: 11px;height:300px" >
-           <div class="col-md-3 ml-auto mr-auto text-center" style="margin-top:120px" ><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div>
-           </div>
-        </div>
-    </div>
+<div class="container mt-20">
+    <div class="row">
+
+        <div class="mx-auto text-center col-md-12">
+<div id="modalshoe" style="display:none;border-radius: 11px;"  >
+<div  style="border-radius: 11px;"  id="verificationmodal">
+              
+  <div class="row" style="border-radius: 11px;height:300px" >
+   <div class="col-md-3 ml-auto mr-auto text-center" style="margin-top:120px" ><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div>
+   </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
 <script>
 
 function onverify(){
   var tester = document.getElementById('tester').value
+document.getElementById('modalshoe').style.display = 'block'
  document.getElementById('verificationmodal').innerHTML = '<div class="row" style="border-radius: 11px;height:300px" ><div class="col-md-3 ml-auto mr-auto text-center" style="margin-top:120px" ><i class="fa-spin fa fa-spinner font-34 text-primary"></i></div></div>'
   if(tester == ''){
 

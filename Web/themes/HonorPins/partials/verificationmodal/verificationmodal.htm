@@ -1,42 +1,68 @@
+<style>
+
+.animation {
+
+}
+</style>
 <div class="row">
   <div class="col-lg-12">
     <table class="rwd-table">
       <tbody>
         <tr>
-          <th>Pin</th>
+          <th>Pin Logo</th>
           <th>Holder Name</th>
           <th>Certificate</th>
-          <th>Organization</th>
+          <th>Pin title</th>
+          <th>Pin Template</th>
           <th>Status</th>
 
 
         </tr>
   {% for holder in holders%}
-        <tr>
-          <td data-th="Pin Logo">
-            <img class="avatar" style="height:40px;object-fit: contain;" src="{{holder.pin.image}}" alt="Bologna">
 
-          </td>
+    <tr>
+      <td data-th="Pin Logo">
+        <img class="avatar" style="height:40px;object-fit: contain;" src="{{holder.pin.image}}" alt="Bologna">
 
-          <td data-th="Action">
-          {{holder.full_name}}
-          </td>
-          <td data-th="Template">
-          {{holder.certificate.title}}
-          </td>
-          <td data-th="Action">
-          {{holder.organization.org_name}}
-          </td>
-          <td data-th="Status">
-            {% if date(holder.start_date) < date() and date(holder.end_date) > date() %}
+      </td>
+
+      <td data-th="Action">
+      {{holder.full_name}}
+      </td>
+      <td data-th="Template">
+      {{holder.certificate.title}}
+      </td>
+      <td data-th="Template">
+      {{holder.pin.title}}
+      </td>
+      <td data-th="Action">
+
+        <a data-toggle="collapse" class="btn btn-dark" data-parent=".tab-pane" href="#collapseTwo{{holder.id}}">
+        See Pin
+        </a>
+
+      </td>
+      <td data-th="Status">
+        {% if date(holder.start_date) < date() and date(holder.end_date) > date() %}
 Valid Certification
 {%else%}
 Expire Certification
 {% endif %}
 
-          </td>
+      </td>
 
-        </tr>
+    </tr>
+
+    <tr id="collapseTwo{{holder.id}}" class="animation panel-collapse collapse">
+      <td colspan="5">
+      <div class="panel-body">
+      {{holder.filled_template |raw}}
+      </div>
+    </td>
+    </tr>
+
+
+
         {%endfor%}
       </tbody>
     </table>

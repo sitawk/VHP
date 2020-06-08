@@ -1,8 +1,23 @@
+<link href="{{'assets/plugins/datatables/dataTables.bootstrap4.min.css'|theme}}" rel="stylesheet" type="text/css" />
+  <link href="{{'assets/plugins/datatables/responsive.bootstrap4.min.css'|theme}}" rel="stylesheet" type="text/css" />
 
+<link href="{{ 'assets/css/datatable.css'|theme }}" rel="stylesheet">
+  <link href="{{ 'assets/css/dashboard.css'|theme }}" rel="stylesheet">
+  <style>
+  .paginate_button a {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  #example_wrapper {
+    padding-left:0px !important;
+    padding-right:0px !important;
+  }
+  </style>
 <div class="col-lg-12">
-  <table class="rwd-table">
-    <tbody>
-      <tr>
+    <table id="example" class="table table-hover responsive nowrap rwd-table-data"  style="width:100%">
+      <thead>
+        <tr>
+
         <th>
             Reg No#
         </th>
@@ -16,30 +31,33 @@
 
 
       </tr>
-        {% if cartitems|length > 0%}
+
+  </thead>
+    <tbody>
+
   {%for cartitem in cartitems%}
       <tr>
-        <td data-th="Reg No#">
+        <td >
         {{cartitem.reg_number}}
         </td>
-        <td data-th="Certificate Title">
+        <td >
       {{cartitem.certificate.title}}  </td>
-        <td data-th="Pin Title">
+        <td >
           {{cartitem.pin.title}}
         </td>
-        <td data-th="Name">
+        <td>
       {{cartitem.name}}
         </td>
-        <td data-th="Email">
+        <td >
       {{cartitem.email}}
         </td>
-        <td data-th="Start Date">
+        <td >
       {{cartitem.start_date|date("m-d-Y")}}
         </td>
-        <td data-th="End Date">
+        <td >
       {{cartitem.end_date|date("m-d-Y")}}
         </td>
-        <td data-th="Action">
+        <td >
           <a href="#" data-toggle="modal" data-target="#editcartitemmodal" style="padding: 0 0.6rem; line-height:1.8" onclick="editcartitem({{cartitem.id}},{{cartitem.certificate_id}},'{{cartitem.email}}','{{cartitem.start_date}}','{{cartitem.end_date}}','{{cartitem.reg_number}}','{{cartitem.phone}}','{{cartitem.name}}')"  class="btn  btn-outline-info myshadow"><i class="fas fa-edit"></i></a>
           <a href="#" style="padding: 0 0.6rem; line-height:1.8" onclick="cartitemdelete({{cartitem.id}})" class="btn  btn-outline-danger myshadow  "><i class="fas fa-trash"></i></a>
 
@@ -48,17 +66,32 @@
 
       </tr>
       {%endfor%}
-      {%else%}
-      <tr>
-      <td colspan="8" class="text-center">
-      <p>No Item added yet!</p>
-    </td>
-      </tr>
-      {%endif%}
+
     </tbody>
   </table>
 </div>
+<script src="{{'assets/plugins/datatables/jquery.dataTables.min.js'|theme}}"></script>
+<script src="{{'assets/plugins/datatables/dataTables.bootstrap4.min.js'|theme}}"></script>
+<!-- Responsive examples -->
+<script src="{{'assets/plugins/datatables/dataTables.responsive.min.js'|theme}}"></script>
 <script>
+$(document).ready(function() {
+  var table =$("#example").DataTable({
+      dom: 'Bfrtip',
+    responsive: true,
+    "paging": true,
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+});
 $(document).ready(function() {
 $('#checkoutmodal').modal('hide');
 $('#editcartitemmodal').modal('hide');

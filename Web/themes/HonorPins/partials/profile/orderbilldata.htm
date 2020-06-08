@@ -25,10 +25,10 @@ $('#addfilemodal').modal('hide');
 <div class="col-md-12 border-bottom" style="    padding-top: 1rem!important;    padding-bottom: 1rem!important;">
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3 ml-auto text-right">
             <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;">Total No of Certificates:</span>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2 mr-5 text-right">
             <span style="font-size:19px;padding-top:0.7rem;display: block; font-weight:bold;"><span class="text-primary">{{cartitems|length}}</span></span>
 
         </div>
@@ -90,26 +90,55 @@ $('#addfilemodal').modal('hide');
         </div>
     </div>
 </div>
-<div id="checkoutbutton">
+<div id="checkoutbutton" >
+<div  class="justify-content-around row">
+
 {%if cartitems|length > 0%}
-<div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+<div class="col-md-4" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
     <button data-toggle="modal" data-target="#checkoutmodal"  class="btn btn btn-primary"> Checkout</button>
 </div>
+<div class="col-md-3" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onDiscard"   class="btn btn btn-primary"> Clear</button>
+</div>
+<div class="col-md-3 " style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onCancelOrder"   class="btn btn btn-primary"> Cancel</button>
+</div>
 {%else%}
-<div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
+<div class="col-md-4" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
     <a href="#" class="btn btn btn-primary disabled" style="cursor: not-allowed;"> Checkout</a>
+</div>
+<div class="col-md-3" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onDiscard"   class="btn btn btn-primary"> Clear</button>
+</div>
+<div class="col-md-3 " style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onCancelOrder"   class="btn btn btn-primary"> Cancel</button>
 </div>
 {%endif%}
 </div>
+</div>
 <div id="finishbutton">
+  <div  class="justify-content-around row">
   {%if cartitems|length > 0%}
-<div class="col-md-12" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+<div class="col-md-4" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
     <button data-request="onCreateOrder" type="submit" class="btn btn btn-primary"> Finish</button>
 </div>
+<div class="col-md-3" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onDiscard"   class="btn btn btn-primary"> Clear</button>
+</div>
+<div class="col-md-3 " style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onCancelOrder"   class="btn btn btn-primary"> Cancel</button>
+</div>
 {%else%}
-<div class="col-md-12" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
+<div class="col-md-4" style="padding-top: 1rem !important;padding-bottom: 1rem !important;">
     <a href="#" class="btn btn btn-primary disabled" style="cursor: not-allowed;"> Finish</a>
+</div>
+<div class="col-md-3" style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onDiscard"   class="btn btn btn-primary"> Clear</button>
+</div>
+<div class="col-md-3 " style="padding-top: 1rem !important;    padding-bottom: 1rem !important;">
+    <button data-request="onCancelOrder"   class="btn btn btn-primary"> Cancel</button>
 </div>
 {%endif%}
 
+</div>
 </div>

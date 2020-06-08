@@ -284,7 +284,7 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
     <div class="container mt-65 py-5">
         <div class="row">
             <div class="col-lg-12 text-center">
-                <h2>My Certificates</h2>
+                <h2>Personal Certificates</h2>
             </div>
 
             <div class="col-lg-12">
@@ -293,7 +293,7 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
                       {%set count = 0%}
                       {% for certificate in user.emails%}
                       {% for certificates in certificate.personalcertificates%}
-                    
+
                       {%set count = count+1%}
                       {%endfor%}
                       {%endfor%}
@@ -340,23 +340,30 @@ $(this).parent().find(".pull-right").removeClass("fa-angle-down");
 function onbuythispin(id){
   document.getElementById('buyingpinid').value = id;
 }
-function onviewmypin(id,title,desc,image,start_date,reg,name,url){
-  document.getElementById('viewmyrendertitle').innerHTML = title;
-  document.getElementById('viewmyrenderurl').innerHTML = url;
-  document.getElementById('viewmyrenderregno').innerHTML = reg;
-  document.getElementById('viewmyrenderstartdate').innerHTML = start_date;
-  document.getElementById('viewmyrenderholdername').innerHTML = name;
-  // document.getElementById('editpinid').value = id;
-  // document.getElementById('edittitle').value = title;
-  document.getElementById('viewmyrenderimage').src = image;
-  // $('#editorglogo').attr("data-default-file", image);
-  // document.getElementByClassName('dropify-preview').style.display = 'block';
-  // $('.dropify-preview').css('display','block');
-  // $('.dropify-render').append('<img src="'+image+'" style="max-height:140px" />');
-  // document.getElementByClassName('dropify-render').innerHTML = '<img src="'+image+'" style="max-height:140px" />' ;
-  document.getElementById('viewmyrenderdesc').innerHTML = desc;
-  // document.getElementById('editdesc').value = desc;
+function onviewmypin(template,title,desc,image,start_date,reg,name,url,certitle,cerdesc){
 
+  var n = template.includes("{certificate_title}");
+  if(n){
+    var template = template.replace("{certificate_title}", certitle);
+  }
+  var nn = template.includes("{holder_name}");
+  if(nn){
+    var template = template.replace("{holder_name}", name);
+  }
+  var nnn = template.includes("{issued_date}");
+  if(nnn){
+    var template = template.replace("{issued_date}", start_date);
+  }
+  var nnnn = template.includes("{certificate_description}");
+  if(nnnn){
+    var template = template.replace("{certificate_description}", cerdesc);
+  }
+  var nnnnn = template.includes("{certificate_url}");
+  if(nnnnn){
+    var template = template.replace("{certificate_url}", url);
+  }
+
+  document.getElementById('pintemplate').innerHTML = template;
 }
     function onedit(id) {
       var AddTrainer = $.request('onEditCertificate',{data:{id:id}}).done(function(data) {
